@@ -1,0 +1,37 @@
+{
+  "name": "anchor",
+  "version": "1.0.0",
+  "description": "Anchor — AI-powered protection platform for Overseas Filipino Workers",
+  "private": true,
+  "workspaces": [
+    "web",
+    "firebase/functions"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:web\" \"npm run emulators\"",
+    "dev:web": "npm run dev --workspace=web",
+    "dev:functions": "npm run build:watch --workspace=firebase/functions",
+    "build": "npm run build --workspaces --if-present",
+    "build:web": "npm run build --workspace=web",
+    "build:functions": "npm run build --workspace=firebase/functions",
+    "lint": "npm run lint --workspaces --if-present",
+    "test": "npm run test --workspaces --if-present",
+    "emulators": "firebase emulators:start --import=.firebase/emulator-data --export-on-exit",
+    "emulators:export": "firebase emulators:export .firebase/emulator-data",
+    "deploy": "npm run build && firebase deploy",
+    "deploy:hosting": "npm run build:web && firebase deploy --only hosting",
+    "deploy:functions": "npm run build:functions && firebase deploy --only functions",
+    "deploy:rules": "firebase deploy --only firestore:rules,storage:rules",
+    "deploy:firestore": "firebase deploy --only firestore",
+    "firebase:login": "firebase login",
+    "firebase:use": "firebase use --add"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "firebase-tools": "^13.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}

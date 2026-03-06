@@ -1,0 +1,119 @@
+# ============================================================
+# ROOT — .gitignore
+# ============================================================
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+build/
+out/
+.output/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# ============================================================
+# Flutter / Dart
+# ============================================================
+
+# Flutter/Dart build
+apps/mobile/.dart_tool/
+apps/mobile/.flutter-plugins
+apps/mobile/.flutter-plugins-dependencies
+apps/mobile/.packages
+apps/mobile/build/
+apps/mobile/.pub-cache/
+apps/mobile/.pub/
+apps/mobile/pubspec.lock
+
+# Android
+apps/mobile/android/.gradle/
+apps/mobile/android/captures/
+apps/mobile/android/gradlew
+apps/mobile/android/gradlew.bat
+apps/mobile/android/local.properties
+apps/mobile/android/**/GeneratedPluginRegistrant.java
+apps/mobile/android/key.properties
+apps/mobile/**/*.jks
+
+# iOS
+apps/mobile/ios/.symlinks/
+apps/mobile/ios/Flutter/flutter_export_environment.sh
+apps/mobile/ios/Flutter/Generated.xcconfig
+apps/mobile/ios/Pods/
+apps/mobile/ios/Runner.xcworkspace/
+apps/mobile/ios/Runner/GeneratedPluginRegistrant.*
+
+# Flutter Firebase
+apps/mobile/lib/firebase_options.dart
+apps/mobile/android/app/google-services.json
+apps/mobile/ios/Runner/GoogleService-Info.plist
+
+# ============================================================
+# Firebase
+# ============================================================
+
+firebase/functions/node_modules/
+firebase/functions/lib/
+firebase/functions/.env
+!firebase/functions/.env.example
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+firestore-debug.log
+firestore-debug.*.log
+storage-debug.log
+storage-debug.*.log
+ui-debug.log
+pubsub-debug.log
+database-debug.log
+hosting/.cache
+
+# ============================================================
+# TypeScript / JavaScript
+# ============================================================
+
+*.js.map
+*.d.ts.map
+tsconfig.tsbuildinfo
+
+# ============================================================
+# Testing
+# ============================================================
+
+coverage/
+*.lcov
+.nyc_output/
