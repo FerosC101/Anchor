@@ -59,6 +59,9 @@ class AuthService {
       return UserModel.fromFirestore(doc);
     } on FirebaseAuthException catch (e) {
       throw AuthException(_mapFirebaseError(e.code));
+    } catch (_) {
+      throw const AuthException(
+          'Sign-in failed. Please check your connection and try again.');
     }
   }
 
@@ -167,7 +170,25 @@ class AuthService {
       return user;
     } on FirebaseAuthException catch (e) {
       throw AuthException(_mapFirebaseError(e.code));
+    } catch (_) {
+      throw const AuthException(
+          'Registration failed. Please check your connection and try again.');
     }
+  }
+
+  // ── Load current user ──────────────────────────────────────────────────────
+
+  /// Fetches the Firestore [UserModel] for the currently signed-in Firebase
+  /// user, or returns null if nobody is logged in.
+  Future<UserModel?> loadCurrentUser() async {
+    final fbUser = _auth.currentUser;
+    if (fbUser == null) return null;
+    final doc = await _firestore
+        .collection(FirebaseConstants.usersCollection)
+        .doc(fbUser.uid)
+        .get();
+    if (!doc.exists) return null;
+    return UserModel.fromFirestore(doc);
   }
 
   // ── Sign Out ───────────────────────────────────────────────────────────────

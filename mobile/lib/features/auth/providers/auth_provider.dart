@@ -49,7 +49,21 @@ class AuthState {
 class AuthNotifier extends StateNotifier<AuthState> {
   final AuthService _service;
 
-  AuthNotifier(this._service) : super(const AuthState());
+  AuthNotifier(this._service) : super(const AuthState()) {
+    _loadCurrentUser();
+  }
+
+  // ── Load on cold start ────────────────────────────────────────────────────
+
+  Future<void> _loadCurrentUser() async {
+    state = state.copyWith(isLoading: true);
+    try {
+      final user = await _service.loadCurrentUser();
+      state = state.copyWith(user: user, isLoading: false);
+    } catch (_) {
+      state = state.copyWith(isLoading: false);
+    }
+  }
 
   // ── Sign In ────────────────────────────────────────────────────────────────
 
@@ -64,6 +78,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return true;
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
+      return false;
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'An unexpected error occurred. Please try again.',
+      );
       return false;
     }
   }
@@ -94,6 +114,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
       return true;
     } on AuthException catch (e) {
       state = state.copyWith(isLoading: false, error: e.message);
+      return false;
+    } catch (_) {
+      state = state.copyWith(
+        isLoading: false,
+        error: 'An unexpected error occurred. Please try again.',
+      );
       return false;
     }
   }

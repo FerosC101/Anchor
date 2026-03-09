@@ -45,11 +45,9 @@ class DefaultFirebaseOptions {
   );
 
   // ── Android ──────────────────────────────────────────────────────────────
-  // TODO: Run `flutterfire configure --project=anchor-81b45` to fill in the
-  //       Android-specific apiKey and appId values below.
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'REPLACE_WITH_ANDROID_API_KEY',
-    appId: 'REPLACE_WITH_ANDROID_APP_ID',
+    apiKey: 'AIzaSyAosd75xcOq-yaEwOrCr4a0G1_NmzUzl_I',
+    appId: '1:472108302995:android:7e54066b3d78f3db888366',
     messagingSenderId: '472108302995',
     projectId: 'anchor-81b45',
     storageBucket: 'anchor-81b45.firebasestorage.app',

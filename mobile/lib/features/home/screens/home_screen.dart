@@ -1,0 +1,619 @@
+import 'package:flutter/material.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int _selectedTab = 0;
+
+  static const Color _purple = Color(0xFF6B5FD6);
+  static const Color _purpleLight = Color(0xFFEAE6FF);
+  static const Color _purpleDark = Color(0xFF3D3478);
+  static const Color _bg = Color(0xFFF4F4F8);
+  static const Color _textSecondary = Color(0xFF64748B);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: _bg,
+      body: SafeArea(
+        child: Column(
+          children: [
+            _buildTopBar(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 16),
+                    _buildSearchBar(),
+                    const SizedBox(height: 16),
+                    _buildSafetyCard(),
+                    const SizedBox(height: 16),
+                    _buildQuickActions(),
+                    const SizedBox(height: 16),
+                    _buildFinancialHealthCard(),
+                    const SizedBox(height: 20),
+                    _buildCommunitySection(),
+                    const SizedBox(height: 20),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: _buildBottomNav(),
+    );
+  }
+
+  // ── Top bar ─────────────────────────────────────────────────────────────────
+
+  Widget _buildTopBar() {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+      child: Row(
+        children: [
+          // Logo
+          Container(
+            width: 36,
+            height: 36,
+            decoration: const BoxDecoration(
+              color: _purple,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 8),
+          const Text(
+            'Anchor',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: _purple,
+            ),
+          ),
+          const Spacer(),
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined,
+                color: Color(0xFF6B7280)),
+            onPressed: () {},
+          ),
+          IconButton(
+            icon: const Icon(Icons.menu_rounded, color: Color(0xFF6B7280)),
+            onPressed: () {},
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Search bar ───────────────────────────────────────────────────────────────
+
+  Widget _buildSearchBar() {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(32),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: const Row(
+        children: [
+          SizedBox(width: 16),
+          Icon(Icons.search_rounded, color: Color(0xFFADB5BD), size: 20),
+          SizedBox(width: 10),
+          Text(
+            'Search',
+            style: TextStyle(
+              color: Color(0xFFADB5BD),
+              fontSize: 15,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Safety status card ───────────────────────────────────────────────────────
+
+  Widget _buildSafetyCard() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFDDD8F7), Color(0xFF9B8FE0)],
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'CURRENT SAFETY STATUS',
+            style: TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w600,
+              letterSpacing: 1.2,
+              color: Color(0xFF5B4FCF),
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Good',
+            style: TextStyle(
+              fontSize: 36,
+              fontWeight: FontWeight.w800,
+              color: _purpleDark,
+              height: 1.1,
+            ),
+          ),
+          const SizedBox(height: 14),
+          _buildSafetyPill(
+              Icons.verified_outlined, 'Contract Verified (92% match)'),
+          const SizedBox(height: 8),
+          _buildSafetyPill(Icons.trending_up_rounded, 'Wages trending normal'),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSafetyPill(IconData icon, String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.55),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 16, color: _purple),
+          const SizedBox(width: 8),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w500,
+              color: _purpleDark,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Quick actions ────────────────────────────────────────────────────────────
+
+  Widget _buildQuickActions() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildActionCard(
+            icon: Icons.description_outlined,
+            title: 'Check Contract',
+            subtitle: 'Scan for hidden clauses',
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildActionCard(
+            icon: Icons.show_chart_rounded,
+            title: 'Log Wages',
+            subtitle: 'Track earnings & deductions',
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionCard({
+    required IconData icon,
+    required String title,
+    required String subtitle,
+  }) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: _purpleLight,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(icon, color: _purple, size: 22),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            title,
+            style: const TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1A1A2E),
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            subtitle,
+            style: const TextStyle(
+              fontSize: 12,
+              color: _textSecondary,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Financial health ─────────────────────────────────────────────────────────
+
+  Widget _buildFinancialHealthCard() {
+    return Container(
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Financial Health',
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1A1A2E),
+                ),
+              ),
+              Text(
+                'Last updated: Today',
+                style: TextStyle(
+                  fontSize: 12,
+                  color: _textSecondary,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          // Savings goal row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Savings Goal (Return Home)',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: Color(0xFF374151),
+                ),
+              ),
+              Text(
+                '45%',
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: _purple,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          // Progress bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: 0.45,
+              minHeight: 7,
+              backgroundColor: _purpleLight,
+              valueColor: const AlwaysStoppedAnimation<Color>(_purple),
+            ),
+          ),
+          const SizedBox(height: 14),
+          // Bottom row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Next expected salary',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: _textSecondary,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  const Text(
+                    '\$2,400 SGD',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1A1A2E),
+                    ),
+                  ),
+                ],
+              ),
+              OutlinedButton(
+                onPressed: () {},
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: _textSecondary,
+                  side: const BorderSide(color: Color(0xFFE2E8F0)),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  minimumSize: Size.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  textStyle: const TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                child: const Text('View Analysis'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  // ── Community posts ──────────────────────────────────────────────────────────
+
+  Widget _buildCommunitySection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Community Posts',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A1A2E),
+              ),
+            ),
+            TextButton.icon(
+              onPressed: () {},
+              icon: const Text(
+                'View more',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: _textSecondary,
+                ),
+              ),
+              label: const Icon(Icons.arrow_forward_rounded,
+                  size: 16, color: _textSecondary),
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        _buildPostCard(),
+        const SizedBox(height: 10),
+        _buildPostCard(),
+      ],
+    );
+  }
+
+  Widget _buildPostCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.04),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Title row
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'BuildRite Construction',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1A1A2E),
+                ),
+              ),
+              Icon(Icons.more_vert_rounded, size: 20, color: _textSecondary),
+            ],
+          ),
+          const SizedBox(height: 6),
+          // Body
+          RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF374151),
+                height: 1.45,
+              ),
+              children: const [
+                TextSpan(
+                  text:
+                      'Salary delayed for 2 months. Dormitory has no clean water supply...',
+                ),
+                TextSpan(
+                  text: 'read more',
+                  style: TextStyle(color: _purple, fontWeight: FontWeight.w500),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 10),
+          // Tags
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              _buildTag('#Delayed Salary'),
+              _buildTag('#Unsafe Dorm'),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Footer row
+          Row(
+            children: [
+              const Text(
+                '17 hours ago',
+                style: TextStyle(fontSize: 12, color: _textSecondary),
+              ),
+              const SizedBox(width: 12),
+              const Icon(Icons.location_on_outlined,
+                  size: 14, color: _textSecondary),
+              const Text(
+                ' Location',
+                style: TextStyle(fontSize: 12, color: _textSecondary),
+              ),
+              const Spacer(),
+              const Icon(Icons.arrow_upward_rounded,
+                  size: 16, color: _textSecondary),
+              const SizedBox(width: 3),
+              const Text('45',
+                  style: TextStyle(fontSize: 12, color: _textSecondary)),
+              const SizedBox(width: 10),
+              const Icon(Icons.chat_bubble_outline_rounded,
+                  size: 15, color: _textSecondary),
+              const SizedBox(width: 3),
+              const Text('12',
+                  style: TextStyle(fontSize: 12, color: _textSecondary)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTag(String label) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      decoration: BoxDecoration(
+        color: _purpleLight,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Text(
+        label,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+          color: _purple,
+        ),
+      ),
+    );
+  }
+
+  // ── Bottom navigation ────────────────────────────────────────────────────────
+
+  Widget _buildBottomNav() {
+    final items = [
+      _NavItem(icon: Icons.home_rounded, label: 'Home'),
+      _NavItem(icon: Icons.attach_money_rounded, label: 'Wages'),
+      _NavItem(icon: Icons.description_outlined, label: 'Contracts'),
+      _NavItem(icon: Icons.people_alt_outlined, label: 'Community'),
+      _NavItem(icon: Icons.security_rounded, label: 'Shield'),
+    ];
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Color(0xFFE2E8F0))),
+      ),
+      child: SafeArea(
+        top: false,
+        child: SizedBox(
+          height: 64,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(items.length, (i) {
+              final selected = i == _selectedTab;
+              return GestureDetector(
+                onTap: () => setState(() => _selectedTab = i),
+                behavior: HitTestBehavior.opaque,
+                child: SizedBox(
+                  width: 64,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        items[i].icon,
+                        size: 24,
+                        color: selected ? _purple : const Color(0xFFADB5BD),
+                      ),
+                      const SizedBox(height: 3),
+                      Text(
+                        items[i].label,
+                        style: TextStyle(
+                          fontSize: 11,
+                          fontWeight:
+                              selected ? FontWeight.w600 : FontWeight.w400,
+                          color: selected ? _purple : const Color(0xFFADB5BD),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem {
+  final IconData icon;
+  final String label;
+  const _NavItem({required this.icon, required this.label});
+}

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
+import '../../features/home/screens/home_screen.dart';
 import '../../models/user_model.dart';
 
 // ─── GoRouter refresh listenable ──────────────────────────────────────────────
@@ -53,94 +54,119 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/register',
         builder: (_, __) => const RegisterScreen(),
       ),
+      // /home is the OFW home — other roles are dispatched by _RoleDispatcher
       GoRoute(
         path: '/home',
-        builder: (_, state) => const _HomeRedirect(),
+        builder: (_, __) => const _RoleDispatcher(),
       ),
     ],
   );
 });
 
-// ─── Placeholder home that redirects to the role-specific dashboard ───────────
+// ─── Role dispatcher ──────────────────────────────────────────────────────────
+// Reads the signed-in user's role and shows the correct dashboard.
+// OFW → HomeScreen (implemented)
+// Agency / Verifier / Admin → placeholder until those dashboards are built.
 
-class _HomeRedirect extends ConsumerWidget {
-  const _HomeRedirect();
+class _RoleDispatcher extends ConsumerWidget {
+  const _RoleDispatcher();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authNotifierProvider);
     final user = authState.user;
 
-    String title;
-    Color color;
-    IconData icon;
-
-    switch (user?.role) {
-      case UserRole.agency:
-        title = 'Agency Dashboard';
-        color = const Color(0xFF8B5CF6);
-        icon = Icons.business_rounded;
-      case UserRole.verifier:
-        title = 'Verifier Dashboard';
-        color = const Color(0xFF10B981);
-        icon = Icons.verified_user_rounded;
-      default:
-        title = 'OFW Dashboard';
-        color = const Color(0xFF0EA5E9);
-        icon = Icons.flight_takeoff_rounded;
+    // Still loading user from Firestore
+    if (authState.isLoading || user == null) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
+    switch (user.role) {
+      case UserRole.ofw:
+        return const HomeScreen();
+      case UserRole.agency:
+        return _ComingSoonScaffold(
+          title: 'Agency Dashboard',
+          icon: Icons.business_rounded,
+          color: const Color(0xFF8B5CF6),
+          ref: ref,
+        );
+      case UserRole.verifier:
+        return _ComingSoonScaffold(
+          title: 'Verifier Dashboard',
+          icon: Icons.verified_user_rounded,
+          color: const Color(0xFF10B981),
+          ref: ref,
+        );
+      default:
+        return _ComingSoonScaffold(
+          title: 'Admin Dashboard',
+          icon: Icons.admin_panel_settings_rounded,
+          color: const Color(0xFFF59E0B),
+          ref: ref,
+        );
+    }
+  }
+}
+
+class _ComingSoonScaffold extends StatelessWidget {
+  const _ComingSoonScaffold({
+    required this.title,
+    required this.icon,
+    required this.color,
+    required this.ref,
+  });
+
+  final String title;
+  final IconData icon;
+  final Color color;
+  final WidgetRef ref;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [color, color.withOpacity(0.7)],
+            colors: [color, color.withValues(alpha: 0.7)],
           ),
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 72, color: Colors.white),
-              const SizedBox(height: 24),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.white,
+        child: SafeArea(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(icon, size: 72, color: Colors.white),
+                const SizedBox(height: 24),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Welcome, ${user?.fullName ?? ''}!',
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.white70,
+                const SizedBox(height: 8),
+                const Text(
+                  'Coming soon',
+                  style: TextStyle(fontSize: 15, color: Colors.white70),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Status: ${user?.verificationStatus.name ?? ''}',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white60,
+                const SizedBox(height: 48),
+                TextButton.icon(
+                  onPressed: () =>
+                      ref.read(authNotifierProvider.notifier).signOut(),
+                  icon: const Icon(Icons.logout, color: Colors.white),
+                  label: const Text(
+                    'Sign Out',
+                    style: TextStyle(color: Colors.white, fontSize: 15),
+                  ),
                 ),
-              ),
-              const SizedBox(height: 48),
-              TextButton.icon(
-                onPressed: () {
-                  ref.read(authNotifierProvider.notifier).signOut();
-                },
-                icon: const Icon(Icons.logout, color: Colors.white),
-                label: const Text(
-                  'Sign Out',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

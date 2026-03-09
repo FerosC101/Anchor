@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "472108302995",
+    "project_id": "anchor-81b45",
+    "storage_bucket": "anchor-81b45.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472108302995:android:7e54066b3d78f3db888366",
+        "android_client_info": {
+          "package_name": "com.anchor.anchor"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472108302995-4kitrtrgmh1l5fougcooep9sl3bi3m7d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAosd75xcOq-yaEwOrCr4a0G1_NmzUzl_I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472108302995-4kitrtrgmh1l5fougcooep9sl3bi3m7d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -479,12 +479,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             const SizedBox(height: 16),
 
             // Country
-            _buildDropdown(
+            _buildSearchablePickerField(
               label: 'Current Country',
               icon: Icons.public_rounded,
               value: _country,
-              items: AppConstants.countries,
-              onChanged: (v) => setState(() => _country = v!),
+              onTap: () => _showSearchablePicker(
+                context: context,
+                title: 'Select Country',
+                items: AppConstants.countries,
+                currentValue: _country,
+                onSelect: (v) => setState(() => _country = v),
+              ),
             ),
             const SizedBox(height: 24),
 
@@ -690,23 +695,22 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               action: TextInputAction.next,
             ),
             const SizedBox(height: 16),
-            _buildDropdown(
+            _buildSearchablePickerField(
               label: 'Destination Country',
               icon: Icons.place_outlined,
               value: _destinationCountry,
-              items: AppConstants.countries
-                  .where((c) => c != 'Philippines')
-                  .toList(),
-              onChanged: (v) => setState(() => _destinationCountry = v!),
+              onTap: () => _showSearchablePicker(
+                context: context,
+                title: 'Select Destination Country',
+                items: AppConstants.countries
+                    .where((c) => c != 'Philippines')
+                    .toList(),
+                currentValue: _destinationCountry,
+                onSelect: (v) => setState(() => _destinationCountry = v),
+              ),
             ),
             const SizedBox(height: 16),
-            _buildField(
-              controller: _jobTitleCtrl,
-              label: 'Job Title (optional)',
-              hint: 'e.g. Domestic Worker, Nurse, Engineer',
-              icon: Icons.work_outline_rounded,
-              action: TextInputAction.next,
-            ),
+            _buildJobPickerField(),
             const SizedBox(height: 16),
             TextFormField(
               controller: _expYearsCtrl,
@@ -780,12 +784,17 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   : null,
             ),
             const SizedBox(height: 16),
-            _buildDropdown(
+            _buildSearchablePickerField(
               label: 'Country of Operation',
               icon: Icons.public_rounded,
               value: _agencyCountry,
-              items: AppConstants.countries,
-              onChanged: (v) => setState(() => _agencyCountry = v!),
+              onTap: () => _showSearchablePicker(
+                context: context,
+                title: 'Select Country of Operation',
+                items: AppConstants.countries,
+                currentValue: _agencyCountry,
+                onSelect: (v) => setState(() => _agencyCountry = v),
+              ),
             ),
             const SizedBox(height: 16),
             TextFormField(
@@ -1007,24 +1016,102 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
-  Widget _buildDropdown({
+  // ── Searchable picker field (tappable, looks like a form field) ─────────────
+
+  Widget _buildSearchablePickerField({
     required String label,
     required IconData icon,
     required String value,
-    required List<String> items,
-    required void Function(String?) onChanged,
+    required VoidCallback onTap,
   }) {
-    return DropdownButtonFormField<String>(
-      value: value,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, color: AppColors.textSecondary),
+    return GestureDetector(
+      onTap: onTap,
+      child: InputDecorator(
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon, color: AppColors.textSecondary),
+          suffixIcon: const Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        child: Text(
+          value,
+          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+        ),
       ),
-      isExpanded: true,
-      items:
-          items.map((c) => DropdownMenuItem(value: c, child: Text(c))).toList(),
-      onChanged: onChanged,
     );
+  }
+
+  // ── Job picker field ──────────────────────────────────────────────────────────
+
+  Widget _buildJobPickerField() {
+    final hasValue = _jobTitleCtrl.text.isNotEmpty;
+    return GestureDetector(
+      onTap: () => _showJobPicker(
+        context: context,
+        currentValue: hasValue ? _jobTitleCtrl.text : null,
+        onSelect: (job) => setState(() => _jobTitleCtrl.text = job),
+      ),
+      child: InputDecorator(
+        decoration: const InputDecoration(
+          labelText: 'Job Title (optional)',
+          prefixIcon: Icon(
+            Icons.work_outline_rounded,
+            color: AppColors.textSecondary,
+          ),
+          suffixIcon: Icon(
+            Icons.keyboard_arrow_down_rounded,
+            color: AppColors.textSecondary,
+          ),
+        ),
+        child: Text(
+          hasValue ? _jobTitleCtrl.text : 'Select job title',
+          style: TextStyle(
+            fontSize: 14,
+            color: hasValue ? AppColors.textPrimary : AppColors.textHint,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ── Searchable country / list bottom sheet ────────────────────────────────────
+
+  Future<void> _showSearchablePicker({
+    required BuildContext context,
+    required String title,
+    required List<String> items,
+    required String? currentValue,
+    required void Function(String) onSelect,
+  }) async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _SearchablePickerSheet(
+        title: title,
+        items: items,
+        currentValue: currentValue,
+      ),
+    );
+    if (selected != null) onSelect(selected);
+  }
+
+  // ── Categorised job picker bottom sheet ───────────────────────────────────────
+
+  Future<void> _showJobPicker({
+    required BuildContext context,
+    required String? currentValue,
+    required void Function(String) onSelect,
+  }) async {
+    final selected = await showModalBottomSheet<String>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => _JobPickerSheet(currentValue: currentValue),
+    );
+    if (selected != null) onSelect(selected);
   }
 
   DropdownMenuItem<OrganizationType> _orgTypeItem(
@@ -1032,6 +1119,293 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     String label,
   ) {
     return DropdownMenuItem(value: type, child: Text(label));
+  }
+}
+
+// ─── Searchable Picker Sheet ─────────────────────────────────────────────────
+
+class _SearchablePickerSheet extends StatefulWidget {
+  const _SearchablePickerSheet({
+    required this.title,
+    required this.items,
+    required this.currentValue,
+  });
+
+  final String title;
+  final List<String> items;
+  final String? currentValue;
+
+  @override
+  State<_SearchablePickerSheet> createState() => _SearchablePickerSheetState();
+}
+
+class _SearchablePickerSheetState extends State<_SearchablePickerSheet> {
+  late final TextEditingController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final q = _ctrl.text.toLowerCase();
+    final filtered = q.isEmpty
+        ? widget.items
+        : widget.items.where((i) => i.toLowerCase().contains(q)).toList();
+    return DraggableScrollableSheet(
+      initialChildSize: 0.75,
+      maxChildSize: 0.92,
+      minChildSize: 0.4,
+      expand: false,
+      builder: (_, scrollCtrl) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE2E8F0),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Text(
+                widget.title,
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: TextField(
+                controller: _ctrl,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Search...',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  suffixIcon: _ctrl.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear_rounded),
+                          onPressed: () {
+                            _ctrl.clear();
+                            setState(() {});
+                          },
+                        )
+                      : null,
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                controller: scrollCtrl,
+                itemCount: filtered.length,
+                itemBuilder: (_, i) {
+                  final item = filtered[i];
+                  final isSelected = item == widget.currentValue;
+                  return ListTile(
+                    title: Text(item),
+                    trailing: isSelected
+                        ? const Icon(
+                            Icons.check_rounded,
+                            color: AppColors.primary,
+                          )
+                        : null,
+                    selected: isSelected,
+                    selectedTileColor:
+                        AppColors.primary.withValues(alpha: 0.05),
+                    onTap: () => Navigator.of(context).pop(item),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Job Picker Sheet ─────────────────────────────────────────────────────────
+
+class _JobPickerSheet extends StatefulWidget {
+  const _JobPickerSheet({required this.currentValue});
+
+  final String? currentValue;
+
+  @override
+  State<_JobPickerSheet> createState() => _JobPickerSheetState();
+}
+
+class _JobPickerSheetState extends State<_JobPickerSheet> {
+  late final TextEditingController _ctrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final q = _ctrl.text.toLowerCase();
+    final isSearching = q.isNotEmpty;
+    final allJobs = [
+      for (final entry in AppConstants.jobCategories.entries)
+        for (final job in entry.value) (category: entry.key, job: job),
+    ];
+    final filtered = isSearching
+        ? allJobs
+            .where((j) =>
+                j.job.toLowerCase().contains(q) ||
+                j.category.toLowerCase().contains(q))
+            .toList()
+        : <({String category, String job})>[];
+    return DraggableScrollableSheet(
+      initialChildSize: 0.85,
+      maxChildSize: 0.95,
+      minChildSize: 0.5,
+      expand: false,
+      builder: (_, scrollCtrl) => Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 12),
+            Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: const Color(0xFFE2E8F0),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.fromLTRB(20, 16, 20, 8),
+              child: Text(
+                'Select Job Title',
+                style: TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: TextField(
+                controller: _ctrl,
+                autofocus: true,
+                decoration: InputDecoration(
+                  hintText: 'Search jobs...',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  suffixIcon: _ctrl.text.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear_rounded),
+                          onPressed: () {
+                            _ctrl.clear();
+                            setState(() {});
+                          },
+                        )
+                      : null,
+                ),
+                onChanged: (_) => setState(() {}),
+              ),
+            ),
+            Expanded(
+              child: isSearching
+                  ? ListView.builder(
+                      controller: scrollCtrl,
+                      itemCount: filtered.length,
+                      itemBuilder: (_, i) {
+                        final item = filtered[i];
+                        final isSelected = item.job == widget.currentValue;
+                        return ListTile(
+                          title: Text(item.job),
+                          subtitle: Text(
+                            item.category,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          trailing: isSelected
+                              ? const Icon(
+                                  Icons.check_rounded,
+                                  color: AppColors.primary,
+                                )
+                              : null,
+                          onTap: () => Navigator.of(context).pop(item.job),
+                        );
+                      },
+                    )
+                  : ListView(
+                      controller: scrollCtrl,
+                      children: [
+                        for (final entry in AppConstants.jobCategories.entries)
+                          Theme(
+                            data: Theme.of(context).copyWith(
+                              dividerColor: Colors.transparent,
+                            ),
+                            child: ExpansionTile(
+                              title: Text(
+                                entry.key,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              children: entry.value.map((job) {
+                                final isSelected = job == widget.currentValue;
+                                return ListTile(
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 32,
+                                  ),
+                                  title: Text(
+                                    job,
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
+                                  trailing: isSelected
+                                      ? const Icon(
+                                          Icons.check_rounded,
+                                          color: AppColors.primary,
+                                        )
+                                      : null,
+                                  onTap: () => Navigator.of(context).pop(job),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                      ],
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 

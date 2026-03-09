@@ -1,0 +1,119 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Users: each user can only read/write their own document ──────────────
+    match /users/{userId} {
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow create, update: if request.auth != null && request.auth.uid == userId;
+      allow delete: if false;
+    }
+
+    // ── OFW profiles ──────────────────────────────────────────────────────────
+    match /ofw_profiles/{profileId} {
+      allow read: if request.auth != null &&
+        (resource.data.user_id == request.auth.uid || _isVerifier() || _isAdmin());
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && resource.data.user_id == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // ── Agencies ──────────────────────────────────────────────────────────────
+    match /agencies/{agencyId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && resource.data.user_id == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // ── Verifier profiles ─────────────────────────────────────────────────────
+    match /verifier_profiles/{profileId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null && resource.data.user_id == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // ── Community posts ───────────────────────────────────────────────────────
+    match /community_posts/{postId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null &&
+        resource.data.user_id == request.auth.uid;
+    }
+
+    // ── Post comments ─────────────────────────────────────────────────────────
+    match /post_comments/{commentId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null;
+      allow update, delete: if request.auth != null &&
+        resource.data.user_id == request.auth.uid;
+    }
+
+    // ── Contracts ─────────────────────────────────────────────────────────────
+    match /contracts/{contractId} {
+      allow read: if request.auth != null &&
+        (resource.data.user_id == request.auth.uid || _isVerifier() || _isAdmin());
+      allow create, update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // ── Contract analysis ─────────────────────────────────────────────────────
+    match /contract_analysis/{analysisId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // ── Contract reviews ──────────────────────────────────────────────────────
+    match /contract_reviews/{reviewId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null;
+      allow delete: if false;
+    }
+
+    // ── Job offers ────────────────────────────────────────────────────────────
+    match /job_offers/{jobId} {
+      allow read: if request.auth != null;
+      allow create, update: if request.auth != null && (_isAgency() || _isAdmin());
+      allow delete: if false;
+    }
+
+    // ── Notifications ─────────────────────────────────────────────────────────
+    match /notifications/{notifId} {
+      allow read: if request.auth != null &&
+        resource.data.user_id == request.auth.uid;
+      allow create: if request.auth != null;
+      allow update: if request.auth != null &&
+        resource.data.user_id == request.auth.uid;
+      allow delete: if false;
+    }
+
+    // ── Reports ───────────────────────────────────────────────────────────────
+    match /reports/{reportId} {
+      allow read: if request.auth != null &&
+        (resource.data.reporter_id == request.auth.uid || _isAdmin());
+      allow create: if request.auth != null;
+      allow update, delete: if false;
+    }
+
+    // ── AI usage logs (server-side only) ─────────────────────────────────────
+    match /ai_usage_logs/{logId} {
+      allow read, write: if false;
+    }
+
+    // ── Helper functions ──────────────────────────────────────────────────────
+    function _role() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+    function _isVerifier() {
+      return request.auth != null && _role() == 'verifier';
+    }
+    function _isAdmin() {
+      return request.auth != null && _role() == 'admin';
+    }
+    function _isAgency() {
+      return request.auth != null && _role() == 'agency';
+    }
+  }
+}
