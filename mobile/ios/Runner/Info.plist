@@ -45,5 +45,30 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Firebase Cloud Messaging -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+	<!-- Privacy descriptions (required for App Store) -->
+	<key>NSCameraUsageDescription</key>
+	<string>Anchor uses the camera to let you upload profile photos and document images.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Anchor uses your photo library to let you upload profile photos and document images.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Anchor uses the microphone for voice features.</string>
+	<!-- Deep-link URL scheme for reversed Google client ID (Sign-In) -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.472108302995-g1jlei1pign52t21uae50l4mn8ffmigb</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

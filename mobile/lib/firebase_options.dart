@@ -54,26 +54,23 @@ class DefaultFirebaseOptions {
   );
 
   // ── iOS ──────────────────────────────────────────────────────────────────
-  // TODO: Run `flutterfire configure --project=anchor-81b45` to fill in the
-  //       iOS-specific apiKey, appId, and iosBundleId values below.
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'REPLACE_WITH_IOS_API_KEY',
-    appId: 'REPLACE_WITH_IOS_APP_ID',
+    apiKey: 'AIzaSyACwFXoLPrnZwEV-o6_gi0RboO20tIbFlI',
+    appId: '1:472108302995:ios:a71ae193a9504bf0888366',
     messagingSenderId: '472108302995',
     projectId: 'anchor-81b45',
     storageBucket: 'anchor-81b45.firebasestorage.app',
-    iosBundleId: 'com.anchor.app',
+    iosBundleId: 'com.anchor.anchor',
   );
 
   // ── macOS ─────────────────────────────────────────────────────────────────
-  // TODO: Run `flutterfire configure --project=anchor-81b45` to fill in the
-  //       macOS-specific apiKey, appId, and bundleId values below.
+  // Using the same iOS credentials for macOS (same bundle ID).
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'REPLACE_WITH_MACOS_API_KEY',
-    appId: 'REPLACE_WITH_MACOS_APP_ID',
+    apiKey: 'AIzaSyACwFXoLPrnZwEV-o6_gi0RboO20tIbFlI',
+    appId: '1:472108302995:ios:a71ae193a9504bf0888366',
     messagingSenderId: '472108302995',
     projectId: 'anchor-81b45',
     storageBucket: 'anchor-81b45.firebasestorage.app',
-    iosBundleId: 'com.anchor.app',
+    iosBundleId: 'com.anchor.anchor',
   );
 }
