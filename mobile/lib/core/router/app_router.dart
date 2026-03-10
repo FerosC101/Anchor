@@ -66,7 +66,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 // ─── Role dispatcher ──────────────────────────────────────────────────────────
 // Reads the signed-in user's role and shows the correct dashboard.
 // OFW → HomeScreen (implemented)
-// Agency / Verifier / Admin → placeholder until those dashboards are built.
+// Government / NGO / Admin → placeholder until those dashboards are built.
 
 class _RoleDispatcher extends ConsumerWidget {
   const _RoleDispatcher();
@@ -86,17 +86,17 @@ class _RoleDispatcher extends ConsumerWidget {
     switch (user.role) {
       case UserRole.ofw:
         return const HomeScreen();
-      case UserRole.agency:
+      case UserRole.government:
         return _ComingSoonScaffold(
-          title: 'Agency Dashboard',
-          icon: Icons.business_rounded,
+          title: 'Government Dashboard',
+          icon: Icons.account_balance_rounded,
           color: const Color(0xFF8B5CF6),
           ref: ref,
         );
-      case UserRole.verifier:
+      case UserRole.ngo:
         return _ComingSoonScaffold(
-          title: 'Verifier Dashboard',
-          icon: Icons.verified_user_rounded,
+          title: 'NGO Dashboard',
+          icon: Icons.volunteer_activism_rounded,
           color: const Color(0xFF10B981),
           ref: ref,
         );

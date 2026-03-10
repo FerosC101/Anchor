@@ -12,22 +12,14 @@ service cloud.firestore {
     // ── OFW profiles ──────────────────────────────────────────────────────────
     match /ofw_profiles/{profileId} {
       allow read: if request.auth != null &&
-        (resource.data.user_id == request.auth.uid || _isVerifier() || _isAdmin());
+        (resource.data.user_id == request.auth.uid || _isGovernmentOrNgo() || _isAdmin());
       allow create: if request.auth != null;
       allow update: if request.auth != null && resource.data.user_id == request.auth.uid;
       allow delete: if false;
     }
 
-    // ── Agencies ──────────────────────────────────────────────────────────────
-    match /agencies/{agencyId} {
-      allow read: if request.auth != null;
-      allow create: if request.auth != null;
-      allow update: if request.auth != null && resource.data.user_id == request.auth.uid;
-      allow delete: if false;
-    }
-
-    // ── Verifier profiles ─────────────────────────────────────────────────────
-    match /verifier_profiles/{profileId} {
+    // ── Organization profiles (Government / NGO) ──────────────────────────────────
+    match /organization_profiles/{profileId} {
       allow read: if request.auth != null;
       allow create: if request.auth != null;
       allow update: if request.auth != null && resource.data.user_id == request.auth.uid;
@@ -53,7 +45,7 @@ service cloud.firestore {
     // ── Contracts ─────────────────────────────────────────────────────────────
     match /contracts/{contractId} {
       allow read: if request.auth != null &&
-        (resource.data.user_id == request.auth.uid || _isVerifier() || _isAdmin());
+        (resource.data.user_id == request.auth.uid || _isGovernmentOrNgo() || _isAdmin());
       allow create, update: if request.auth != null;
       allow delete: if false;
     }
@@ -75,7 +67,7 @@ service cloud.firestore {
     // ── Job offers ────────────────────────────────────────────────────────────
     match /job_offers/{jobId} {
       allow read: if request.auth != null;
-      allow create, update: if request.auth != null && (_isAgency() || _isAdmin());
+      allow create, update: if request.auth != null && (_isGovernmentOrNgo() || _isAdmin());
       allow delete: if false;
     }
 
@@ -106,14 +98,11 @@ service cloud.firestore {
     function _role() {
       return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
     }
-    function _isVerifier() {
-      return request.auth != null && _role() == 'verifier';
+    function _isGovernmentOrNgo() {
+      return request.auth != null && (_role() == 'government' || _role() == 'ngo');
     }
     function _isAdmin() {
       return request.auth != null && _role() == 'admin';
-    }
-    function _isAgency() {
-      return request.auth != null && _role() == 'agency';
     }
   }
 }

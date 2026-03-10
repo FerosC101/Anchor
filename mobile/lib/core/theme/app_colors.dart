@@ -39,8 +39,8 @@ class AppColors {
 
   // Role colours
   static const Color ofwColor = Color(0xFF0EA5E9);
-  static const Color agencyColor = Color(0xFF8B5CF6);
-  static const Color verifierColor = Color(0xFF10B981);
+  static const Color governmentColor = Color(0xFF8B5CF6);
+  static const Color ngoColor = Color(0xFF10B981);
 
   // Gradient
   static const LinearGradient primaryGradient = LinearGradient(

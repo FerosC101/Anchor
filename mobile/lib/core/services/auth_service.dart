@@ -124,43 +124,19 @@ class AuthService {
           );
           batch.set(ofwRef, ofw.toFirestore());
 
-        case UserRole.agency:
-          final agencyRef =
-              _firestore.collection(FirebaseConstants.agenciesCollection).doc();
-          final agency = AgencyModel(
-            id: agencyRef.id,
-            userId: uid,
-            agencyName: roleData?['agency_name'] as String? ?? '',
-            licenseNumber: roleData?['license_number'] as String? ?? '',
-            country: roleData?['country'] as String? ?? country,
-            address: roleData?['address'] as String? ?? '',
-            contactEmail: roleData?['contact_email'] as String? ?? email.trim(),
-            contactPhone:
-                roleData?['contact_phone'] as String? ?? phoneNumber.trim(),
-            verificationStatus: 'pending',
-            createdAt: now,
-          );
-          batch.set(agencyRef, agency.toFirestore());
-
-        case UserRole.verifier:
-          final verifierRef = _firestore
-              .collection(FirebaseConstants.verifierProfilesCollection)
+        case UserRole.government:
+        case UserRole.ngo:
+          final orgRef = _firestore
+              .collection(FirebaseConstants.organizationProfilesCollection)
               .doc();
-          final orgTypeStr =
-              roleData?['organization_type'] as String? ?? 'government';
-          final verifier = VerifierProfile(
-            id: verifierRef.id,
+          final org = OrganizationProfile(
+            id: orgRef.id,
             userId: uid,
             organizationName: roleData?['organization_name'] as String? ?? '',
-            organizationType: OrganizationType.values.firstWhere(
-              (t) => t.name == orgTypeStr,
-              orElse: () => OrganizationType.government,
-            ),
             roleTitle: roleData?['role_title'] as String? ?? '',
-            verificationLevel: 1,
             createdAt: now,
           );
-          batch.set(verifierRef, verifier.toFirestore());
+          batch.set(orgRef, org.toFirestore());
 
         default:
           break;
