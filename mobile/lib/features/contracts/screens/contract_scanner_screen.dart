@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/utils/risk_utils.dart';
 import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/anchor_drawer.dart';
 import '../../../models/scan_model.dart';
 
 class ContractScannerScreen extends StatefulWidget {
@@ -58,6 +59,7 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
         title: 'Contract Reality Check',
         subtitle: 'Upload your contract or salary slip to detect hidden risks.',
       ),
+      endDrawer: const AnchorDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -245,7 +247,8 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
     final riskColor = RiskUtils.getRiskColor(score);
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
         color: Colors.white,

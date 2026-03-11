@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/community_post_card.dart';
 import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/anchor_drawer.dart';
 
 class CommunitySafetyScreen extends StatefulWidget {
   const CommunitySafetyScreen({super.key});
@@ -59,6 +60,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
         title: 'Community Safety',
         subtitle: 'Anonymous intel from fellow workers.',
       ),
+      endDrawer: const AnchorDrawer(),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -83,6 +85,9 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                   location: post['location'],
                   upvotes: post['upvotes'],
                   comments: post['comments'],
+                  onTap: () {
+                    context.push('/community/post-detail');
+                  },
                 ),
               )),
         ],

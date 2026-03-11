@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../features/profile/screens/notifications_screen.dart';
 
 class AnchorAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AnchorAppBar({
@@ -25,7 +26,12 @@ class AnchorAppBar extends StatelessWidget implements PreferredSizeWidget {
           : IconButton(
               icon: Icon(Icons.notifications_none, color: Colors.grey[700]),
               onPressed: () {
-                // TODO: Navigate to notifications screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const NotificationsScreen(),
+                  ),
+                );
               },
             ),
       title: title == null
@@ -63,7 +69,7 @@ class AnchorAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           icon: Icon(Icons.menu, color: Colors.grey[700]),
           onPressed: () {
-            // TODO: Open menu drawer or sheet
+            Scaffold.of(context).openEndDrawer();
           },
         ),
       ],

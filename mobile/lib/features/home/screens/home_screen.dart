@@ -6,6 +6,7 @@ import '../../community/screens/community_safety_screen.dart';
 import '../../shield/screens/financial_shield_screen.dart';
 import '../../../shared/widgets/community_post_card.dart';
 import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/anchor_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -50,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: _bg,
       appBar: const AnchorAppBar(),
+      endDrawer: const AnchorDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -212,18 +214,28 @@ class _HomeScreenState extends State<HomeScreen> {
     return Row(
       children: [
         Expanded(
-          child: _buildActionCard(
-            icon: Icons.description_outlined,
-            title: 'Check Contract',
-            subtitle: 'Scan for hidden clauses',
+          child: GestureDetector(
+            onTap: () {
+              setState(() => _selectedTab = 2);
+            },
+            child: _buildActionCard(
+              icon: Icons.description_outlined,
+              title: 'Check Contract',
+              subtitle: 'Scan for hidden clauses',
+            ),
           ),
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildActionCard(
-            icon: Icons.show_chart_rounded,
-            title: 'Log Wages',
-            subtitle: 'Track earnings & deductions',
+          child: GestureDetector(
+            onTap: () {
+              setState(() => _selectedTab = 1);
+            },
+            child: _buildActionCard(
+              icon: Icons.show_chart_rounded,
+              title: 'Log Wages',
+              subtitle: 'Track earnings & deductions',
+            ),
           ),
         ),
       ],
@@ -383,7 +395,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  setState(() => _selectedTab = 4);
+                },
                 style: OutlinedButton.styleFrom(
                   foregroundColor: _textSecondary,
                   side: const BorderSide(color: Color(0xFFE2E8F0)),

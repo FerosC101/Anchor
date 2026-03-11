@@ -133,56 +133,159 @@ class ContractScanDetailScreen extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          // Risk Banner
+          // Risk Banner Card
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               color: riskBgColor,
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(16),
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                  offset: Offset(0, 2),
+                ),
+              ],
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'AI ANALYSIS COMPLETE',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.w600,
-                    color: riskColor,
-                    letterSpacing: 1.4,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  riskHeadline,
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: riskColor,
-                  ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  riskSubtitle,
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: riskColor,
-                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    // LEFT: label + headline + subtitle
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'AI ANALYSIS COMPLETE',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: riskColor,
+                              letterSpacing: 1.4,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            riskHeadline,
+                            style: TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              color: riskColor,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            riskSubtitle,
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: riskColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    // RIGHT: score badge
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: riskColor,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            scan.score.toString(),
+                            style: const TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'SCORE',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white.withValues(alpha: 0.85),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 16),
+                // Issues row — two white sub-cards side by side
                 Row(
                   children: [
-                    _StatBox(
-                      label: 'Issues found',
-                      value: issueCount.toString(),
-                      color: riskColor,
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Issues found',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: riskColor,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              issueCount.toString(),
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w800,
+                                color: riskColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    const SizedBox(width: 16),
-                    _StatBox(
-                      label: 'Critical',
-                      value: criticalCount.toString(),
-                      color: riskColor,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Critical',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: riskColor,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              criticalCount.toString(),
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.w800,
+                                color: riskColor,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -198,7 +301,7 @@ class ContractScanDetailScreen extends StatelessWidget {
               color: const Color(0xFFFFFBE8),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(
-                color: const Color(0xFFAD4B00).withValues(alpha: 0.3),
+                color: const Color(0xFFAD4B00).withValues(alpha: 0.25),
               ),
             ),
             child: Column(
@@ -232,15 +335,21 @@ class ContractScanDetailScreen extends StatelessWidget {
                   onPressed: () {
                     // TODO: implement download
                   },
-                  icon: const Icon(Icons.download_outlined, size: 18),
-                  label: const Text('Download Report'),
+                  icon: const Icon(Icons.download_outlined,
+                      color: Color(0xFF3D3790)),
+                  label: const Text(
+                    'Download Report',
+                    style: TextStyle(
+                      color: Color(0xFF3D3790),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF3D3790),
                     side: const BorderSide(color: Color(0xFFD7D2E7)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),
               ),
@@ -250,15 +359,21 @@ class ContractScanDetailScreen extends StatelessWidget {
                   onPressed: () {
                     // TODO: implement contact help
                   },
-                  icon: const Icon(Icons.phone_outlined, size: 18),
-                  label: const Text('Contact Help'),
+                  icon: const Icon(Icons.phone_outlined,
+                      color: Color(0xFF3D3790)),
+                  label: const Text(
+                    'Contact Help',
+                    style: TextStyle(
+                      color: Color(0xFF3D3790),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF3D3790),
                     side: const BorderSide(color: Color(0xFFD7D2E7)),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),
               ),

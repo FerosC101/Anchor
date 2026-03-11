@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/anchor_drawer.dart';
 
 class WageMonitorScreen extends StatefulWidget {
   const WageMonitorScreen({super.key});
@@ -51,6 +52,7 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
         title: 'Wage Monitor',
         subtitle: 'Track your earnings and spot deductions',
       ),
+      endDrawer: const AnchorDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

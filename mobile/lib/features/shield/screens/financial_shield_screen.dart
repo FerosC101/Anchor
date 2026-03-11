@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/anchor_drawer.dart';
 import '../widgets/exit_simulation_dialog.dart';
 
 class FinancialShieldScreen extends StatefulWidget {
@@ -26,6 +27,7 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
         title: 'Financial Shield',
         subtitle: 'Build resilience against financial shocks.',
       ),
+      endDrawer: const AnchorDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -52,7 +54,7 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF9E9DCA), Color(0xFF3D3790)],
+          colors: [Color(0xFFDDD8F7), Color(0xFF9B8FE0)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -66,7 +68,7 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Colors.white.withValues(alpha: 0.8),
+              color: Color(0xFF5B4FCF),
               letterSpacing: 1.5,
             ),
           ),
@@ -76,7 +78,7 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
             style: TextStyle(
               fontSize: 42,
               fontWeight: FontWeight.w800,
-              color: Colors.white,
+              color: Color(0xFF3D3478),
             ),
           ),
           const SizedBox(height: 16),
@@ -106,7 +108,7 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white.withValues(alpha: 0.2),
+        color: Colors.white.withValues(alpha: 0.55),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -114,9 +116,9 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
         children: [
           Text(
             label,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 13,
-              color: Colors.white.withValues(alpha: 0.85),
+              color: Color(0xFF6B5FD6),
             ),
           ),
           const SizedBox(height: 4),
@@ -125,7 +127,7 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w700,
-              color: Colors.white,
+              color: Color(0xFF3D3478),
             ),
           ),
         ],
@@ -230,10 +232,10 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: _lightLavender,
+                color: const Color(0xFFEAE6FF),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: _deepPurple, size: 26),
+              child: Icon(icon, color: const Color(0xFF6B5FD6), size: 26),
             ),
             const SizedBox(height: 14),
             Text(
