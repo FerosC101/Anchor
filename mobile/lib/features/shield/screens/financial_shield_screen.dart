@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/anchor_app_bar.dart';
 import '../../../shared/widgets/anchor_drawer.dart';
 import '../widgets/exit_simulation_dialog.dart';
+import '../../remittance/screens/remittance_calculator_screen.dart';
 
 class FinancialShieldScreen extends StatefulWidget {
   const FinancialShieldScreen({super.key});
@@ -34,8 +35,6 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
           children: [
             const SizedBox(height: 20),
             _buildNetSafetyNetCard(),
-            const SizedBox(height: 20),
-            _buildDebtAlertCard(),
             const SizedBox(height: 20),
             _buildActionCardsRow(),
             const SizedBox(height: 40),
@@ -135,42 +134,6 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
     );
   }
 
-  // ── Debt Alert Card ──────────────────────────────────────────────────────────
-
-  Widget _buildDebtAlertCard() {
-    return Container(
-      width: double.infinity,
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: _debtAlertBg,
-        borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: _debtAlertText.withValues(alpha: 0.4)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Debt Alert',
-            style: TextStyle(
-              fontSize: 15,
-              fontWeight: FontWeight.w700,
-              color: _debtAlertText,
-            ),
-          ),
-          const SizedBox(height: 6),
-          const Text(
-            'Your last 3 payslips show a consistent 15-20% gap from your contract salary.',
-            style: TextStyle(
-              fontSize: 13,
-              color: _debtAlertText,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // ── Action Cards Row ─────────────────────────────────────────────────────────
 
   Widget _buildActionCardsRow() {
@@ -193,8 +156,11 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
               title: 'Remittance\nCalculator',
               subtitle: 'Find the best exchange rates',
               onTap: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Coming soon')),
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RemittanceCalculatorScreen(),
+                  ),
                 );
               },
             ),

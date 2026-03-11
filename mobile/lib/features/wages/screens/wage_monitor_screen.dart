@@ -59,8 +59,6 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildChartCard(),
-            const SizedBox(height: 16),
-            _buildAlertBanner(),
             const SizedBox(height: 20),
             const Text(
               'Recent Logs',
@@ -208,43 +206,6 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
                   ),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ── Alert Banner ─────────────────────────────────────────────────────────────
-
-  Widget _buildAlertBanner() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: _alertBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border(
-          left: BorderSide(color: _alertRed, width: 4),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Pattern Detected: Underpayment',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w700,
-              color: _alertRed.withValues(alpha: 0.9),
-            ),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            'Your last 3 payslips show a consistent 15-20% gap from your contract salary.',
-            style: TextStyle(
-              fontSize: 13,
-              color: _alertRed.withValues(alpha: 0.8),
-              height: 1.4,
             ),
           ),
         ],
