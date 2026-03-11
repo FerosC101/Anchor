@@ -8,7 +8,10 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/home/screens/home_screen.dart';
+import '../../features/community/screens/community_post_detail_screen.dart';
+import '../../features/contracts/screens/contract_scan_detail_screen.dart';
 import '../../models/user_model.dart';
+import '../../models/scan_model.dart';
 
 // ─── GoRouter refresh listenable ──────────────────────────────────────────────
 
@@ -58,6 +61,17 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/home',
         builder: (_, __) => const _RoleDispatcher(),
+      ),
+      GoRoute(
+        path: '/community/post-detail',
+        builder: (_, __) => const CommunityPostDetailScreen(),
+      ),
+      GoRoute(
+        path: '/contracts/detail',
+        builder: (_, state) {
+          final scan = state.extra as ScanModel;
+          return ContractScanDetailScreen(scan: scan);
+        },
       ),
     ],
   );

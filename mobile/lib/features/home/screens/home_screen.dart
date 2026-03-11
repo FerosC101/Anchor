@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../../wages/screens/wage_monitor_screen.dart';
+import '../../contracts/screens/contract_scanner_screen.dart';
+import '../../community/screens/community_safety_screen.dart';
+import '../../shield/screens/financial_shield_screen.dart';
+import '../../../shared/widgets/community_post_card.dart';
+import '../../../shared/widgets/anchor_app_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,74 +25,77 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Different screens for each tab
+    final screens = [
+      _buildHomeContent(),
+      const WageMonitorScreen(),
+      const ContractScannerScreen(),
+      const CommunitySafetyScreen(),
+      const FinancialShieldScreen(),
+    ];
+
     return Scaffold(
       backgroundColor: _bg,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildTopBar(),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 16),
-                    _buildSearchBar(),
-                    const SizedBox(height: 16),
-                    _buildSafetyCard(),
-                    const SizedBox(height: 16),
-                    _buildQuickActions(),
-                    const SizedBox(height: 16),
-                    _buildFinancialHealthCard(),
-                    const SizedBox(height: 20),
-                    _buildCommunitySection(),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: IndexedStack(
+        index: _selectedTab,
+        children: screens,
       ),
       bottomNavigationBar: _buildBottomNav(),
     );
   }
 
-  // ── Top bar ─────────────────────────────────────────────────────────────────
+  // ── Home Content ─────────────────────────────────────────────────────────────
 
-  Widget _buildTopBar() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      child: Row(
+  Widget _buildHomeContent() {
+    return Scaffold(
+      backgroundColor: _bg,
+      appBar: const AnchorAppBar(),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 16),
+            _buildSearchBar(),
+            const SizedBox(height: 16),
+            _buildSafetyCard(),
+            const SizedBox(height: 16),
+            _buildQuickActions(),
+            const SizedBox(height: 16),
+            _buildFinancialHealthCard(),
+            const SizedBox(height: 20),
+            _buildCommunitySection(),
+            const SizedBox(height: 20),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ── Placeholder for other tabs ───────────────────────────────────────────────
+
+  Widget _buildPlaceholder(String title) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Logo
-          Container(
-            width: 36,
-            height: 36,
-            decoration: const BoxDecoration(
-              color: _purple,
-              shape: BoxShape.circle,
-            ),
-          ),
-          const SizedBox(width: 8),
-          const Text(
-            'Anchor',
-            style: TextStyle(
-              fontSize: 20,
+          Icon(Icons.construction_rounded, size: 64, color: _purple),
+          const SizedBox(height: 16),
+          Text(
+            '$title Screen',
+            style: const TextStyle(
+              fontSize: 24,
               fontWeight: FontWeight.w700,
-              color: _purple,
+              color: Color(0xFF1A1A2E),
             ),
           ),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined,
-                color: Color(0xFF6B7280)),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.menu_rounded, color: Color(0xFF6B7280)),
-            onPressed: () {},
+          const SizedBox(height: 8),
+          Text(
+            'Coming Soon',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+            ),
           ),
         ],
       ),
@@ -415,7 +425,9 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             TextButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                setState(() => _selectedTab = 3); // Navigate to Community tab
+              },
               icon: const Text(
                 'View more',
                 style: TextStyle(
@@ -431,125 +443,34 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         const SizedBox(height: 10),
-        _buildPostCard(),
-        const SizedBox(height: 10),
-        _buildPostCard(),
-      ],
-    );
-  }
-
-  Widget _buildPostCard() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Title row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'BuildRite Construction',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF1A1A2E),
-                ),
-              ),
-              Icon(Icons.more_vert_rounded, size: 20, color: _textSecondary),
-            ],
-          ),
-          const SizedBox(height: 6),
-          // Body
-          RichText(
-            text: TextSpan(
-              style: const TextStyle(
-                fontSize: 13,
-                color: Color(0xFF374151),
-                height: 1.45,
-              ),
-              children: const [
-                TextSpan(
-                  text:
-                      'Salary delayed for 2 months. Dormitory has no clean water supply...',
-                ),
-                TextSpan(
-                  text: 'read more',
-                  style: TextStyle(color: _purple, fontWeight: FontWeight.w500),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          // Tags
-          Wrap(
-            spacing: 8,
-            runSpacing: 6,
-            children: [
-              _buildTag('#Delayed Salary'),
-              _buildTag('#Unsafe Dorm'),
-            ],
-          ),
-          const SizedBox(height: 12),
-          // Footer row
-          Row(
-            children: [
-              const Text(
-                '17 hours ago',
-                style: TextStyle(fontSize: 12, color: _textSecondary),
-              ),
-              const SizedBox(width: 12),
-              const Icon(Icons.location_on_outlined,
-                  size: 14, color: _textSecondary),
-              const Text(
-                ' Location',
-                style: TextStyle(fontSize: 12, color: _textSecondary),
-              ),
-              const Spacer(),
-              const Icon(Icons.arrow_upward_rounded,
-                  size: 16, color: _textSecondary),
-              const SizedBox(width: 3),
-              const Text('45',
-                  style: TextStyle(fontSize: 12, color: _textSecondary)),
-              const SizedBox(width: 10),
-              const Icon(Icons.chat_bubble_outline_rounded,
-                  size: 15, color: _textSecondary),
-              const SizedBox(width: 3),
-              const Text('12',
-                  style: TextStyle(fontSize: 12, color: _textSecondary)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTag(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: _purpleLight,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-          color: _purple,
+        CommunityPostCard(
+          company: 'BuildRite Construction',
+          description:
+              'Salary delayed for 2 months. Dormitory has no clean water supply...',
+          tags: const ['#Delayed Salary', '#Unsafe Dorm'],
+          time: '17 hours ago',
+          location: 'Location',
+          upvotes: 45,
+          comments: 12,
+          onTap: () {
+            context.push('/community/post-detail');
+          },
         ),
-      ),
+        const SizedBox(height: 10),
+        CommunityPostCard(
+          company: 'BuildRite Construction',
+          description:
+              'Salary delayed for 2 months. Dormitory has no clean water supply...',
+          tags: const ['#Delayed Salary', '#Unsafe Dorm'],
+          time: '17 hours ago',
+          location: 'Location',
+          upvotes: 45,
+          comments: 12,
+          onTap: () {
+            context.push('/community/post-detail');
+          },
+        ),
+      ],
     );
   }
 
