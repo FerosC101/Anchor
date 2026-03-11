@@ -18,7 +18,6 @@ class AnchorDrawer extends StatelessWidget {
       child: Column(
         children: [
           _buildHeader(context),
-          _buildStatsRow(),
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -47,19 +46,6 @@ class AnchorDrawer extends StatelessWidget {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const NotificationsScreen(),
-                      ),
-                    );
-                  },
-                ),
-                DrawerMenuItem(
-                  icon: Icons.settings_outlined,
-                  label: 'Settings',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const ProfileScreen(initialTab: 1),
                       ),
                     );
                   },
@@ -94,39 +80,13 @@ class AnchorDrawer extends StatelessWidget {
                 const DrawerSectionLabel('SUPPORT'),
                 DrawerMenuItem(
                   icon: Icons.help_outline,
-                  label: 'Help & FAQs',
+                  label: 'Help & Support',
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const HelpScreen(),
-                      ),
-                    );
-                  },
-                ),
-                DrawerMenuItem(
-                  icon: Icons.menu_book_outlined,
-                  label: 'User Guide',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HelpScreen(initialTab: 1),
-                      ),
-                    );
-                  },
-                ),
-                DrawerMenuItem(
-                  icon: Icons.mail_outline,
-                  label: 'Contact Support',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HelpScreen(initialTab: 2),
                       ),
                     );
                   },
@@ -215,46 +175,6 @@ class AnchorDrawer extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatsRow() {
-    return Container(
-      color: Colors.white,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildDrawerStat('5', 'Contracts', const Color(0xFF3D3790)),
-          Container(width: 1, height: 40, color: const Color(0xFFF5F5F5)),
-          _buildDrawerStat('12', 'Wage Logs', const Color(0xFF00AA28)),
-          Container(width: 1, height: 40, color: const Color(0xFFF5F5F5)),
-          _buildDrawerStat('3', 'Alerts', const Color(0xFFAD4B00)),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDrawerStat(String value, String label, Color color) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.w800,
-            color: color,
-          ),
-        ),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            color: Color(0xFF888888),
-          ),
-        ),
-      ],
     );
   }
 

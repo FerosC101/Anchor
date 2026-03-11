@@ -65,41 +65,12 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildPageHeader(),
-            const SizedBox(height: 24),
             _buildUploadArea(),
             const SizedBox(height: 24),
             _buildRecentScansSection(),
           ],
         ),
       ),
-    );
-  }
-
-  // ── Page Header ──────────────────────────────────────────────────────────────
-
-  Widget _buildPageHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Contract Reality Check',
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF1A1A2E),
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Upload your contract or salary slip to detect hidden risks.',
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            color: Colors.grey[600],
-          ),
-        ),
-      ],
     );
   }
 

@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/anchor_app_bar.dart';
 import '../../../shared/widgets/info_row.dart';
 import '../../../shared/widgets/section_title.dart';
-import '../../../shared/widgets/settings_toggle.dart';
-import '../../../shared/widgets/drawer_menu_item.dart';
-import 'privacy_screen.dart';
-import 'safety_resources_screen.dart';
-import 'help_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.initialTab = 0});
@@ -15,40 +10,20 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 3,
-      initialIndex: initialTab,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF5F5F5),
-        appBar: const AnchorAppBar(
-          showBackButton: true,
-          title: 'Profile',
-          subtitle: '',
-        ),
-        body: Column(
-          children: [
-            _buildProfileHeader(),
-            const TabBar(
-              labelColor: Color(0xFF3D3790),
-              unselectedLabelColor: Color(0xFF888888),
-              indicatorColor: Color(0xFF3D3790),
-              tabs: [
-                Tab(text: 'Profile'),
-                Tab(text: 'Settings'),
-                Tab(text: 'Help'),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  _buildProfileTab(context),
-                  _buildSettingsTab(context),
-                  _buildHelpTab(context),
-                ],
-              ),
-            ),
-          ],
-        ),
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: const AnchorAppBar(
+        showBackButton: true,
+        title: 'Profile',
+        subtitle: '',
+      ),
+      body: Column(
+        children: [
+          _buildProfileHeader(),
+          Expanded(
+            child: _buildProfileTab(context),
+          ),
+        ],
       ),
     );
   }
@@ -109,7 +84,7 @@ class ProfileScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: const Text(
-                    '👑  Migrant Worker',
+                    'Migrant Worker',
                     style: TextStyle(
                       fontSize: 12,
                       color: Colors.white,
@@ -250,196 +225,6 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildSettingsTab(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionTitle('Preferences'),
-          const SettingsToggle(
-            label: 'Push Notifications',
-            icon: Icons.notifications_none,
-            defaultValue: true,
-          ),
-          const SettingsToggle(
-            label: 'Email Alerts',
-            icon: Icons.mail_outline,
-            defaultValue: false,
-          ),
-          const SettingsToggle(
-            label: 'Dark Mode',
-            icon: Icons.dark_mode_outlined,
-            defaultValue: false,
-          ),
-          const SectionTitle('Data & Privacy'),
-          DrawerMenuItem(
-            icon: Icons.lock_outline,
-            label: 'Privacy & Security',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PrivacyScreen(),
-                ),
-              );
-            },
-          ),
-          DrawerMenuItem(
-            icon: Icons.delete_outline,
-            label: 'Delete Account',
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: const Text('Delete Account'),
-                  content: const Text(
-                    'Are you sure you want to delete your account? This action cannot be undone.',
-                  ),
-                  actions: [
-                    TextButton(
-                      onPressed: () => Navigator.pop(context),
-                      child: const Text('Cancel'),
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('Account deletion coming soon'),
-                          ),
-                        );
-                      },
-                      child: const Text(
-                        'Delete',
-                        style: TextStyle(color: Color(0xFF8E0012)),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHelpTab(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SectionTitle('Quick Help'),
-          DrawerMenuItem(
-            icon: Icons.help_outline,
-            label: 'FAQs',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HelpScreen(),
-                ),
-              );
-            },
-          ),
-          DrawerMenuItem(
-            icon: Icons.menu_book_outlined,
-            label: 'User Guide',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HelpScreen(initialTab: 1),
-                ),
-              );
-            },
-          ),
-          DrawerMenuItem(
-            icon: Icons.shield_outlined,
-            label: 'Safety Resources',
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const SafetyResourcesScreen(),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFFFF3F3),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFF8E0012).withValues(alpha: 0.3),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Row(
-                  children: [
-                    Icon(Icons.error_outline, color: Color(0xFF8E0012)),
-                    SizedBox(width: 8),
-                    Text(
-                      'Emergency Contacts',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF8E0012),
-                        fontSize: 15,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 10),
-                _buildEmergencyContact(
-                  '🇵🇭',
-                  'Philippine Embassy (Malaysia)',
-                  '+60 3-2148 5888',
-                ),
-                _buildEmergencyContact(
-                  '🇵🇭',
-                  'Philippine Embassy (Thailand)',
-                  '+66 2-259 0139',
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildEmergencyContact(String flag, String label, String number) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
-      child: Row(
-        children: [
-          Text(
-            '$flag  $label',
-            style: const TextStyle(
-              fontSize: 13,
-              color: Color(0xFF8E0012),
-            ),
-          ),
-          const Spacer(),
-          Text(
-            number,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF8E0012),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
