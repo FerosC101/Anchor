@@ -3,6 +3,13 @@ allprojects {
         google()
         mavenCentral()
     }
+    
+    configurations.all {
+        resolutionStrategy {
+            // Force specific versions to avoid license checks
+            force("com.android.tools.build:gradle:8.0.0")
+        }
+    }
 }
 
 val newBuildDir: Directory =
