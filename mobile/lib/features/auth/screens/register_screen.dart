@@ -43,19 +43,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _jobTitleCtrl = TextEditingController();
   final _expYearsCtrl = TextEditingController();
 
-  // ── Step 3 – Agency ──────────────────────────────────────────────────────
-  final _agencyFormKey = GlobalKey<FormState>();
-  final _agencyNameCtrl = TextEditingController();
-  final _licenseCtrl = TextEditingController();
-  String _agencyCountry = 'Philippines';
-  final _agencyAddressCtrl = TextEditingController();
-  final _agencyEmailCtrl = TextEditingController();
-  final _agencyPhoneCtrl = TextEditingController();
-
-  // ── Step 3 – Verifier ─────────────────────────────────────────────────────
-  final _verifierFormKey = GlobalKey<FormState>();
+  // ── Step 3 – Government / NGO ────────────────────────────────────────────
+  final _orgFormKey = GlobalKey<FormState>();
   final _orgNameCtrl = TextEditingController();
-  OrganizationType _orgType = OrganizationType.government;
   final _roleTitleCtrl = TextEditingController();
 
   @override
@@ -69,11 +59,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     _passportCtrl.dispose();
     _jobTitleCtrl.dispose();
     _expYearsCtrl.dispose();
-    _agencyNameCtrl.dispose();
-    _licenseCtrl.dispose();
-    _agencyAddressCtrl.dispose();
-    _agencyEmailCtrl.dispose();
-    _agencyPhoneCtrl.dispose();
     _orgNameCtrl.dispose();
     _roleTitleCtrl.dispose();
     super.dispose();
@@ -91,15 +76,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       if (_selectedRole == null) {
         _showRoleError();
         return;
-      }
-      // Pre-fill agency contact fields from basic info
-      if (_selectedRole == UserRole.agency) {
-        if (_agencyEmailCtrl.text.isEmpty) {
-          _agencyEmailCtrl.text = _emailCtrl.text;
-        }
-        if (_agencyPhoneCtrl.text.isEmpty) {
-          _agencyPhoneCtrl.text = _phoneCtrl.text;
-        }
       }
       _goToStep(2);
     } else {
@@ -157,25 +133,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           };
         }
 
-      case UserRole.agency:
-        valid = _agencyFormKey.currentState?.validate() ?? false;
-        if (valid) {
-          roleData = {
-            'agency_name': _agencyNameCtrl.text.trim(),
-            'license_number': _licenseCtrl.text.trim(),
-            'country': _agencyCountry,
-            'address': _agencyAddressCtrl.text.trim(),
-            'contact_email': _agencyEmailCtrl.text.trim(),
-            'contact_phone': _agencyPhoneCtrl.text.trim(),
-          };
-        }
-
-      case UserRole.verifier:
-        valid = _verifierFormKey.currentState?.validate() ?? false;
+      case UserRole.government:
+      case UserRole.ngo:
+        valid = _orgFormKey.currentState?.validate() ?? false;
         if (valid) {
           roleData = {
             'organization_name': _orgNameCtrl.text.trim(),
-            'organization_type': _orgType.name,
             'role_title': _roleTitleCtrl.text.trim(),
           };
         }
@@ -389,10 +352,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     switch (_selectedRole) {
       case UserRole.ofw:
         return 'OFW Details';
-      case UserRole.agency:
-        return 'Agency Details';
-      case UserRole.verifier:
-        return 'Organization Details';
+      case UserRole.government:
+        return 'Government Details';
+      case UserRole.ngo:
+        return 'NGO Details';
       default:
         return 'Your Details';
     }
@@ -619,29 +582,29 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
           const SizedBox(height: 16),
 
-          // Agency Card
+          // Government Card
           _RoleCard(
-            role: UserRole.agency,
-            icon: Icons.business_rounded,
-            title: 'Recruitment Agency',
+            role: UserRole.government,
+            icon: Icons.account_balance_rounded,
+            title: 'Government',
             description:
-                'I represent a licensed recruitment agency deploying Filipino workers abroad.',
-            color: AppColors.agencyColor,
-            isSelected: _selectedRole == UserRole.agency,
-            onTap: () => setState(() => _selectedRole = UserRole.agency),
+                'I work for a government agency, embassy, or consulate that supports and protects OFWs.',
+            color: AppColors.governmentColor,
+            isSelected: _selectedRole == UserRole.government,
+            onTap: () => setState(() => _selectedRole = UserRole.government),
           ),
           const SizedBox(height: 16),
 
-          // Verifier Card
+          // NGO Card
           _RoleCard(
-            role: UserRole.verifier,
-            icon: Icons.verified_user_rounded,
-            title: 'Government / NGO Verifier',
+            role: UserRole.ngo,
+            icon: Icons.volunteer_activism_rounded,
+            title: 'NGO / Non-profit',
             description:
-                'I work for a government agency, embassy, or NGO that verifies employment contracts.',
-            color: AppColors.verifierColor,
-            isSelected: _selectedRole == UserRole.verifier,
-            onTap: () => setState(() => _selectedRole = UserRole.verifier),
+                'I represent a non-governmental organization providing assistance and advocacy for OFWs.',
+            color: AppColors.ngoColor,
+            isSelected: _selectedRole == UserRole.ngo,
+            onTap: () => setState(() => _selectedRole = UserRole.ngo),
           ),
 
           const SizedBox(height: 8),
@@ -658,10 +621,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     switch (_selectedRole) {
       case UserRole.ofw:
         return _buildOfwStep();
-      case UserRole.agency:
-        return _buildAgencyStep();
-      case UserRole.verifier:
-        return _buildVerifierStep();
+      case UserRole.government:
+      case UserRole.ngo:
+        return _buildOrganizationStep();
       default:
         return const Center(child: Text('Please go back and select a role.'));
     }
@@ -742,144 +704,36 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     );
   }
 
-  // ── Agency form ────────────────────────────────────────────────────────────
+  // ── Government / NGO form ─────────────────────────────────────────────────
 
-  Widget _buildAgencyStep() {
+  Widget _buildOrganizationStep() {
+    final isGov = _selectedRole == UserRole.government;
     return SingleChildScrollView(
       padding: const EdgeInsets.all(24),
       child: Form(
-        key: _agencyFormKey,
+        key: _orgFormKey,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _roleInfoBanner(
-              icon: Icons.business_rounded,
-              color: AppColors.agencyColor,
-              label: 'Recruitment Agency',
-              note: 'Your agency will be reviewed by our team before being '
-                  'listed on the platform. Ensure your POEA license is valid.',
-            ),
-            const SizedBox(height: 24),
-            _sectionLabel('Agency Details'),
-            const SizedBox(height: 16),
-            _buildField(
-              controller: _agencyNameCtrl,
-              label: 'Agency Name',
-              hint: 'ABC Recruitment Inc.',
-              icon: Icons.business_rounded,
-              action: TextInputAction.next,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'Agency name is required'
-                  : null,
-            ),
-            const SizedBox(height: 16),
-            _buildField(
-              controller: _licenseCtrl,
-              label: 'POEA License Number',
-              hint: 'POEA-XXX-LB-XXXXX-XX',
-              icon: Icons.verified_outlined,
-              action: TextInputAction.next,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'License number is required'
-                  : null,
-            ),
-            const SizedBox(height: 16),
-            _buildSearchablePickerField(
-              label: 'Country of Operation',
-              icon: Icons.public_rounded,
-              value: _agencyCountry,
-              onTap: () => _showSearchablePicker(
-                context: context,
-                title: 'Select Country of Operation',
-                items: AppConstants.countries,
-                currentValue: _agencyCountry,
-                onSelect: (v) => setState(() => _agencyCountry = v),
-              ),
-            ),
-            const SizedBox(height: 16),
-            TextFormField(
-              controller: _agencyAddressCtrl,
-              maxLines: 2,
-              textInputAction: TextInputAction.next,
-              decoration: const InputDecoration(
-                labelText: 'Office Address',
-                hintText: 'Complete street address',
-                prefixIcon: Padding(
-                  padding: EdgeInsets.only(bottom: 20),
-                  child: Icon(
-                    Icons.location_on_outlined,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-                alignLabelWithHint: true,
-              ),
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'Office address is required'
-                  : null,
-            ),
-            const SizedBox(height: 24),
-            _sectionLabel('Contact Information'),
-            const SizedBox(height: 16),
-            _buildField(
-              controller: _agencyEmailCtrl,
-              label: 'Contact Email',
-              hint: 'agency@example.com',
-              icon: Icons.email_outlined,
-              keyboard: TextInputType.emailAddress,
-              action: TextInputAction.next,
-              validator: (v) {
-                if (v == null || v.trim().isEmpty)
-                  return 'Contact email is required';
-                if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v.trim())) {
-                  return 'Enter a valid email address';
-                }
-                return null;
-              },
-            ),
-            const SizedBox(height: 16),
-            _buildField(
-              controller: _agencyPhoneCtrl,
-              label: 'Contact Phone',
-              hint: '+63 2 XXXX XXXX',
-              icon: Icons.phone_outlined,
-              keyboard: TextInputType.phone,
-              action: TextInputAction.done,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'Contact phone is required'
-                  : null,
-            ),
-            const SizedBox(height: 8),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // ── Verifier form ──────────────────────────────────────────────────────────
-
-  Widget _buildVerifierStep() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Form(
-        key: _verifierFormKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _roleInfoBanner(
-              icon: Icons.verified_user_rounded,
-              color: AppColors.verifierColor,
-              label: 'Government / NGO Verifier',
-              note: 'Verifiers have access to contract review tools and can '
-                  'flag or approve employment contracts submitted by OFWs.',
+              icon: isGov
+                  ? Icons.account_balance_rounded
+                  : Icons.volunteer_activism_rounded,
+              color: isGov ? AppColors.governmentColor : AppColors.ngoColor,
+              label: isGov ? 'Government' : 'NGO / Non-profit',
+              note: isGov
+                  ? 'You will have access to OFW contract review tools and case management features.'
+                  : 'You will be able to assist OFWs with contract disputes, welfare concerns, and legal support.',
             ),
             const SizedBox(height: 24),
             _sectionLabel('Organization Details'),
             const SizedBox(height: 16),
-
             _buildField(
               controller: _orgNameCtrl,
               label: 'Organization Name',
-              hint: 'e.g. OWWA, POEA, Philippine Embassy',
+              hint: isGov
+                  ? 'e.g. OWWA, POEA, Philippine Embassy'
+                  : 'e.g. Migrante International, Blas F. Ople Center',
               icon: Icons.account_balance_outlined,
               action: TextInputAction.next,
               validator: (v) => (v == null || v.trim().isEmpty)
@@ -887,30 +741,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   : null,
             ),
             const SizedBox(height: 16),
-
-            // Organization type dropdown
-            DropdownButtonFormField<OrganizationType>(
-              value: _orgType,
-              decoration: const InputDecoration(
-                labelText: 'Organization Type',
-                prefixIcon: Icon(
-                  Icons.category_outlined,
-                  color: AppColors.textSecondary,
-                ),
-              ),
-              items: [
-                _orgTypeItem(OrganizationType.government, 'Government Agency'),
-                _orgTypeItem(OrganizationType.ngo, 'NGO / Non-profit'),
-                _orgTypeItem(OrganizationType.embassy, 'Embassy / Consulate'),
-              ],
-              onChanged: (v) => setState(() => _orgType = v!),
-            ),
-            const SizedBox(height: 16),
-
             _buildField(
               controller: _roleTitleCtrl,
               label: 'Your Role / Title',
-              hint: 'e.g. Labor Attaché, Case Worker, Director',
+              hint: isGov
+                  ? 'e.g. Labor Attaché, Case Worker, Director'
+                  : 'e.g. Program Officer, Advocacy Lead, Social Worker',
               icon: Icons.badge_outlined,
               action: TextInputAction.done,
               validator: (v) => (v == null || v.trim().isEmpty)
@@ -1112,13 +948,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       builder: (_) => _JobPickerSheet(currentValue: currentValue),
     );
     if (selected != null) onSelect(selected);
-  }
-
-  DropdownMenuItem<OrganizationType> _orgTypeItem(
-    OrganizationType type,
-    String label,
-  ) {
-    return DropdownMenuItem(value: type, child: Text(label));
   }
 }
 

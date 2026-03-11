@@ -8,7 +8,10 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/home/screens/home_screen.dart';
+import '../../features/community/screens/community_post_detail_screen.dart';
+import '../../features/contracts/screens/contract_scan_detail_screen.dart';
 import '../../models/user_model.dart';
+import '../../models/scan_model.dart';
 
 // ─── GoRouter refresh listenable ──────────────────────────────────────────────
 
@@ -59,6 +62,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/home',
         builder: (_, __) => const _RoleDispatcher(),
       ),
+      GoRoute(
+        path: '/community/post-detail',
+        builder: (_, __) => const CommunityPostDetailScreen(),
+      ),
+      GoRoute(
+        path: '/contracts/detail',
+        builder: (_, state) {
+          final scan = state.extra as ScanModel;
+          return ContractScanDetailScreen(scan: scan);
+        },
+      ),
     ],
   );
 });
@@ -66,7 +80,7 @@ final routerProvider = Provider<GoRouter>((ref) {
 // ─── Role dispatcher ──────────────────────────────────────────────────────────
 // Reads the signed-in user's role and shows the correct dashboard.
 // OFW → HomeScreen (implemented)
-// Agency / Verifier / Admin → placeholder until those dashboards are built.
+// Government / NGO / Admin → placeholder until those dashboards are built.
 
 class _RoleDispatcher extends ConsumerWidget {
   const _RoleDispatcher();
@@ -86,17 +100,17 @@ class _RoleDispatcher extends ConsumerWidget {
     switch (user.role) {
       case UserRole.ofw:
         return const HomeScreen();
-      case UserRole.agency:
+      case UserRole.government:
         return _ComingSoonScaffold(
-          title: 'Agency Dashboard',
-          icon: Icons.business_rounded,
+          title: 'Government Dashboard',
+          icon: Icons.account_balance_rounded,
           color: const Color(0xFF8B5CF6),
           ref: ref,
         );
-      case UserRole.verifier:
+      case UserRole.ngo:
         return _ComingSoonScaffold(
-          title: 'Verifier Dashboard',
-          icon: Icons.verified_user_rounded,
+          title: 'NGO Dashboard',
+          icon: Icons.volunteer_activism_rounded,
           color: const Color(0xFF10B981),
           ref: ref,
         );

@@ -4,8 +4,7 @@ class FirebaseConstants {
   // Collection names (match database schema)
   static const String usersCollection = 'users';
   static const String ofwProfilesCollection = 'ofw_profiles';
-  static const String agenciesCollection = 'agencies';
-  static const String verifierProfilesCollection = 'verifier_profiles';
+  static const String organizationProfilesCollection = 'organization_profiles';
   static const String contractsCollection = 'contracts';
   static const String contractAnalysisCollection = 'contract_analysis';
   static const String contractReviewsCollection = 'contract_reviews';
