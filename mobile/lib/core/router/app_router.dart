@@ -10,6 +10,7 @@ import '../../features/auth/screens/register_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/community/screens/community_post_detail_screen.dart';
 import '../../features/contracts/screens/contract_scan_detail_screen.dart';
+import '../../features/ngo/screens/ngo_home_screen.dart';
 import '../../models/user_model.dart';
 import '../../models/scan_model.dart';
 
@@ -108,12 +109,7 @@ class _RoleDispatcher extends ConsumerWidget {
           ref: ref,
         );
       case UserRole.ngo:
-        return _ComingSoonScaffold(
-          title: 'NGO Dashboard',
-          icon: Icons.volunteer_activism_rounded,
-          color: const Color(0xFF10B981),
-          ref: ref,
-        );
+        return const NgoHomeScreen();
       default:
         return _ComingSoonScaffold(
           title: 'Admin Dashboard',
