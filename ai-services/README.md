@@ -1,0 +1,1 @@
+Contract_Analyst_Model.pkl -- would be used to classify contractual clauses as either 'safe' or 'predatory' (scam). It's designed to analyze contract text and flag potentially problematic clauses with a confidence score, aiding in risk assessment.
