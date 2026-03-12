@@ -8,6 +8,7 @@ import '../../features/auth/providers/auth_provider.dart';
 import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/home/screens/home_screen.dart';
+import '../../features/government_dashboard/screens/government_dashboard_screen.dart';
 import '../../features/community/screens/community_post_detail_screen.dart';
 import '../../features/contracts/screens/contract_scan_detail_screen.dart';
 import '../../features/ngo/screens/ngo_home_screen.dart';
@@ -102,12 +103,7 @@ class _RoleDispatcher extends ConsumerWidget {
       case UserRole.ofw:
         return const HomeScreen();
       case UserRole.government:
-        return _ComingSoonScaffold(
-          title: 'Government Dashboard',
-          icon: Icons.account_balance_rounded,
-          color: const Color(0xFF8B5CF6),
-          ref: ref,
-        );
+        return const GovernmentDashboardScreen();
       case UserRole.ngo:
         return const NgoHomeScreen();
       default:

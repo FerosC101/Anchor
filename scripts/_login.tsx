@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../core/context/AuthContext";
 import { ROUTES } from "../core/config/routes";
-import { USER_ROLE } from "../types/user";
 
 const GRADIENT: React.CSSProperties = {
   background: "linear-gradient(135deg, #0A2463 0%, #1E3A8A 100%)",
@@ -63,12 +62,8 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     clearError();
-    const loggedInUser = await signIn(email.trim(), password);
-    if (loggedInUser) {
-      const dest =
-        loggedInUser.role === USER_ROLE.ADMIN ? ROUTES.ADMIN : ROUTES.HOME;
-      navigate(dest, { replace: true });
-    }
+    const ok = await signIn(email.trim(), password);
+    if (ok) navigate(ROUTES.HOME, { replace: true });
   }
 
   return (

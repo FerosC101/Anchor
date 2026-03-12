@@ -71,9 +71,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             right: 0,
             child: Container(
               height: 280,
-              decoration: const BoxDecoration(
-                gradient: AppColors.primaryGradient,
-                borderRadius: BorderRadius.only(
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [Color(0xFFDDD8F7), Color(0xFF9B8FE0)],
+                ),
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
                   bottomRight: Radius.circular(32),
                 ),
@@ -82,31 +86,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Anchor logo
-                    Container(
-                      width: 72,
-                      height: 72,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.15),
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white.withOpacity(0.3),
-                          width: 2,
-                        ),
-                      ),
-                      child: const Icon(
-                        Icons.anchor_rounded,
-                        size: 40,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
                     const Text(
                       'ANCHOR',
                       style: TextStyle(
                         fontSize: 26,
                         fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                        color: Color(0xFF3D3790),
                         letterSpacing: 3,
                       ),
                     ),
@@ -137,7 +122,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   // Form card
                   Container(
                     decoration: BoxDecoration(
-                      color: AppColors.surface,
+                      color: Colors.white,
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
                         BoxShadow(
@@ -181,7 +166,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               labelText: 'Email Address',
                               prefixIcon: Icon(
                                 Icons.email_outlined,
-                                color: AppColors.textSecondary,
+                                color: Color(0xFF3D3790),
                               ),
                             ),
                             validator: (v) {
@@ -208,7 +193,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               labelText: 'Password',
                               prefixIcon: const Icon(
                                 Icons.lock_outline_rounded,
-                                color: AppColors.textSecondary,
+                                color: Color(0xFF3D3790),
                               ),
                               suffixIcon: IconButton(
                                 onPressed: () => setState(
@@ -218,7 +203,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                   _showPassword
                                       ? Icons.visibility_off_outlined
                                       : Icons.visibility_outlined,
-                                  color: AppColors.textSecondary,
+                                  color: Color(0xFF3D3790),
                                 ),
                               ),
                             ),
@@ -252,13 +237,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             height: 52,
                             child: ElevatedButton(
                               onPressed: isLoading ? null : _submit,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFD7D2E7),
+                                foregroundColor: const Color(0xFF3D3790),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
                               child: isLoading
                                   ? const SizedBox(
                                       width: 22,
                                       height: 22,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2.5,
-                                        color: Colors.white,
+                                        color: Color(0xFF3D3790),
                                       ),
                                     )
                                   : const Text('Sign In'),
@@ -287,7 +279,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         child: const Text(
                           'Create one',
                           style: TextStyle(
-                            color: AppColors.primary,
+                            color: Color(0xFF3D3790),
                             fontWeight: FontWeight.w700,
                             fontSize: 14,
                           ),
