@@ -22,8 +22,8 @@ class CommunityPostCard extends StatelessWidget {
     this.onTap,
   });
 
-  static const Color _purple = Color(0xFF8575B6);
-  static const Color _purpleLight = Color(0xFFD7D2E7);
+  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blueLight = Color(0xFFCAEBFA);
   static const Color _textSecondary = Color(0xFF64748B);
 
   @override
@@ -77,7 +77,7 @@ class CommunityPostCard extends StatelessWidget {
                   TextSpan(text: description),
                   const TextSpan(
                     text: 'read more',
-                    style: TextStyle(color: _purple, fontWeight: FontWeight.w500),
+                    style: TextStyle(color: _blueMid, fontWeight: FontWeight.w500),
                   ),
                 ],
               ),
@@ -128,7 +128,7 @@ class CommunityPostCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: _purpleLight,
+        color: _blueLight,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -136,7 +136,7 @@ class CommunityPostCard extends StatelessWidget {
         style: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
-          color: _purple,
+          color: _blueMid,
         ),
       ),
     );

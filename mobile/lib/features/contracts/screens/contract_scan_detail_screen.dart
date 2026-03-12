@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../models/scan_model.dart';
 import '../../../shared/utils/risk_utils.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
 
 class ContractScanDetailScreen extends StatelessWidget {
   const ContractScanDetailScreen({super.key, required this.scan});
@@ -18,11 +18,7 @@ class ContractScanDetailScreen extends StatelessWidget {
       length: 3,
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F5F5),
-        appBar: const AnchorAppBar(
-          showBackButton: true,
-          title: 'Contract Analysis',
-          subtitle: 'Detailed risk assessment',
-        ),
+        appBar: const WorkerAppBar(showBackButton: true),
         body: Column(
           children: [
             _buildFileHeaderCard(),
@@ -64,12 +60,12 @@ class ContractScanDetailScreen extends StatelessWidget {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: const Color(0xFFD7D2E7),
+              color: const Color(0xFFCAEBFA),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.insert_drive_file_outlined,
-              color: Color(0xFF3D3790),
+              color: Color(0xFF003696),
               size: 28,
             ),
           ),
@@ -107,9 +103,9 @@ class ContractScanDetailScreen extends StatelessWidget {
     return Container(
       color: Colors.white,
       child: const TabBar(
-        labelColor: Color(0xFF3D3790),
+        labelColor: Color(0xFF003696),
         unselectedLabelColor: Color(0xFF888888),
-        indicatorColor: Color(0xFF3D3790),
+        indicatorColor: Color(0xFF003696),
         indicatorWeight: 2.5,
         tabs: [
           Tab(text: 'Overview'),
@@ -336,16 +332,16 @@ class ContractScanDetailScreen extends StatelessWidget {
                     // TODO: implement download
                   },
                   icon: const Icon(Icons.download_outlined,
-                      color: Color(0xFF3D3790)),
+                      color: Color(0xFF003696)),
                   label: const Text(
                     'Download Report',
                     style: TextStyle(
-                      color: Color(0xFF3D3790),
+                      color: Color(0xFF003696),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFD7D2E7)),
+                    side: const BorderSide(color: Color(0xFFCAEBFA)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -360,16 +356,16 @@ class ContractScanDetailScreen extends StatelessWidget {
                     // TODO: implement contact help
                   },
                   icon: const Icon(Icons.phone_outlined,
-                      color: Color(0xFF3D3790)),
+                      color: Color(0xFF003696)),
                   label: const Text(
                     'Contact Help',
                     style: TextStyle(
-                      color: Color(0xFF3D3790),
+                      color: Color(0xFF003696),
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFD7D2E7)),
+                    side: const BorderSide(color: Color(0xFFCAEBFA)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -395,7 +391,7 @@ class ContractScanDetailScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFD7D2E7).withValues(alpha: 0.4),
+              color: const Color(0xFFCAEBFA).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Column(
@@ -406,7 +402,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w700,
-                    color: Color(0xFF3D3790),
+                    color: Color(0xFF003696),
                   ),
                 ),
                 SizedBox(height: 4),
@@ -414,7 +410,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                   'See how your contract compares to international labor standards and typical Singapore/Malaysia contracts.',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF8575B6),
+                    color: Color(0xFF4F90F0),
                   ),
                 ),
               ],
@@ -619,7 +615,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.account_circle_outlined,
-                      color: Color(0xFF3D3790),
+                      color: Color(0xFF003696),
                       size: 20,
                     ),
                     SizedBox(width: 8),
@@ -628,7 +624,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF3D3790),
+                        color: Color(0xFF003696),
                       ),
                     ),
                   ],
@@ -640,7 +636,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                       : 'Based on your contract analysis, here\'s what we recommend:',
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF8575B6),
+                    color: Color(0xFF4F90F0),
                   ),
                 ),
               ],
@@ -756,7 +752,7 @@ class _ComparisonCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(icon, color: const Color(0xFF8575B6), size: 20),
+                  Icon(icon, color: const Color(0xFF4F90F0), size: 20),
                   const SizedBox(width: 8),
                   Text(
                     category,
@@ -909,7 +905,7 @@ class _ActionItem extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: isUrgent ? const Color(0xFF8E0012) : const Color(0xFF3D3790),
+              color: isUrgent ? const Color(0xFF8E0012) : const Color(0xFF003696),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Center(
@@ -936,7 +932,7 @@ class _ActionItem extends StatelessWidget {
                       size: 16,
                       color: isUrgent
                           ? const Color(0xFF8E0012)
-                          : const Color(0xFF3D3790),
+                          : const Color(0xFF003696),
                     ),
                     const SizedBox(width: 6),
                     Expanded(

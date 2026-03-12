@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
 
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({super.key});
@@ -8,14 +8,21 @@ class NotificationsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: const AnchorAppBar(
-        showBackButton: true,
-        title: 'Notifications',
-        subtitle: '',
-      ),
+      appBar: const WorkerAppBar(showBackButton: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+            child: Text(
+              'Notifications',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
+          ),
           _buildNotificationTile(
             icon: Icons.attach_money_outlined,
             iconColor: const Color(0xFF00AA28),
@@ -27,8 +34,8 @@ class NotificationsScreen extends StatelessWidget {
           ),
           _buildNotificationTile(
             icon: Icons.description_outlined,
-            iconColor: const Color(0xFF3D3790),
-            iconBgColor: const Color(0xFFD7D2E7),
+            iconColor: const Color(0xFF003696),
+            iconBgColor: const Color(0xFFCAEBFA),
             title: 'Contract Scan Complete',
             message: 'Review results for "Employment Agreement 2026"',
             time: '5 hours ago',
@@ -63,8 +70,8 @@ class NotificationsScreen extends StatelessWidget {
           ),
           _buildNotificationTile(
             icon: Icons.shield_outlined,
-            iconColor: const Color(0xFF3D3790),
-            iconBgColor: const Color(0xFFD7D2E7),
+            iconColor: const Color(0xFF003696),
+            iconBgColor: const Color(0xFFCAEBFA),
             title: 'Emergency Contact Added',
             message: 'Philippine Embassy contact saved to your profile',
             time: '1 week ago',
@@ -100,7 +107,7 @@ class NotificationsScreen extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
         border: isUnread
-            ? Border.all(color: const Color(0xFF3D3790).withValues(alpha: 0.3))
+            ? Border.all(color: const Color(0xFF003696).withValues(alpha: 0.3))
             : null,
         boxShadow: const [
           BoxShadow(
@@ -144,7 +151,7 @@ class NotificationsScreen extends StatelessWidget {
                         width: 8,
                         height: 8,
                         decoration: const BoxDecoration(
-                          color: Color(0xFF3D3790),
+                          color: Color(0xFF003696),
                           shape: BoxShape.circle,
                         ),
                       ),

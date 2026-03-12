@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
 import '../../../shared/widgets/section_title.dart';
 import '../../../shared/widgets/settings_toggle.dart';
 
@@ -10,20 +10,27 @@ class PrivacyScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: const AnchorAppBar(
-        showBackButton: true,
-        title: 'Privacy & Security',
-        subtitle: '',
-      ),
+      appBar: const WorkerAppBar(showBackButton: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+            child: Text(
+              'Privacy & Security',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
+          ),
           _buildInfoCard(
             icon: Icons.shield_outlined,
             title: 'Your Data is Protected',
             description:
                 'We use end-to-end encryption to keep your personal information, contracts, and financial data secure.',
-            color: const Color(0xFF3D3790),
+            color: const Color(0xFF003696),
           ),
           const SectionTitle('Data Protection'),
           const SettingsToggle(
@@ -294,12 +301,12 @@ class PrivacyScreen extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFF3D3790).withValues(alpha: 0.1),
+                  color: const Color(0xFF003696).withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   icon,
-                  color: const Color(0xFF3D3790),
+                  color: const Color(0xFF003696),
                   size: 20,
                 ),
               ),

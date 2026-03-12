@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/community_post_card.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
-import '../../../shared/widgets/anchor_drawer.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
+import '../../../shared/widgets/worker_drawer.dart';
 
 class CommunitySafetyScreen extends StatefulWidget {
   const CommunitySafetyScreen({super.key});
@@ -13,8 +13,8 @@ class CommunitySafetyScreen extends StatefulWidget {
 
 class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _purple = Color(0xFF8575B6);
-  static const Color _purpleDark = Color(0xFF3D3790);
+  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blue = Color(0xFF003696);
   static const Color _bg = Color(0xFFF5F5F5);
   static const Color _alertRed = Color(0xFFD32F2F);
 
@@ -56,14 +56,22 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      appBar: const AnchorAppBar(
-        title: 'Community Safety',
-        subtitle: 'Anonymous intel from fellow workers.',
-      ),
-      endDrawer: const AnchorDrawer(),
+      appBar: const WorkerAppBar(),
+      endDrawer: const WorkerDrawer(),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+            child: Text(
+              'Community Safety',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
+          ),
           _buildMapCard(),
           const SizedBox(height: 24),
           const Text(
@@ -149,7 +157,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                 children: [
                   Icon(
                     Icons.location_on,
-                    color: _purpleDark,
+                    color: Color(0xFF003696),
                     size: 20,
                   ),
                   const SizedBox(width: 8),
@@ -158,7 +166,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w700,
-                      color: _purpleDark,
+                      color: Color(0xFF003696),
                     ),
                   ),
                 ],
@@ -233,7 +241,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: _purple, width: 2),
+                    borderSide: const BorderSide(color: _blueMid, width: 2),
                   ),
                 ),
               ),
@@ -263,7 +271,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: _purple, width: 2),
+                    borderSide: const BorderSide(color: _blueMid, width: 2),
                   ),
                 ),
               ),
@@ -293,7 +301,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: _purple, width: 2),
+                    borderSide: const BorderSide(color: _blueMid, width: 2),
                   ),
                 ),
                 items: ['Low', 'Medium', 'High']
@@ -331,7 +339,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: _purple, width: 2),
+                    borderSide: const BorderSide(color: _blueMid, width: 2),
                   ),
                 ),
               ),
@@ -361,7 +369,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: const BorderSide(color: _purple, width: 2),
+                    borderSide: const BorderSide(color: _blueMid, width: 2),
                   ),
                 ),
               ),
@@ -374,7 +382,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.grey[700],
-                        side: const BorderSide(color: Color(0xFFD7D2E7)),
+                        side: const BorderSide(color: Color(0xFFCAEBFA)),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -401,7 +409,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: _purpleDark,
+                        backgroundColor: _blue,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(

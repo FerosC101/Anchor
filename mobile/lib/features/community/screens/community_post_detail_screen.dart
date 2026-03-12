@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
 
 class CommunityPostDetailScreen extends StatefulWidget {
   const CommunityPostDetailScreen({super.key});
@@ -11,9 +11,8 @@ class CommunityPostDetailScreen extends StatefulWidget {
 
 class _CommunityPostDetailScreenState extends State<CommunityPostDetailScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _purple = Color(0xFF8575B6);
-  static const Color _purpleDark = Color(0xFF3D3790);
-  static const Color _purpleLight = Color(0xFFD7D2E7);
+  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blueLight = Color(0xFFCAEBFA);
   static const Color _bg = Color(0xFFF5F5F5);
 
   // ── Sample data ─────────────────────────────────────────────────────────────
@@ -38,11 +37,22 @@ class _CommunityPostDetailScreenState extends State<CommunityPostDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      appBar: const AnchorAppBar(showBackButton: true),
+      appBar: const WorkerAppBar(showBackButton: true),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+              child: Text(
+                'Community Concerns',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
             _buildPostBody(),
             const SizedBox(height: 20),
@@ -155,7 +165,7 @@ class _CommunityPostDetailScreenState extends State<CommunityPostDetailScreen> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: _purpleLight,
+        color: _blueLight,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Text(
@@ -163,7 +173,7 @@ class _CommunityPostDetailScreenState extends State<CommunityPostDetailScreen> {
         style: const TextStyle(
           fontSize: 12,
           fontWeight: FontWeight.w500,
-          color: _purple,
+          color: _blueMid,
         ),
       ),
     );
@@ -179,7 +189,7 @@ class _CommunityPostDetailScreenState extends State<CommunityPostDetailScreen> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: _purpleLight),
+          border: Border.all(color: _blueLight),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.04),
@@ -201,7 +211,7 @@ class _CommunityPostDetailScreenState extends State<CommunityPostDetailScreen> {
               ),
             ),
             IconButton(
-              icon: const Icon(Icons.send_rounded, color: _purple),
+              icon: const Icon(Icons.send_rounded, color: _blueMid),
               onPressed: () {},
             ),
           ],

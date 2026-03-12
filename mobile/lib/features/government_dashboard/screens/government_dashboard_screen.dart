@@ -1,4 +1,6 @@
 ﻿import 'package:flutter/material.dart';
+import '../../../shared/widgets/government_drawer.dart';
+import '../../../shared/widgets/government_app_bar.dart';
 import '../utils/dashboard_theme.dart';
 import 'home_tab.dart';
 import 'monitoring_tab.dart';
@@ -14,6 +16,7 @@ class GovernmentDashboardScreen extends StatefulWidget {
 
 class _GovernmentDashboardScreenState extends State<GovernmentDashboardScreen> {
   int _selectedTab = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // ── Shared filter state ──────────────────────────────────────────────────────
   String _selectedCountry = 'All Countries';
@@ -23,11 +26,16 @@ class _GovernmentDashboardScreenState extends State<GovernmentDashboardScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: DashboardTheme.bg,
+      appBar: const GovernmentAppBar(),
+      drawer: const GovernmentDrawer(),
       body: IndexedStack(
         index: _selectedTab,
         children: [
-          const HomeTab(),
+          HomeTab(
+            onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+          ),
           MonitoringTab(
             selectedCountry: _selectedCountry,
             selectedStatus: _selectedStatus,
@@ -65,7 +73,7 @@ class _GovernmentDashboardScreenState extends State<GovernmentDashboardScreen> {
         currentIndex: _selectedTab,
         onTap: (i) => setState(() => _selectedTab = i),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: const Color(0xFF0F172A),
+        selectedItemColor: const Color(0xFF003696),
         unselectedItemColor: const Color(0xFFCBD5E1),
         showSelectedLabels: true,
         showUnselectedLabels: true,

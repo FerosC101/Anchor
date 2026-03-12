@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../../shared/widgets/info_row.dart';
 import '../../../shared/widgets/section_title.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
+import '../../../shared/widgets/worker_drawer.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key, this.initialTab = 0});
@@ -11,16 +13,8 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
+      appBar: const WorkerAppBar(showBackButton: true),
+      endDrawer: const WorkerDrawer(),
       body: Column(
         children: [
           _buildProfileHeader(),
@@ -37,11 +31,7 @@ class ProfileScreen extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 32),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Color(0xFFB8B0DD), Color(0xFF9E9DCA)],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
+        color: Color(0xFFCAEBFA),
       ),
       child: Column(
         children: [
@@ -81,7 +71,7 @@ class ProfileScreen extends StatelessWidget {
                       'migrant@gmail.com',
                       style: TextStyle(
                         fontSize: 15,
-                        color: Color(0xFF3D3790),
+                        color: Color(0xFF003696),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -99,7 +89,7 @@ class ProfileScreen extends StatelessWidget {
                         'Migrant Worker',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Color(0xFF3D3790),
+                          color: Color(0xFF003696),
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -121,19 +111,19 @@ class ProfileScreen extends StatelessWidget {
                 icon: const Icon(
                   Icons.edit,
                   size: 18,
-                  color: Color(0xFF3D3790),
+                  color: Color(0xFF003696),
                 ),
                 label: const Text(
                   'Edit Profile',
                   style: TextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF3D3790),
+                    color: Color(0xFF003696),
                   ),
                 ),
                 style: OutlinedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  side: const BorderSide(color: Color(0xFF3D3790), width: 1.5),
+                  side: const BorderSide(color: Color(0xFF003696), width: 1.5),
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
@@ -158,15 +148,15 @@ class ProfileScreen extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: _buildStatCard('5', 'Contracts', const Color(0xFF3D3790)),
+                  child: _buildStatCard('5', 'Contracts', const Color(0xFF003696)),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _buildStatCard('12', 'Wage Logs', const Color(0xFF3D3790)),
+                  child: _buildStatCard('12', 'Wage Logs', const Color(0xFF003696)),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: _buildStatCard('4', 'Reports', const Color(0xFF3D3790)),
+                  child: _buildStatCard('4', 'Reports', const Color(0xFF003696)),
                 ),
               ],
             ),
@@ -234,7 +224,7 @@ class ProfileScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: const Color(0xFFE8E4F3), width: 1),
+                border: Border.all(color: const Color(0xFFCAEBFA), width: 1),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.03),
@@ -250,12 +240,12 @@ class ProfileScreen extends StatelessWidget {
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE8E4F3),
+                          color: const Color(0xFFCAEBFA),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
                           Icons.calendar_today_outlined,
-                          color: Color(0xFF3D3790),
+                          color: Color(0xFF003696),
                           size: 20,
                         ),
                       ),
@@ -284,19 +274,19 @@ class ProfileScreen extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16),
-                  const Divider(color: Color(0xFFE8E4F3)),
+                  const Divider(color: Color(0xFFCAEBFA)),
                   const SizedBox(height: 16),
                   Row(
                     children: [
                       Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFE8E4F3),
+                          color: const Color(0xFFCAEBFA),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: const Icon(
                           Icons.verified_user_outlined,
-                          color: Color(0xFF3D3790),
+                          color: Color(0xFF003696),
                           size: 20,
                         ),
                       ),
@@ -350,7 +340,7 @@ class ProfileScreen extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFE8E4F3), width: 1),
+        border: Border.all(color: const Color(0xFFCAEBFA), width: 1),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.03),
@@ -369,7 +359,7 @@ class ProfileScreen extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFFE8E4F3),
+        color: const Color(0xFFCAEBFA),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
@@ -420,7 +410,7 @@ class ProfileScreen extends StatelessWidget {
                 controller: nameController,
                 decoration: const InputDecoration(
                   labelText: 'Full Name',
-                  prefixIcon: Icon(Icons.person_outline, color: Color(0xFF3D3790)),
+                  prefixIcon: Icon(Icons.person_outline, color: Color(0xFF003696)),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -429,7 +419,7 @@ class ProfileScreen extends StatelessWidget {
                 controller: emailController,
                 decoration: const InputDecoration(
                   labelText: 'Email',
-                  prefixIcon: Icon(Icons.mail_outline, color: Color(0xFF3D3790)),
+                  prefixIcon: Icon(Icons.mail_outline, color: Color(0xFF003696)),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -438,7 +428,7 @@ class ProfileScreen extends StatelessWidget {
                 controller: phoneController,
                 decoration: const InputDecoration(
                   labelText: 'Phone Number',
-                  prefixIcon: Icon(Icons.phone_outlined, color: Color(0xFF3D3790)),
+                  prefixIcon: Icon(Icons.phone_outlined, color: Color(0xFF003696)),
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -465,7 +455,7 @@ class ProfileScreen extends StatelessWidget {
               Navigator.pop(context);
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3D3790),
+              backgroundColor: const Color(0xFF003696),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(

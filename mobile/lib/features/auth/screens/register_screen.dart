@@ -242,7 +242,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFFDDD8F7), Color(0xFF9B8FE0)],
+          colors: [Color(0xFF95D6F5), Color(0xFF4F90F0)],
         ),
       ),
       child: SafeArea(
@@ -381,8 +381,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: ElevatedButton(
             onPressed: isLoading ? null : _next,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFD7D2E7),
-              foregroundColor: const Color(0xFF3D3790),
+              backgroundColor: const Color(0xFFCAEBFA),
+              foregroundColor: const Color(0xFF003696),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

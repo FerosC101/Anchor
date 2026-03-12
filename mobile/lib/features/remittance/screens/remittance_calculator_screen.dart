@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/anchor_drawer.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
+import '../../../shared/widgets/worker_drawer.dart';
 
 class RemittanceCalculatorScreen extends StatefulWidget {
   const RemittanceCalculatorScreen({super.key});
@@ -95,61 +96,23 @@ class _RemittanceCalculatorScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text(
-              'Remittance Calculator',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1A1A1A),
-              ),
-            ),
-            SizedBox(height: 2),
-            Text(
-              'Compare rates and save on every transfer',
-              style: TextStyle(
-                fontSize: 11,
-                color: Color(0xFF888888),
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined, color: Color(0xFF1A1A1A)),
-            onPressed: () {},
-          ),
-          Builder(
-            builder: (context) => IconButton(
-              icon: const Icon(Icons.menu, color: Color(0xFF1A1A1A)),
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
-              },
-            ),
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      endDrawer: const AnchorDrawer(),
+      appBar: const WorkerAppBar(showBackButton: true),
+      endDrawer: const WorkerDrawer(),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
-            
+            const Padding(
+              padding: EdgeInsets.fromLTRB(16, 24, 16, 8),
+              child: Text(
+                'Remittance Calculator',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+            ),
             // Calculator Card
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -214,7 +177,7 @@ class _RemittanceCalculatorScreenState
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF3D3790),
+                        color: const Color(0xFF003696),
                         shape: BoxShape.circle,
                       ),
                       child: IconButton(
@@ -433,7 +396,7 @@ class _RemittanceCalculatorScreenState
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF5E4DBD),
+                        color: const Color(0xFF003696),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
@@ -506,7 +469,7 @@ class _RemittanceCalculatorScreenState
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF3D3790),
+                                color: Color(0xFF003696),
                               ),
                             ),
                           ],
@@ -536,7 +499,7 @@ class _RemittanceCalculatorScreenState
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF3D3790),
+                                color: Color(0xFF003696),
                               ),
                             ),
                           ],
@@ -566,7 +529,7 @@ class _RemittanceCalculatorScreenState
                               style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF3D3790),
+                                color: Color(0xFF003696),
                               ),
                             ),
                           ],
@@ -614,12 +577,12 @@ class _RemittanceCalculatorScreenState
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text('Opening ${provider['name']} transfer...'),
-                          backgroundColor: const Color(0xFF3D3790),
+                          backgroundColor: const Color(0xFF003696),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3D3790),
+                      backgroundColor: const Color(0xFF003696),
                       foregroundColor: Colors.white,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../core/ngo_theme.dart';
 
 class NgoTopBar extends StatelessWidget {
-  const NgoTopBar({super.key});
+  final VoidCallback? onMenuTap;
+  
+  const NgoTopBar({super.key, this.onMenuTap});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,7 @@ class NgoTopBar extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.menu_rounded,
                 color: Color(0xFF6B7280), size: 24),
-            onPressed: () {},
+            onPressed: onMenuTap,
           ),
         ],
       ),

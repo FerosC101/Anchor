@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
 import '../components/dashboard_filter_chips.dart';
-import '../components/dashboard_header.dart';
 import '../components/dashboard_shared_widgets.dart';
 import '../data/dashboard_data.dart';
 import '../utils/dashboard_theme.dart';
@@ -33,21 +32,16 @@ class _MonitoringTabState extends State<MonitoringTab> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return SingleChildScrollView(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const DashboardHeader(),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 20),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Risk Monitoring',
-                      style: TextStyle(
+          const SizedBox(height: 20),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16),
+            child: Text(
+              'Risk Monitoring',
+              style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.w700,
                         color: Color(0xFF0F172A),
@@ -64,11 +58,7 @@ class _MonitoringTabState extends State<MonitoringTab> {
                   if (_monitoringSubTab == 2) ..._buildContractIssuesContent(),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
+            );
   }
 
   // ── Sub-tabs ──────────────────────────────────────────────────────────────

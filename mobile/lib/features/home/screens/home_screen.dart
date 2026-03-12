@@ -5,8 +5,8 @@ import '../../contracts/screens/contract_scanner_screen.dart';
 import '../../community/screens/community_safety_screen.dart';
 import '../../shield/screens/financial_shield_screen.dart';
 import '../../../shared/widgets/community_post_card.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
-import '../../../shared/widgets/anchor_drawer.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
+import '../../../shared/widgets/worker_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -18,9 +18,9 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedTab = 0;
 
-  static const Color _purple = Color(0xFF6B5FD6);
-  static const Color _purpleLight = Color(0xFFEAE6FF);
-  static const Color _purpleDark = Color(0xFF3D3478);
+  static const Color _blue = Color(0xFF003696); // Deep Blue
+  static const Color _blueLight = Color(0xFFCAEBFA); // Light Teal
+  static const Color _blueDark = Color(0xFF003696); // Deep Blue
   static const Color _bg = Color(0xFFF4F4F8);
   static const Color _textSecondary = Color(0xFF64748B);
 
@@ -50,8 +50,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildHomeContent() {
     return Scaffold(
       backgroundColor: _bg,
-      appBar: const AnchorAppBar(),
-      endDrawer: const AnchorDrawer(),
+      appBar: const WorkerAppBar(),
+      endDrawer: const WorkerDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
@@ -81,14 +81,14 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.construction_rounded, size: 64, color: _purple),
+          Icon(Icons.construction_rounded, size: 64, color: _blue),
           const SizedBox(height: 16),
           Text(
             '$title Screen',
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF1A1A2E),
+              color: Color(0xFF003696), // Deep Blue
             ),
           ),
           const SizedBox(height: 8),
@@ -145,11 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        gradient: const LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [Color(0xFFDDD8F7), Color(0xFF9B8FE0)],
-        ),
+        color: const Color(0xFFCAEBFA),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -169,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
             style: TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.w800,
-              color: _purpleDark,
+              color: _blueDark,
               height: 1.1,
             ),
           ),
@@ -193,14 +189,14 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16, color: _purple),
+          Icon(icon, size: 16, color: _blue),
           const SizedBox(width: 8),
           Text(
             label,
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: _purpleDark,
+              color: _blueDark,
             ),
           ),
         ],
@@ -267,10 +263,10 @@ class _HomeScreenState extends State<HomeScreen> {
             width: 44,
             height: 44,
             decoration: BoxDecoration(
-              color: _purpleLight,
+              color: _blueLight,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: _purple, size: 22),
+            child: Icon(icon, color: _blue, size: 22),
           ),
           const SizedBox(height: 12),
           Text(
@@ -352,7 +348,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: _purple,
+                  color: _blue,
                 ),
               ),
             ],
@@ -364,8 +360,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: LinearProgressIndicator(
               value: 0.45,
               minHeight: 7,
-              backgroundColor: _purpleLight,
-              valueColor: const AlwaysStoppedAnimation<Color>(_purple),
+              backgroundColor: _blueLight,
+              valueColor: const AlwaysStoppedAnimation<Color>(_blue),
             ),
           ),
           const SizedBox(height: 14),
@@ -523,7 +519,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       Icon(
                         items[i].icon,
                         size: 24,
-                        color: selected ? _purple : const Color(0xFFADB5BD),
+                        color: selected ? _blue : const Color(0xFFADB5BD),
                       ),
                       const SizedBox(height: 3),
                       Text(
@@ -532,7 +528,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           fontSize: 11,
                           fontWeight:
                               selected ? FontWeight.w600 : FontWeight.w400,
-                          color: selected ? _purple : const Color(0xFFADB5BD),
+                          color: selected ? _blue : const Color(0xFFADB5BD),
                         ),
                       ),
                     ],

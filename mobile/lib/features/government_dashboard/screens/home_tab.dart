@@ -1,36 +1,28 @@
 import 'package:flutter/material.dart';
-import '../components/dashboard_header.dart';
 import '../data/dashboard_data.dart';
 import '../utils/dashboard_theme.dart';
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+  final VoidCallback? onMenuTap;
+  
+  const HomeTab({super.key, this.onMenuTap});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const DashboardHeader(),
-          Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 16),
-                  _buildTitleSection(),
-                  const SizedBox(height: 20),
-                  _buildStatsGrid(),
-                  const SizedBox(height: 24),
-                  _buildChartSection(),
-                  const SizedBox(height: 24),
-                  _buildAlertsSection(),
-                  const SizedBox(height: 24),
-                ],
-              ),
-            ),
-          ),
+          const SizedBox(height: 16),
+          _buildTitleSection(),
+          const SizedBox(height: 20),
+          _buildStatsGrid(),
+          const SizedBox(height: 24),
+          _buildChartSection(),
+          const SizedBox(height: 24),
+          _buildAlertsSection(),
+          const SizedBox(height: 24),
         ],
       ),
     );

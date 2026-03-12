@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
 import '../../../shared/widgets/section_title.dart';
 
 class HelpScreen extends StatelessWidget {
@@ -14,17 +14,13 @@ class HelpScreen extends StatelessWidget {
       initialIndex: initialTab,
       child: Scaffold(
         backgroundColor: const Color(0xFFF5F5F5),
-        appBar: const AnchorAppBar(
-          showBackButton: true,
-          title: 'Help & Support',
-          subtitle: '',
-        ),
+        appBar: const WorkerAppBar(showBackButton: true),
         body: Column(
           children: [
             const TabBar(
-              labelColor: Color(0xFF3D3790),
+              labelColor: Color(0xFF003696),
               unselectedLabelColor: Color(0xFF888888),
-              indicatorColor: Color(0xFF3D3790),
+              indicatorColor: Color(0xFF003696),
               tabs: [
                 Tab(text: 'FAQs'),
                 Tab(text: 'User Guide'),
@@ -140,14 +136,14 @@ class HelpScreen extends StatelessWidget {
           title: 'Create Your Profile',
           description:
               'Set up your profile with personal and work information to get personalized recommendations.',
-          color: const Color(0xFF3D3790),
+          color: const Color(0xFF003696),
         ),
         _buildGuideCard(
           icon: Icons.description_outlined,
           title: 'Upload Your Contract',
           description:
               'Scan your employment contract to detect potential risks and understand your rights.',
-          color: const Color(0xFF8575B6),
+          color: const Color(0xFF4F90F0),
         ),
         const SectionTitle('Core Features'),
         _buildGuideCard(
@@ -162,7 +158,7 @@ class HelpScreen extends StatelessWidget {
           title: 'Financial Shield',
           description:
               'Monitor savings, track debts, and plan your financial exit strategy with our tools.',
-          color: const Color(0xFF9E9DCA),
+          color: const Color(0xFF95D6F5),
         ),
         _buildGuideCard(
           icon: Icons.group_outlined,
@@ -177,7 +173,7 @@ class HelpScreen extends StatelessWidget {
           title: 'Exit Simulation',
           description:
               'Run financial simulations to understand when you can safely return home.',
-          color: const Color(0xFF3D3790),
+          color: const Color(0xFF003696),
         ),
       ],
     );
@@ -255,7 +251,7 @@ class HelpScreen extends StatelessWidget {
           title: 'Email Support',
           subtitle: 'support@anchor.app',
           description: 'Response time: 24-48 hours',
-          color: const Color(0xFF3D3790),
+          color: const Color(0xFF003696),
         ),
         _buildContactCard(
           icon: Icons.chat_outlined,

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 class DashboardHeader extends StatelessWidget {
-  const DashboardHeader({super.key});
+  final VoidCallback? onMenuTap;
+  
+  const DashboardHeader({super.key, this.onMenuTap});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +31,7 @@ class DashboardHeader extends StatelessWidget {
           ),
           IconButton(
             icon: const Icon(Icons.menu_rounded),
-            onPressed: () {},
+            onPressed: onMenuTap,
             color: const Color(0xFF1E293B),
             iconSize: 24,
           ),

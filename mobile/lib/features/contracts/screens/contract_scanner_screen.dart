@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/utils/risk_utils.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
-import '../../../shared/widgets/anchor_drawer.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
+import '../../../shared/widgets/worker_drawer.dart';
 import '../../../models/scan_model.dart';
 
 class ContractScannerScreen extends StatefulWidget {
@@ -14,8 +14,8 @@ class ContractScannerScreen extends StatefulWidget {
 
 class _ContractScannerScreenState extends State<ContractScannerScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _purple = Color(0xFF8575B6);
-  static const Color _purpleLight = Color(0xFFD7D2E7);
+  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blueLight = Color(0xFFCAEBFA);
   static const Color _bg = Color(0xFFF5F5F5);
 
   // ── Sample data ─────────────────────────────────────────────────────────────
@@ -55,16 +55,24 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      appBar: const AnchorAppBar(
-        title: 'Contract Reality Check',
-        subtitle: 'Upload your contract or salary slip to detect hidden risks.',
-      ),
-      endDrawer: const AnchorDrawer(),
+      appBar: const WorkerAppBar(),
+      endDrawer: const WorkerDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+              child: Text(
+                'Contract Reality Check',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+            ),
             _buildUploadArea(),
             const SizedBox(height: 24),
             _buildRecentScansSection(),
@@ -92,7 +100,7 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: _purple.withValues(alpha: 0.3),
+            color: _blueMid.withValues(alpha: 0.3),
             width: 2,
             style: BorderStyle.solid,
           ),
@@ -111,12 +119,12 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
               width: 80,
               height: 80,
               decoration: BoxDecoration(
-                color: _purpleLight,
+                color: _blueLight,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: const Icon(
                 Icons.upload_file_outlined,
-                color: _purple,
+                color: _blueMid,
                 size: 40,
               ),
             ),
@@ -178,7 +186,7 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
                     style: const TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
-                      color: _purple,
+                      color: _blueMid,
                     ),
                   ),
                   const SizedBox(width: 4),
@@ -187,7 +195,7 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
                     size: 18,
-                    color: _purple,
+                    color: _blueMid,
                   ),
                 ],
               ),
@@ -239,12 +247,12 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFFD7D2E7),
+              color: const Color(0xFFCAEBFA),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.insert_drive_file_outlined,
-              color: Color(0xFF3D3790),
+              color: Color(0xFF003696),
               size: 26,
             ),
           ),

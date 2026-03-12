@@ -4,9 +4,9 @@ class ExitSimulationDialog extends StatelessWidget {
   const ExitSimulationDialog({super.key});
 
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _deepPurple = Color(0xFF3D3790);
-  static const Color _primaryPurple = Color(0xFF8575B6);
-  static const Color _lightLavender = Color(0xFFD7D2E7);
+  static const Color _blue = Color(0xFF003696);
+  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blueLight = Color(0xFFCAEBFA);
   static const Color _successGreen = Color(0xFF2E7D32);
   static const Color _dangerRed = Color(0xFFC62828);
 
@@ -22,7 +22,7 @@ class ExitSimulationDialog extends StatelessWidget {
           const SizedBox(height: 20),
           _buildLineItems(),
           const SizedBox(height: 16),
-          const Divider(color: _lightLavender, thickness: 1),
+          const Divider(color: _blueLight, thickness: 1),
           const SizedBox(height: 12),
           _buildRemainingRunway(),
           const SizedBox(height: 16),
@@ -119,7 +119,7 @@ class ExitSimulationDialog extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: _lightLavender,
+        color: _blueLight,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -130,7 +130,7 @@ class ExitSimulationDialog extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w700,
-              color: _deepPurple,
+              color: _blue,
             ),
           ),
           const SizedBox(height: 4),
@@ -138,7 +138,7 @@ class ExitSimulationDialog extends StatelessWidget {
             'Based on your \$800/month living cost, you will have 1 month of runway',
             style: TextStyle(
               fontSize: 13,
-              color: _primaryPurple,
+              color: _blueMid,
             ),
           ),
         ],
@@ -155,8 +155,8 @@ class ExitSimulationDialog extends StatelessWidget {
           child: OutlinedButton(
             onPressed: () => Navigator.of(context).pop(),
             style: OutlinedButton.styleFrom(
-              side: const BorderSide(color: _lightLavender),
-              backgroundColor: _lightLavender,
+              side: const BorderSide(color: _blueLight),
+              backgroundColor: _blueLight,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -165,7 +165,7 @@ class ExitSimulationDialog extends StatelessWidget {
             child: const Text(
               'Close',
               style: TextStyle(
-                color: _deepPurple,
+                color: _blue,
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -176,7 +176,7 @@ class ExitSimulationDialog extends StatelessWidget {
           child: ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
             style: ElevatedButton.styleFrom(
-              backgroundColor: _deepPurple,
+              backgroundColor: _blue,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),

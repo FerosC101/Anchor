@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
 import '../../../shared/widgets/section_title.dart';
 
 class SafetyResourcesScreen extends StatelessWidget {
@@ -9,14 +9,21 @@ class SafetyResourcesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
-      appBar: const AnchorAppBar(
-        showBackButton: true,
-        title: 'Safety Resources',
-        subtitle: '',
-      ),
+      appBar: const WorkerAppBar(showBackButton: true),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+            child: Text(
+              'Safety Resources',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1A1A1A),
+              ),
+            ),
+          ),
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -82,7 +89,7 @@ class SafetyResourcesScreen extends StatelessWidget {
             description: 'Free legal consultation and support for migrant workers',
             contact: '+60 3-2698 4703',
             website: 'www.mwc.org.my',
-            color: const Color(0xFF3D3790),
+            color: const Color(0xFF003696),
           ),
           _buildResourceCard(
             icon: Icons.account_balance_outlined,
@@ -90,7 +97,7 @@ class SafetyResourcesScreen extends StatelessWidget {
             description: 'Pro bono legal services for employment disputes',
             contact: '+66 2-222 1333',
             website: 'www.legalaidcenter.org',
-            color: const Color(0xFF3D3790),
+            color: const Color(0xFF003696),
           ),
           const SectionTitle('Labor Rights Organizations'),
           _buildResourceCard(
@@ -133,7 +140,7 @@ class SafetyResourcesScreen extends StatelessWidget {
             description: 'Emergency financial assistance for workers in crisis',
             contact: '+60 3-2272 4404',
             website: 'www.migrantfund.org',
-            color: const Color(0xFF8575B6),
+            color: const Color(0xFF4F90F0),
           ),
         ],
       ),

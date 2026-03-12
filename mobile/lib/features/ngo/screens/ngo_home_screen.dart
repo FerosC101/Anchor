@@ -1,4 +1,5 @@
 ﻿import 'package:flutter/material.dart';
+import '../../../shared/widgets/anchor_drawer.dart';
 import '../core/ngo_theme.dart';
 import '../widgets/ngo_top_bar.dart';
 import 'ngo_alert_tab.dart';
@@ -14,6 +15,7 @@ class NgoHomeScreen extends StatefulWidget {
 
 class _NgoHomeScreenState extends State<NgoHomeScreen> {
   int _selectedNav = 0;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static const _navItems = [
     (Icons.home_rounded, Icons.home_outlined, 'Home'),
@@ -25,11 +27,15 @@ class _NgoHomeScreenState extends State<NgoHomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: NgoTheme.bg,
+      drawer: const AnchorDrawer(),
       body: SafeArea(
         child: Column(
           children: [
-            const NgoTopBar(),
+            NgoTopBar(
+              onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+            ),
             Expanded(
               child: IndexedStack(
                 index: _selectedNav.clamp(0, 2),

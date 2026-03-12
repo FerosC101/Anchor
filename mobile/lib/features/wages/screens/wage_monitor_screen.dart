@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
-import '../../../shared/widgets/anchor_drawer.dart';
+import '../../../shared/widgets/worker_app_bar.dart';
+import '../../../shared/widgets/worker_drawer.dart';
 
 class WageMonitorScreen extends StatefulWidget {
   const WageMonitorScreen({super.key});
@@ -12,9 +12,9 @@ class WageMonitorScreen extends StatefulWidget {
 
 class _WageMonitorScreenState extends State<WageMonitorScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _purple = Color(0xFF8575B6);
-  static const Color _purpleDark = Color(0xFF3D3790);
-  static const Color _purpleLight = Color(0xFFD7D2E7);
+  static const Color _blue = Color(0xFF003696);
+  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blueLight = Color(0xFFCAEBFA);
   static const Color _bg = Color(0xFFF5F5F5);
   static const Color _alertRed = Color(0xFFFF6B6B);
   static const Color _alertBg = Color(0xFFFFF0F0);
@@ -48,16 +48,24 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      appBar: const AnchorAppBar(
-        title: 'Wage Monitor',
-        subtitle: 'Track your earnings and spot deductions',
-      ),
-      endDrawer: const AnchorDrawer(),
+      appBar: const WorkerAppBar(),
+      endDrawer: const WorkerDrawer(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const Padding(
+              padding: EdgeInsets.fromLTRB(0, 8, 0, 16),
+              child: Text(
+                'Wage Monitor',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1A1A1A),
+                ),
+              ),
+            ),
             _buildChartCard(),
             const SizedBox(height: 20),
             const Text(
@@ -80,7 +88,7 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
       floatingActionButton: FloatingActionButton(
         heroTag: 'wages_fab',
         onPressed: _showLogNewSalaryDialog,
-        backgroundColor: _purpleDark,
+        backgroundColor: _blue,
         child: const Icon(Icons.add, color: Colors.white),
       ),
     );
@@ -180,14 +188,14 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
                         .map((e) => FlSpot(e.key.toDouble(), e.value))
                         .toList(),
                     isCurved: true,
-                    color: _purple,
+                    color: _blueMid,
                     barWidth: 3,
                     dotData: FlDotData(
                       show: true,
                       getDotPainter: (spot, percent, barData, index) {
                         return FlDotCirclePainter(
                           radius: 4,
-                          color: _purpleDark,
+                          color: _blue,
                           strokeWidth: 0,
                         );
                       },
@@ -196,8 +204,8 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
                       show: true,
                       gradient: LinearGradient(
                         colors: [
-                          _purpleLight.withValues(alpha: 0.3),
-                          _purpleLight.withValues(alpha: 0.05),
+                          _blueLight.withValues(alpha: 0.3),
+                          _blueLight.withValues(alpha: 0.05),
                         ],
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
@@ -236,12 +244,12 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: _purpleLight,
+              color: _blueLight,
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
               Icons.calendar_today_rounded,
-              color: _purple,
+              color: _blueMid,
               size: 24,
             ),
           ),
@@ -358,7 +366,7 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: _purple, width: 2),
+                      borderSide: const BorderSide(color: _blueMid, width: 2),
                     ),
                   ),
                   items: ['May 2024', 'June 2024', 'July 2024']
@@ -401,7 +409,7 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: _purple, width: 2),
+                      borderSide: const BorderSide(color: _blueMid, width: 2),
                     ),
                   ),
                 ),
@@ -414,7 +422,7 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
                         onPressed: () => Navigator.pop(context),
                         style: OutlinedButton.styleFrom(
                           foregroundColor: Colors.grey[700],
-                          side: BorderSide(color: _purpleLight),
+                        side: BorderSide(color: _blueLight),
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
@@ -437,7 +445,7 @@ class _WageMonitorScreenState extends State<WageMonitorScreen> {
                           Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: _purpleDark,
+                          backgroundColor: _blue,
                           foregroundColor: Colors.white,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
