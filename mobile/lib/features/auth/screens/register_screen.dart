@@ -188,7 +188,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.white,
       body: Stack(
         children: [
           Column(
@@ -238,7 +238,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Widget _buildHeader() {
     return Container(
-      color: AppColors.primary,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [Color(0xFFDDD8F7), Color(0xFF9B8FE0)],
+        ),
+      ),
       child: SafeArea(
         bottom: false,
         child: Column(
@@ -374,6 +380,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           height: 52,
           child: ElevatedButton(
             onPressed: isLoading ? null : _next,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFD7D2E7),
+              foregroundColor: const Color(0xFF3D3790),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
             child: Text(isLastStep ? 'Create Account' : 'Continue'),
           ),
         ),
