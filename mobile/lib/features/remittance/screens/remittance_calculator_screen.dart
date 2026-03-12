@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../../../shared/widgets/anchor_app_bar.dart';
 import '../../../shared/widgets/anchor_drawer.dart';
 
 class RemittanceCalculatorScreen extends StatefulWidget {
@@ -27,52 +26,52 @@ class _RemittanceCalculatorScreenState
 
   final List<Map<String, dynamic>> _providers = [
     {
-      'name': 'Wise',
-      'rating': 4.8,
-      'reviews': 12453,
-      'fee': 8.50,
-      'speed': '24h',
-      'tags': ['Mid-market rate', 'Fast transfer', 'Mobile app'],
-      'discount': '60% off first transfer',
+      'name': 'Remitly',
+      'rating': 4.6,
+      'reviews': 1234,
+      'fee': 3.99,
+      'speed': '1H',
+      'tags': ['Express Delivery', 'Trusted', 'Low fees'],
+      'discount': null,
       'recommended': true,
     },
     {
       'name': 'Remitly',
       'rating': 4.6,
-      'reviews': 8932,
+      'reviews': 1234,
       'fee': 3.99,
-      'speed': '1h',
-      'tags': ['Express delivery', 'Low fees', 'Trusted'],
+      'speed': '1H',
+      'tags': ['Express Delivery', 'Trusted', 'Low fees'],
       'discount': null,
       'recommended': false,
     },
     {
-      'name': 'WorldRemit',
-      'rating': 4.5,
-      'reviews': 7821,
-      'fee': 4.99,
-      'speed': '12h',
-      'tags': ['Cash pickup', 'Bank transfer', 'Mobile wallet'],
+      'name': 'Remitly',
+      'rating': 4.6,
+      'reviews': 1234,
+      'fee': 3.99,
+      'speed': '1H',
+      'tags': ['Express Delivery', 'Trusted', 'Low fees'],
       'discount': null,
       'recommended': false,
     },
     {
-      'name': 'Xoom',
-      'rating': 4.4,
-      'reviews': 6234,
-      'fee': 5.99,
-      'speed': '4h',
-      'tags': ['PayPal', 'Fast', 'Reliable'],
+      'name': 'Remitly',
+      'rating': 4.6,
+      'reviews': 1234,
+      'fee': 3.99,
+      'speed': '1H',
+      'tags': ['Express Delivery', 'Trusted', 'Low fees'],
       'discount': null,
       'recommended': false,
     },
     {
-      'name': 'Remit2Home',
-      'rating': 4.3,
-      'reviews': 4532,
-      'fee': 7.50,
-      'speed': '24h',
-      'tags': ['Bank transfer', 'Cash pickup'],
+      'name': 'Remitly',
+      'rating': 4.6,
+      'reviews': 1234,
+      'fee': 3.99,
+      'speed': '1H',
+      'tags': ['Express Delivery', 'Trusted', 'Low fees'],
       'discount': null,
       'recommended': false,
     },
@@ -95,296 +94,268 @@ class _RemittanceCalculatorScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F5F5),
-      appBar: const AnchorAppBar(
-        showBackButton: true,
-        title: 'Remittance Calculator',
-        subtitle: '',
-      ),
-      endDrawer: const AnchorDrawer(),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Color(0xFF1A1A1A)),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Text(
               'Remittance Calculator',
               style: TextStyle(
-                fontSize: 22,
+                fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: Color(0xFF1A1A1A),
               ),
             ),
-            const SizedBox(height: 4),
-            const Text(
+            SizedBox(height: 2),
+            Text(
               'Compare rates and save on every transfer',
               style: TextStyle(
-                fontSize: 14,
+                fontSize: 11,
                 color: Color(0xFF888888),
+                fontWeight: FontWeight.w400,
               ),
             ),
-            const SizedBox(height: 20),
-            _buildSummaryCards(),
-            const SizedBox(height: 24),
-            _buildYouSendSection(),
+          ],
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.notifications_outlined, color: Color(0xFF1A1A1A)),
+            onPressed: () {},
+          ),
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu, color: Color(0xFF1A1A1A)),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
+          ),
+          const SizedBox(width: 8),
+        ],
+      ),
+      endDrawer: const AnchorDrawer(),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
             const SizedBox(height: 16),
-            _buildSwapButton(),
-            const SizedBox(height: 16),
-            _buildRecipientGetsSection(),
-            const SizedBox(height: 20),
-            _buildQuickAmounts(),
+            
+            // Calculator Card
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.08),
+                    blurRadius: 20,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // You Send
+                  const Text(
+                    'You Send',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _buildCurrencyDropdown(_fromCurrency, (value) {
+                        setState(() => _fromCurrency = value);
+                      }),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: TextField(
+                          keyboardType: TextInputType.number,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF1A1A1A),
+                          ),
+                          decoration: InputDecoration(
+                            hintText: _amount.toStringAsFixed(0),
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              _amount = double.tryParse(value) ?? 1000;
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  
+                  // Swap Button
+                  Center(
+                    child: Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF3D3790),
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(
+                          Icons.swap_vert,
+                          color: Colors.white,
+                          size: 24,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            final temp = _fromCurrency;
+                            _fromCurrency = _toCurrency;
+                            _toCurrency = temp;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  
+                  // Recipient Gets
+                  const Text(
+                    'Recipient Gets',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      _buildCurrencyDropdown(_toCurrency, (value) {
+                        setState(() => _toCurrency = value);
+                      }),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          _convertedAmount.toStringAsFixed(0),
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xFF1A1A1A),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            
             const SizedBox(height: 24),
-            _buildSortOptions(),
-            const SizedBox(height: 20),
-            _buildProvidersHeader(),
-            const SizedBox(height: 12),
-            ..._providers.map((provider) => Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: _buildProviderCard(provider),
-                )),
+            
+            // Providers Section
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Row(
+                children: [
+                  const Text(
+                    '5 Providers found',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Sort Dropdown
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(color: const Color(0xFFE0E0E0)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.sort, size: 20, color: Color(0xFF888888)),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButton<String>(
+                        value: _sortBy,
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                        items: ['Best Value', 'Fastest', 'Cheapest'].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF1A1A1A),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          if (value != null) {
+                            setState(() => _sortBy = value);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            
+            const SizedBox(height: 16),
+            
+            // Provider Cards
+            ...List.generate(_providers.length, (index) {
+              final provider = _providers[index];
+              final isFirst = index == 0;
+              return Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
+                child: _buildProviderCard(provider, isFirst),
+              );
+            }),
+            
+            const SizedBox(height: 24),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSummaryCards() {
-    return Row(
-      children: [
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEEFDF3),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: const Color(0xFF00AA28).withValues(alpha: 0.3),
-              ),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.trending_up,
-                      color: const Color(0xFF00AA28),
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'Best Rate',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF00AA28),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '₱${_bestRate.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF00AA28),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: Container(
-            padding: const EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: const Color(0xFFD7D2E7),
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.savings_outlined,
-                      color: const Color(0xFF3D3790),
-                      size: 16,
-                    ),
-                    const SizedBox(width: 4),
-                    const Text(
-                      'You Save',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF3D3790),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  '₱${_youSave.toStringAsFixed(2)}',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF3D3790),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildYouSendSection() {
+  Widget _buildCurrencyDropdown(String currency, Function(String) onChanged) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Colors.black12,
-            blurRadius: 8,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'You Send',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF888888),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              _buildCurrencySelector(_fromCurrency, (value) {
-                setState(() => _fromCurrency = value);
-              }),
-              const SizedBox(width: 12),
-              Expanded(
-                child: TextField(
-                  keyboardType: TextInputType.number,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF1A1A1A),
-                  ),
-                  decoration: InputDecoration(
-                    hintText: _amount.toStringAsFixed(0),
-                    border: InputBorder.none,
-                    isDense: true,
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      _amount = double.tryParse(value) ?? 1000;
-                    });
-                  },
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSwapButton() {
-    return Center(
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          color: const Color(0xFF3D3790),
-          shape: BoxShape.circle,
-          boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 8,
-              offset: Offset(0, 2),
-            ),
-          ],
-        ),
-        child: IconButton(
-          icon: const Icon(
-            Icons.swap_vert,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            setState(() {
-              final temp = _fromCurrency;
-              _fromCurrency = _toCurrency;
-              _toCurrency = temp;
-            });
-          },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildRecipientGetsSection() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEEFDF3),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: const Color(0xFF00AA28).withValues(alpha: 0.3),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Recipient Gets',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF00AA28),
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              _buildCurrencySelector(_toCurrency, (value) {
-                setState(() => _toCurrency = value);
-              }),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  _convertedAmount.toStringAsFixed(2),
-                  style: const TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF00AA28),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCurrencySelector(String currency, Function(String) onChanged) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
+        color: const Color(0xFFF5F5F5),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFE0E0E0)),
       ),
       child: DropdownButton<String>(
         value: currency,
@@ -393,22 +364,13 @@ class _RemittanceCalculatorScreenState
         items: ['SGD', 'PHP', 'USD', 'MYR'].map((String value) {
           return DropdownMenuItem<String>(
             value: value,
-            child: Row(
-              children: [
-                Text(
-                  _getCurrencyFlag(value),
-                  style: const TextStyle(fontSize: 18),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF1A1A1A),
-                  ),
-                ),
-              ],
+            child: Text(
+              value,
+              style: const TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1A1A1A),
+              ),
             ),
           );
         }).toList(),
@@ -419,158 +381,21 @@ class _RemittanceCalculatorScreenState
     );
   }
 
-  String _getCurrencyFlag(String currency) {
-    switch (currency) {
-      case 'SGD':
-        return '🇸🇬';
-      case 'PHP':
-        return '🇵🇭';
-      case 'USD':
-        return '🇺🇸';
-      case 'MYR':
-        return '🇲🇾';
-      default:
-        return '🌍';
-    }
-  }
-
-  Widget _buildQuickAmounts() {
-    final amounts = [500.0, 1000.0, 2000.0, 5000.0];
-    return Row(
-      children: amounts.map((amount) {
-        final isSelected = _amount == amount;
-        return Expanded(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            child: InkWell(
-              onTap: () => setState(() => _amount = amount),
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? const Color(0xFF3D3790)
-                      : const Color(0xFFF5F5F5),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  'S\$${amount.toInt()}',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w600,
-                    color: isSelected ? Colors.white : const Color(0xFF888888),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Widget _buildSortOptions() {
-    final options = ['Best Value', 'Fastest', 'Cheapest'];
-    return Row(
-      children: [
-        const Text(
-          'Sort by:',
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.w600,
-            color: Color(0xFF888888),
-          ),
-        ),
-        const SizedBox(width: 12),
-        ...options.map((option) {
-          final isSelected = _sortBy == option;
-          return Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: InkWell(
-              onTap: () => setState(() => _sortBy = option),
-              child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                decoration: BoxDecoration(
-                  color: isSelected
-                      ? const Color(0xFF3D3790)
-                      : Colors.transparent,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color: isSelected
-                        ? const Color(0xFF3D3790)
-                        : const Color(0xFFE0E0E0),
-                  ),
-                ),
-                child: Text(
-                  option,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color:
-                        isSelected ? Colors.white : const Color(0xFF888888),
-                  ),
-                ),
-              ),
-            ),
-          );
-        }),
-      ],
-    );
-  }
-
-  Widget _buildProvidersHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          '${_providers.length} Providers Found',
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF1A1A1A),
-          ),
-        ),
-        TextButton.icon(
-          onPressed: () {
-            setState(() {
-              // Trigger refresh animation
-            });
-          },
-          icon: const Icon(
-            Icons.refresh,
-            size: 16,
-            color: Color(0xFF3D3790),
-          ),
-          label: const Text(
-            'Refresh Rates',
-            style: TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF3D3790),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildProviderCard(Map<String, dynamic> provider) {
+  Widget _buildProviderCard(Map<String, dynamic> provider, bool isRecommended) {
     final youGet = _convertedAmount - provider['fee'];
-    final isRecommended = provider['recommended'] as bool;
 
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         border: isRecommended
-            ? Border.all(color: const Color(0xFF00AA28), width: 2)
-            : null,
-        boxShadow: const [
+            ? Border.all(color: const Color(0xFF00C853), width: 2)
+            : Border.all(color: const Color(0xFFE0E0E0)),
+        boxShadow: [
           BoxShadow(
-            color: Colors.black12,
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 8,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -581,48 +406,40 @@ class _RemittanceCalculatorScreenState
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 8),
               decoration: const BoxDecoration(
-                color: Color(0xFF00AA28),
+                color: Color(0xFFE8F5E9),
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(14),
                   topRight: Radius.circular(14),
                 ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.verified,
-                    color: Colors.white,
-                    size: 16,
-                  ),
-                  const SizedBox(width: 6),
-                  const Text(
-                    'BEST VALUE - Recommended',
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: Colors.white,
-                    ),
-                  ),
-                ],
+              child: const Text(
+                'Best Value - Recommended',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF00C853),
+                ),
               ),
             ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(20),
             child: Column(
               children: [
+                // Provider Header
                 Row(
                   children: [
                     Container(
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF5F5F5),
+                        color: const Color(0xFF5E4DBD),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Icon(
-                        Icons.account_balance_wallet,
-                        color: Color(0xFF3D3790),
+                        Icons.account_balance_wallet_outlined,
+                        color: Colors.white,
+                        size: 24,
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -633,23 +450,24 @@ class _RemittanceCalculatorScreenState
                           Text(
                             provider['name'],
                             style: const TextStyle(
-                              fontSize: 16,
+                              fontSize: 18,
                               fontWeight: FontWeight.w700,
                               color: Color(0xFF1A1A1A),
                             ),
                           ),
+                          const SizedBox(height: 2),
                           Row(
                             children: [
                               const Icon(
                                 Icons.star,
-                                size: 14,
+                                size: 16,
                                 color: Color(0xFFFFA726),
                               ),
                               const SizedBox(width: 4),
                               Text(
-                                '${provider['rating']} (${provider['reviews']} reviews)',
+                                '${provider['rating']}  (${provider['reviews']} reviews)',
                                 style: const TextStyle(
-                                  fontSize: 12,
+                                  fontSize: 13,
                                   color: Color(0xFF888888),
                                 ),
                               ),
@@ -660,102 +478,161 @@ class _RemittanceCalculatorScreenState
                     ),
                   ],
                 ),
-                const SizedBox(height: 16),
+                
+                const SizedBox(height: 20),
+                
+                // Info Cards: You Get, Fee, Speed
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildInfoColumn(
-                      '₱${youGet.toStringAsFixed(2)}',
-                      'You Get',
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'You get',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF888888),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '\$${youGet.toStringAsFixed(0)}',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF3D3790),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    _buildInfoColumn(
-                      'S\$${provider['fee']}',
-                      'Fee',
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Fee',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF888888),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '\$${provider['fee'].toStringAsFixed(2)}',
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF3D3790),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    _buildInfoColumn(
-                      provider['speed'],
-                      'Speed',
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F5F5),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          children: [
+                            const Text(
+                              'Speed',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Color(0xFF888888),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              provider['speed'],
+                              style: const TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xFF3D3790),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 12),
+                
+                const SizedBox(height: 16),
+                
+                // Tags
                 Wrap(
-                  spacing: 6,
-                  runSpacing: 6,
+                  spacing: 8,
+                  runSpacing: 8,
                   children: (provider['tags'] as List<String>).map((tag) {
                     return Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                        horizontal: 12,
+                        vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFD7D2E7),
-                        borderRadius: BorderRadius.circular(6),
+                        color: const Color(0xFFF5F5F5),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(
                         tag,
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xFF3D3790),
+                          color: Color(0xFF888888),
                         ),
                       ),
                     );
                   }).toList(),
                 ),
-                if (provider['discount'] != null) ...[
-                  const SizedBox(height: 12),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFFF3F3),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Text(
-                      provider['discount'],
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF8E0012),
-                      ),
-                    ),
-                  ),
-                ],
-                const SizedBox(height: 12),
+                
+                const SizedBox(height: 16),
+                
+                // Send Money Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content:
-                              Text('Opening ${provider['name']} transfer...'),
+                          content: Text('Opening ${provider['name']} transfer...'),
+                          backgroundColor: const Color(0xFF3D3790),
                         ),
                       );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF3D3790),
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),
+                      elevation: 0,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          'Send Money',
-                          style: TextStyle(
-                            fontSize: 15,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        SizedBox(width: 6),
-                        Icon(Icons.arrow_forward, size: 18),
-                      ],
+                    child: const Text(
+                      'Send Money',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
                 ),
@@ -764,29 +641,6 @@ class _RemittanceCalculatorScreenState
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildInfoColumn(String value, String label) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF1A1A1A),
-          ),
-        ),
-        const SizedBox(height: 2),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            color: Color(0xFF888888),
-          ),
-        ),
-      ],
     );
   }
 }

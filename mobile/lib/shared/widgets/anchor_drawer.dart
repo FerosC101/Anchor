@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'drawer_menu_item.dart';
 import 'drawer_section_label.dart';
 import '../../features/profile/screens/profile_screen.dart';
@@ -7,12 +8,13 @@ import '../../features/profile/screens/notifications_screen.dart';
 import '../../features/profile/screens/privacy_screen.dart';
 import '../../features/profile/screens/safety_resources_screen.dart';
 import '../../features/profile/screens/help_screen.dart';
+import '../../features/auth/providers/auth_provider.dart';
 
-class AnchorDrawer extends StatelessWidget {
+class AnchorDrawer extends ConsumerWidget {
   const AnchorDrawer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.85,
       child: Column(
@@ -89,6 +91,52 @@ class AnchorDrawer extends StatelessWidget {
                         builder: (context) => const HelpScreen(),
                       ),
                     );
+                  },
+                ),
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(color: Colors.grey.shade300),
+                ),
+                DrawerMenuItem(
+                  icon: Icons.logout,
+                  label: 'Logout',
+                  onTap: () async {
+                    // Capture the auth service before any async operations
+                    final authService = ref.read(authServiceProvider);
+                    final navigator = Navigator.of(context);
+                    final router = GoRouter.of(context);
+                    
+                    navigator.pop();
+                    
+                    // Show confirmation dialog
+                    final shouldLogout = await showDialog<bool>(
+                      context: context,
+                      builder: (context) => AlertDialog(
+                        title: const Text('Logout'),
+                        content: const Text('Are you sure you want to logout?'),
+                        actions: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, false),
+                            child: const Text('Cancel'),
+                          ),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context, true),
+                            style: TextButton.styleFrom(
+                              foregroundColor: const Color(0xFF3D3790),
+                            ),
+                            child: const Text('Logout'),
+                          ),
+                        ],
+                      ),
+                    );
+                    
+                    if (shouldLogout == true) {
+                      // Sign out the user
+                      await authService.signOut();
+                      // Navigate to login
+                      router.go('/login');
+                    }
                   },
                 ),
               ],
