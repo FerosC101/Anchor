@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
+import { ROUTES } from "../../core/config/routes";
 
 // ── Icons ────────────────────────────────────────────────────────────────────
 
@@ -345,12 +347,12 @@ export default function AdminDashboard() {
 
             {/* Navigation - Desktop */}
             <nav className="hidden md:flex items-center gap-8">
-              <a href="#" className="text-blue-700 font-semibold border-b-2 border-blue-700 pb-1">
+              <Link to={ROUTES.ADMIN} className="text-blue-700 font-semibold border-b-2 border-blue-700 pb-1">
                 Home
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">
+              </Link>
+              <Link to={ROUTES.ADMIN_USERS} className="text-gray-600 hover:text-gray-800 transition-colors">
                 Users
-              </a>
+              </Link>
               <a href="#" className="text-gray-600 hover:text-gray-800 transition-colors">
                 Contents
               </a>
@@ -379,12 +381,12 @@ export default function AdminDashboard() {
           {/* Navigation - Mobile */}
           {mobileMenuOpen && (
             <nav className="md:hidden mt-4 pt-4 border-t border-gray-200 flex flex-col gap-3">
-              <a href="#" className="text-blue-700 font-semibold">
+              <Link to={ROUTES.ADMIN} className="text-blue-700 font-semibold">
                 Home
-              </a>
-              <a href="#" className="text-gray-600 hover:text-gray-800">
+              </Link>
+              <Link to={ROUTES.ADMIN_USERS} className="text-gray-600 hover:text-gray-800">
                 Users
-              </a>
+              </Link>
               <a href="#" className="text-gray-600 hover:text-gray-800">
                 Contents
               </a>

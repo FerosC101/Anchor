@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../core/context/AuthContext";
 import { ROUTES } from "../core/config/routes";
+import { useAuth } from "../core/context/AuthContext";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -369,7 +369,12 @@ export default function AdminDashboardPage() {
               return (
                 <button
                   key={item}
-                  onClick={() => setActiveNav(item)}
+                  onClick={() => {
+                    setActiveNav(item);
+                    if (item === "Users") {
+                      navigate(ROUTES.ADMIN_USERS);
+                    }
+                  }}
                   className={`relative px-4 text-sm font-medium transition-colors h-full flex items-center ${
                     isActive
                       ? "text-[#5B4FCB]"
@@ -414,6 +419,9 @@ export default function AdminDashboardPage() {
                 onClick={() => {
                   setActiveNav(item);
                   setMobileMenuOpen(false);
+                  if (item === "Users") {
+                    navigate(ROUTES.ADMIN_USERS);
+                  }
                 }}
                 className={`text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${activeNav === item ? "bg-purple-50 text-[#5B4FCB]" : "text-slate-600 hover:bg-slate-50"}`}
               >
