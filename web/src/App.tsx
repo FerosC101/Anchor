@@ -1,9 +1,10 @@
-import { Routes, Route, Navigate } from "react-router-dom";
-import { useAuth } from "./core/context/AuthContext";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { ROUTES } from "./core/config/routes";
+import { useAuth } from "./core/context/AuthContext";
+import DashboardPage from "./pages/DashboardPage";
+import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
-import HomePage from "./pages/HomePage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -59,6 +60,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.DASHBOARD}
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
           </ProtectedRoute>
         }
       />
