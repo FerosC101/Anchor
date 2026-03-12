@@ -53,7 +53,10 @@ function authReducer(state: AuthState, action: AuthAction): AuthState {
 // ─── Context value ───────────────────────────────────────────────────────────
 
 type AuthContextValue = AuthState & {
-  signIn: (email: string, password: string) => Promise<boolean>;
+  signIn: (
+    email: string,
+    password: string,
+  ) => Promise<import("@/types").UserModel | null>;
   register: (params: {
     email: string;
     password: string;
@@ -111,20 +114,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const signIn = useCallback(
-    async (email: string, password: string): Promise<boolean> => {
+    async (
+      email: string,
+      password: string,
+    ): Promise<import("@/types").UserModel | null> => {
       dispatch({ type: "SET_LOADING", payload: true });
       dispatch({ type: "CLEAR_ERROR" });
       try {
         const user = await authService.signIn(email, password);
         dispatch({ type: "SET_USER", payload: user });
-        return true;
+        return user;
       } catch (e) {
         const message =
           e instanceof authService.AuthException
             ? e.message
             : "Sign in failed.";
         dispatch({ type: "SET_ERROR", payload: message });
-        return false;
+        return null;
       }
     },
     [],

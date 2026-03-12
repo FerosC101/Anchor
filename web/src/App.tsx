@@ -1,6 +1,8 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { ROUTES } from "./core/config/routes";
 import { useAuth } from "./core/context/AuthContext";
+import { USER_ROLE } from "./types/user";
+import AdminDashboardPage from "./pages/AdminDashboardPage";
 import DashboardPage from "./pages/DashboardPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -31,7 +33,12 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     );
   }
   if (user) {
-    return <Navigate to={ROUTES.HOME} replace />;
+    return (
+      <Navigate
+        to={user.role === USER_ROLE.ADMIN ? ROUTES.ADMIN : ROUTES.HOME}
+        replace
+      />
+    );
   }
   return <>{children}</>;
 }
@@ -68,6 +75,14 @@ export default function App() {
         element={
           <ProtectedRoute>
             <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ADMIN}
+        element={
+          <ProtectedRoute>
+            <AdminDashboardPage />
           </ProtectedRoute>
         }
       />
