@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const Color _bg = Color(0xFFF4F4F8);
+import '../../widgets/admin/admin_button.dart';
+import '../../widgets/admin/admin_search_bar.dart';
+import '../../widgets/admin/admin_tab_bar.dart';
+
+const Color _bg = Color(0xFFF5F5F5);
 
 const BoxShadow _subtleBoxShadow = BoxShadow(
   color: Color.fromRGBO(0, 0, 0, 0.04),
@@ -133,29 +137,38 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
   ];
 
   void _showUserProfileModal(UserData user) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => _UserProfileModal(
-        user: user,
-        onVerify: () {
-          setState(() {
-            final index = _mockWorkers.indexOf(user);
-            if (index != -1) {
-              _mockWorkers[index] = UserData(
-                id: user.id,
-                name: user.name,
-                email: user.email,
-                country: user.country,
-                registered: user.registered,
-                status: user.status,
-                role: user.role,
-                lastActive: user.lastActive,
-                verified: true,
-              );
-            }
-          });
-          Navigator.pop(context);
-        },
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.82,
+        maxChildSize: 0.92,
+        minChildSize: 0.55,
+        expand: false,
+        builder: (context, scrollController) => _UserProfileModal(
+          user: user,
+          scrollController: scrollController,
+          onVerify: () {
+            setState(() {
+              final index = _mockWorkers.indexOf(user);
+              if (index != -1) {
+                _mockWorkers[index] = UserData(
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  country: user.country,
+                  registered: user.registered,
+                  status: user.status,
+                  role: user.role,
+                  lastActive: user.lastActive,
+                  verified: true,
+                );
+              }
+            });
+            Navigator.pop(context);
+          },
+        ),
       ),
     );
   }
@@ -192,19 +205,19 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _SearchBar(
-                      onChanged: (value) {
-                        // TODO: Filter users based on search query
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: _TabSelector(
                       selectedTab: _selectedTab,
                       onTabChanged: (index) {
                         setState(() => _selectedTab = index);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _SearchBar(
+                      onChanged: (value) {
+                        // TODO: Filter users based on search query
                       },
                     ),
                   ),
@@ -347,32 +360,9 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: const [_subtleBoxShadow],
-      ),
-      child: TextField(
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          hintText: 'Search user by name',
-          hintStyle: const TextStyle(
-            color: Color(0xFF9CA3AF),
-            fontSize: 14,
-          ),
-          prefixIcon: const Icon(
-            Icons.search_rounded,
-            color: Color(0xFF6B7280),
-            size: 20,
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-        ),
-      ),
+    return AdminSearchBar(
+      hintText: 'Search user by name',
+      onChanged: onChanged,
     );
   }
 }
@@ -609,73 +599,15 @@ class _TabSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _TabButton(
-            label: 'Workers',
-            isSelected: selectedTab == 0,
-            onTap: () => onTabChanged(0),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _TabButton(
-            label: 'NGO',
-            isSelected: selectedTab == 1,
-            onTap: () => onTabChanged(1),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ─── Tab Button ────────────────────────────────────────────────────────────────
-
-class _TabButton extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _TabButton({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF0052CC) : Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: isSelected
-                  ? const Color(0xFF0052CC)
-                  : const Color(0xFFE5E7EB),
-              width: 1,
-            ),
-            boxShadow: const [_subtleBoxShadow],
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : const Color(0xFF374151),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
+    return DefaultTabController(
+      length: 2,
+      initialIndex: selectedTab,
+      child: AdminTabBar(
+        onTap: onTabChanged,
+        tabs: const [
+          Tab(text: 'Workers'),
+          Tab(text: 'NGO'),
+        ],
       ),
     );
   }
@@ -693,10 +625,6 @@ class _UserCard extends StatelessWidget {
     required this.onViewProfile,
     required this.onVerify,
   });
-
-  String _getInitials(String name) {
-    return name.split(' ').map((e) => e[0]).take(2).join().toUpperCase();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -723,17 +651,14 @@ class _UserCard extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFE9D5FF),
-                    borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xFFDFEDFF),
+                    borderRadius: BorderRadius.circular(10),
                   ),
-                  child: Center(
-                    child: Text(
-                      _getInitials(user.name),
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF6B46C1),
-                      ),
+                  child: const Center(
+                    child: Icon(
+                      Icons.person,
+                      size: 24,
+                      color: Color(0xFF003696),
                     ),
                   ),
                 ),
@@ -745,9 +670,9 @@ class _UserCard extends StatelessWidget {
                       Text(
                         user.name,
                         style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF4C1D95),
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF0F172A),
                         ),
                       ),
                       const SizedBox(height: 2),
@@ -814,18 +739,12 @@ class _UserCard extends StatelessWidget {
             const SizedBox(height: 12),
             Row(
               children: [
-                const Icon(
-                  Icons.location_on_outlined,
-                  size: 16,
-                  color: Color(0xFF6B7280),
-                ),
-                const SizedBox(width: 4),
-                Text(
+                const Text(
                   'Country: ',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
+                    color: Color(0xFF64748B),
                   ),
                 ),
                 Text(
@@ -841,18 +760,12 @@ class _UserCard extends StatelessWidget {
             const SizedBox(height: 6),
             Row(
               children: [
-                const Icon(
-                  Icons.calendar_today_outlined,
-                  size: 16,
-                  color: Color(0xFF6B7280),
-                ),
-                const SizedBox(width: 4),
-                Text(
+                const Text(
                   'Registered: ',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
-                    color: Colors.grey[600],
+                    color: Color(0xFF64748B),
                   ),
                 ),
                 Text(
@@ -869,20 +782,9 @@ class _UserCard extends StatelessWidget {
             if (user.verified)
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: OutlinedButton(
                   onPressed: onViewProfile,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: const Color(0xFF4C1D95),
-                    side: const BorderSide(
-                      color: Color(0xFF4C1D95),
-                      width: 1.5,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+                  style: AdminButtonStyles.secondary,
                   child: const Text(
                     'View Profile',
                     style: TextStyle(
@@ -898,17 +800,7 @@ class _UserCard extends StatelessWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: onViewProfile,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF4C1D95),
-                        side: const BorderSide(
-                          color: Color(0xFF4C1D95),
-                          width: 1.5,
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                      style: AdminButtonStyles.secondary,
                       child: const Text(
                         'View Profile',
                         style: TextStyle(
@@ -922,14 +814,7 @@ class _UserCard extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: onVerify,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6B46C1),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 10),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                      style: AdminButtonStyles.primary,
                       child: const Text(
                         'Verify',
                         style: TextStyle(
@@ -953,10 +838,12 @@ class _UserCard extends StatelessWidget {
 class _UserProfileModal extends StatefulWidget {
   final UserData user;
   final VoidCallback onVerify;
+  final ScrollController? scrollController;
 
   const _UserProfileModal({
     required this.user,
     required this.onVerify,
+    this.scrollController,
   });
 
   @override
@@ -980,17 +867,35 @@ class _UserProfileModalState extends State<_UserProfileModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+      child: SafeArea(
+        top: false,
         child: SingleChildScrollView(
+          controller: widget.scrollController,
+          padding: EdgeInsets.fromLTRB(
+            24,
+            14,
+            24,
+            24 + MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD1D5DB),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1153,14 +1058,7 @@ class _UserProfileModalState extends State<_UserProfileModal> {
                   onPressed: () {
                     // TODO: Implement suspend user functionality
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3B3F5C),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: AdminButtonStyles.secondary,
                   child: const Text(
                     'Suspend User',
                     style: TextStyle(
@@ -1175,17 +1073,7 @@ class _UserProfileModalState extends State<_UserProfileModal> {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF374151),
-                    side: const BorderSide(
-                      color: Color(0xFFD1D5DB),
-                      width: 1.5,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: AdminButtonStyles.secondary,
                   child: const Text(
                     'Cancel',
                     style: TextStyle(
@@ -1342,6 +1230,33 @@ class _NGOVerificationCard extends StatelessWidget {
     required this.onReject,
   });
 
+  String get _statusLabel {
+    if (ngo.status == 'Approval Queue') return 'Pending';
+    return ngo.status;
+  }
+
+  Color get _statusBg {
+    switch (_statusLabel) {
+      case 'Approved':
+        return const Color(0xFFDEF7EC);
+      case 'Rejected':
+        return const Color(0xFFFEE2E2);
+      default:
+        return const Color(0xFFFDF3C7);
+    }
+  }
+
+  Color get _statusFg {
+    switch (_statusLabel) {
+      case 'Approved':
+        return const Color(0xFF065F46);
+      case 'Rejected':
+        return const Color(0xFF991B1B);
+      default:
+        return const Color(0xFF92400E);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1373,20 +1288,44 @@ class _NGOVerificationCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    const Icon(
-                      Icons.calendar_today_outlined,
-                      size: 14,
-                      color: Color(0xFF6B7280),
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.calendar_today_outlined,
+                          size: 14,
+                          color: Color(0xFF6B7280),
+                        ),
+                        const SizedBox(width: 6),
+                        Text(
+                          ngo.date,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFF6B7280),
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      ngo.date,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xFF6B7280),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: _statusBg,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        _statusLabel,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: _statusFg,
+                        ),
                       ),
                     ),
                   ],
@@ -1438,14 +1377,7 @@ class _NGOVerificationCard extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton(
                       onPressed: onApprove,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF3B3FA6),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                      style: AdminButtonStyles.primary,
                       child: const Text(
                         'Approve',
                         style: TextStyle(
@@ -1457,19 +1389,9 @@ class _NGOVerificationCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 12),
                   Expanded(
-                    child: OutlinedButton(
+                    child: ElevatedButton(
                       onPressed: onReject,
-                      style: OutlinedButton.styleFrom(
-                        foregroundColor: const Color(0xFF3B3FA6),
-                        side: const BorderSide(
-                          color: Color(0xFF3B3FA6),
-                          width: 1.5,
-                        ),
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
+                      style: AdminButtonStyles.secondary,
                       child: const Text(
                         'Reject',
                         style: TextStyle(

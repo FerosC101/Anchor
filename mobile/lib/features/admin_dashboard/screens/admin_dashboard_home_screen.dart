@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../widgets/admin/admin_app_bar.dart';
+import '../widgets/admin/admin_bottom_nav.dart';
+import '../widgets/admin/admin_drawer.dart';
 import 'content_moderation/content_moderation_screen.dart';
 import 'job_listing/job_listing_screen.dart';
 import 'system_monitoring/system_monitoring_screen.dart';
 import 'user_management/user_management_screen.dart';
 
-const Color _bg = Color(0xFFF4F4F8);
+const Color _bg = Color(0xFFF5F5F5);
 
 const BoxShadow _subtleBoxShadow = BoxShadow(
   color: Color.fromRGBO(0, 0, 0, 0.04),
@@ -30,11 +33,8 @@ class _AdminDashboardHomeScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _bg,
-      appBar: _AdminAppBar(
-        onMenuTap: () {
-          // TODO: Implement drawer or menu
-        },
-      ),
+      appBar: const AdminAppBar(),
+      endDrawer: const AdminDrawer(),
       body: IndexedStack(
         index: _selectedBottomTab,
         children: [
@@ -45,53 +45,9 @@ class _AdminDashboardHomeScreenState
           const SystemMonitoringScreen(),
         ],
       ),
-      bottomNavigationBar: _AdminBottomNavBar(
+      bottomNavigationBar: AdminBottomNav(
         currentIndex: _selectedBottomTab,
-        onTabChanged: (index) {
-          setState(() => _selectedBottomTab = index);
-        },
-      ),
-    );
-  }
-}
-
-// ─── App Bar ──────────────────────────────────────────────────────────────────
-
-class _AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final VoidCallback onMenuTap;
-
-  const _AdminAppBar({
-    required this.onMenuTap,
-  });
-
-  @override
-  Size get preferredSize => const Size.fromHeight(56);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.white,
-      elevation: 0,
-      centerTitle: true,
-      title: const Text(
-        'Anchor Logo',
-        style: TextStyle(
-          color: Color(0xFF2D2D2D),
-          fontSize: 18,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      leading: SizedBox.expand(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onMenuTap,
-            child: const Icon(
-              Icons.menu_rounded,
-              color: Color(0xFF2D2D2D),
-            ),
-          ),
-        ),
+        onTap: (index) => setState(() => _selectedBottomTab = index),
       ),
     );
   }
@@ -154,48 +110,48 @@ class _SystemOverviewSection extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         GridView.count(
-          crossAxisCount: 3,
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
+          crossAxisCount: 2,
+          crossAxisSpacing: 14,
+          mainAxisSpacing: 14,
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
-          childAspectRatio: 0.85,
+          childAspectRatio: 1.12,
           children: [
-            _MetricCard(
-              icon: Icons.people_rounded,
-              value: '1,247',
-              label: 'Total\nUsers',
-              isDarkTheme: true,
+            _AdminStatCard(
+              icon: Icons.people_outlined,
+              label: 'Total Users',
+              value: '1,247', // TODO: replace with real data
+              sublabel: 'all users',
             ),
-            _MetricCard(
-              icon: Icons.block_rounded,
-              value: '23',
-              label: 'Suspended\nAccounts',
-              isDarkTheme: true,
+            _AdminStatCard(
+              icon: Icons.block_outlined,
+              label: 'Suspended Accounts',
+              value: '23', // TODO: replace with real data
+              sublabel: 'current total',
             ),
-            _MetricCard(
-              icon: Icons.verified_user_rounded,
-              value: '8',
-              label: 'Pending NGO\nVerifications',
-              isDarkTheme: true,
+            _AdminStatCard(
+              icon: Icons.verified_user_outlined,
+              label: 'Pending NGO Verifications',
+              value: '8', // TODO: replace with real data
+              sublabel: 'awaiting action',
             ),
-            _MetricCard(
-              icon: Icons.flag_rounded,
-              value: '15',
-              label: 'Flagged\nPosts',
-              isDarkTheme: false,
+            _AdminStatCard(
+              icon: Icons.flag_outlined,
+              label: 'Flagged Posts',
+              value: '15', // TODO: replace with real data
+              sublabel: 'needs review',
             ),
-            _MetricCard(
-              icon: Icons.assignment_rounded,
-              value: '42',
-              label: 'Pending Job\nApprovals',
-              isDarkTheme: false,
+            _AdminStatCard(
+              icon: Icons.assignment_outlined,
+              label: 'Pending Job Approvals',
+              value: '42', // TODO: replace with real data
+              sublabel: 'awaiting decision',
             ),
-            _MetricCard(
-              icon: Icons.warning_amber_rounded,
-              value: '5',
-              label: 'Active Risk\nAlerts',
-              isDarkTheme: false,
+            _AdminStatCard(
+              icon: Icons.warning_amber_outlined,
+              label: 'Active Risk Alerts',
+              value: '5', // TODO: replace with real data
+              sublabel: 'currently active',
             ),
           ],
         ),
@@ -204,67 +160,110 @@ class _SystemOverviewSection extends StatelessWidget {
   }
 }
 
-// ─── Metric Card ──────────────────────────────────────────────────────────────
+// ─── Admin Stat Card ──────────────────────────────────────────────────────────
 
-class _MetricCard extends StatelessWidget {
+class _AdminStatCard extends StatelessWidget {
   final IconData icon;
-  final String value;
   final String label;
-  final bool isDarkTheme;
+  final String value;
+  final String? delta;
+  final String sublabel;
+  final Color? deltaColor;
 
-  const _MetricCard({
+  const _AdminStatCard({
     required this.icon,
-    required this.value,
     required this.label,
-    required this.isDarkTheme,
+    required this.value,
+    this.delta,
+    required this.sublabel,
+    this.deltaColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: isDarkTheme ? const Color(0xFF6B46C1) : Colors.white,
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        border: isDarkTheme
-            ? null
-            : Border.all(
-                color: const Color(0xFFE5E7EB),
-                width: 1,
-              ),
-        boxShadow: const [_subtleBoxShadow],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: isDarkTheme ? Colors.white : const Color(0xFF4C1D95),
-              size: 24,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: isDarkTheme ? Colors.white : const Color(0xFF4C1D95),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF003696),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(icon, color: Colors.white, size: 18),
               ),
+              const Spacer(),
+              if (delta != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.north_east_rounded,
+                      size: 12,
+                      color: deltaColor ?? const Color(0xFF00AA28),
+                    ),
+                    const SizedBox(width: 2),
+                    Text(
+                      delta!,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: deltaColor ?? const Color(0xFF00AA28),
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+          const Spacer(),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
+              color: Color(0xFF1A1A1A),
+              height: 1,
             ),
-            const SizedBox(height: 4),
-            Text(
-              label,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-                color: isDarkTheme ? Colors.white70 : const Color(0xFF6B7280),
-                height: 1.3,
-              ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF4A5565),
             ),
-          ],
-        ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+          const SizedBox(height: 2),
+          Text(
+            sublabel,
+            style: const TextStyle(
+              fontSize: 11,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF888888),
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
       ),
     );
   }
@@ -295,23 +294,19 @@ class _PendingActionsSection extends StatelessWidget {
               onPressed: () {
                 // TODO: Navigate to view all pending actions
               },
-              child: const Row(
-                children: [
-                  Text(
-                    'View all',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF6B46C1),
-                    ),
-                  ),
-                  SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 16,
-                    color: Color(0xFF6B46C1),
-                  ),
-                ],
+              style: TextButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                minimumSize: const Size(0, 30),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                'View all  →',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF888888),
+                ),
               ),
             ),
           ],
@@ -408,12 +403,12 @@ class _ActionCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3F4F6),
-                    borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xFFDFEDFF),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     icon,
-                    color: const Color(0xFF6B46C1),
+                    color: const Color(0xFF003696),
                     size: 24,
                   ),
                 ),
@@ -427,7 +422,7 @@ class _ActionCard extends StatelessWidget {
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Color(0xFF4C1D95),
+                          color: Color(0xFF1A1A1A),
                           height: 1.3,
                         ),
                       ),
@@ -445,48 +440,21 @@ class _ActionCard extends StatelessWidget {
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF6B46C1),
-                    borderRadius: BorderRadius.circular(20),
+                    color: const Color(0xFFDFEDFF),
+                    borderRadius: BorderRadius.circular(999),
                   ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12,
-                    vertical: 6,
+                    vertical: 7,
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        count.toString(),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const SizedBox(width: 6),
-                      GestureDetector(
-                        onTap: onTap,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              actionLabel,
-                              style: const TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 4),
-                            const Icon(
-                              Icons.arrow_forward_rounded,
-                              size: 12,
-                              color: Colors.white,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  child: Text(
+                    '$count • $actionLabel',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: Color(0xFF003696),
+                      height: 1,
+                    ),
                   ),
                 ),
               ],
@@ -523,23 +491,19 @@ class _RecentActivitySection extends StatelessWidget {
               onPressed: () {
                 // TODO: Navigate to view all activity
               },
-              child: const Row(
-                children: [
-                  Text(
-                    'View all',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF6B46C1),
-                    ),
-                  ),
-                  SizedBox(width: 4),
-                  Icon(
-                    Icons.arrow_forward_rounded,
-                    size: 16,
-                    color: Color(0xFF6B46C1),
-                  ),
-                ],
+              style: TextButton.styleFrom(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                minimumSize: const Size(0, 30),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                'View all  →',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF888888),
+                ),
               ),
             ),
           ],
@@ -645,12 +609,12 @@ class _ActivityCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFF3F4F6),
-                    borderRadius: BorderRadius.circular(6),
+                    color: const Color(0xFFDFEDFF),
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: Icon(
                     icon,
-                    color: const Color(0xFF6B46C1),
+                    color: const Color(0xFF003696),
                     size: 20,
                   ),
                 ),
@@ -679,14 +643,20 @@ class _ActivityCard extends StatelessWidget {
                     ],
                   ),
                 ),
-                TextButton(
-                  onPressed: onActionTap,
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFDFEDFF),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
                   child: Text(
                     actionLabel,
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF6B46C1),
+                      color: Color(0xFF003696),
+                      height: 1,
                     ),
                   ),
                 ),

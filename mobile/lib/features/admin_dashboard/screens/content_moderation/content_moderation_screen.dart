@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const Color _bg = Color(0xFFF4F4F8);
+import '../../widgets/admin/admin_button.dart';
+import '../../widgets/admin/admin_search_bar.dart';
+import '../../widgets/admin/admin_tab_bar.dart';
+
+const Color _bg = Color(0xFFF5F5F5);
 
 const BoxShadow _subtleBoxShadow = BoxShadow(
   color: Color.fromRGBO(0, 0, 0, 0.04),
@@ -125,22 +129,31 @@ class _ContentModerationScreenState
       _selectedTab == 0 ? _workersContentList : _ngoContentList;
 
   void _showContentReviewModal(ContentData content) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => _ContentReviewModal(
-        content: content,
-        onApprove: () {
-          setState(() {
-            _currentContentList.removeWhere((item) => item.id == content.id);
-          });
-          Navigator.pop(context);
-        },
-        onRemove: () {
-          setState(() {
-            _currentContentList.removeWhere((item) => item.id == content.id);
-          });
-          Navigator.pop(context);
-        },
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.82,
+        maxChildSize: 0.92,
+        minChildSize: 0.55,
+        expand: false,
+        builder: (context, scrollController) => _ContentReviewModal(
+          content: content,
+          scrollController: scrollController,
+          onApprove: () {
+            setState(() {
+              _currentContentList.removeWhere((item) => item.id == content.id);
+            });
+            Navigator.pop(context);
+          },
+          onRemove: () {
+            setState(() {
+              _currentContentList.removeWhere((item) => item.id == content.id);
+            });
+            Navigator.pop(context);
+          },
+        ),
       ),
     );
   }
@@ -170,19 +183,19 @@ class _ContentModerationScreenState
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: _SearchBar(
-                      onChanged: (value) {
-                        // TODO: Filter content based on search query
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: _TabSelector(
                       selectedTab: _selectedTab,
                       onTabChanged: (index) {
                         setState(() => _selectedTab = index);
+                      },
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: _SearchBar(
+                      onChanged: (value) {
+                        // TODO: Filter content based on search query
                       },
                     ),
                   ),
@@ -272,32 +285,9 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: const [_subtleBoxShadow],
-      ),
-      child: TextField(
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          hintText: 'Search content',
-          hintStyle: const TextStyle(
-            color: Color(0xFF9CA3AF),
-            fontSize: 14,
-          ),
-          prefixIcon: const Icon(
-            Icons.search_rounded,
-            color: Color(0xFF6B7280),
-            size: 20,
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-        ),
-      ),
+    return AdminSearchBar(
+      hintText: 'Search content',
+      onChanged: onChanged,
     );
   }
 }
@@ -315,73 +305,15 @@ class _TabSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _TabButton(
-            label: 'Workers',
-            isSelected: selectedTab == 0,
-            onTap: () => onTabChanged(0),
-          ),
-        ),
-        const SizedBox(width: 8),
-        Expanded(
-          child: _TabButton(
-            label: 'NGO',
-            isSelected: selectedTab == 1,
-            onTap: () => onTabChanged(1),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// ─── Tab Button ────────────────────────────────────────────────────────────────
-
-class _TabButton extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _TabButton({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF0052CC) : Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: isSelected
-                  ? const Color(0xFF0052CC)
-                  : const Color(0xFFE5E7EB),
-              width: 1,
-            ),
-            boxShadow: const [_subtleBoxShadow],
-          ),
-          child: Center(
-            child: Text(
-              label,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: isSelected ? Colors.white : const Color(0xFF374151),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
+    return DefaultTabController(
+      length: 2,
+      initialIndex: selectedTab,
+      child: AdminTabBar(
+        onTap: onTabChanged,
+        tabs: const [
+          Tab(text: 'Workers'),
+          Tab(text: 'NGO'),
+        ],
       ),
     );
   }
@@ -801,14 +733,7 @@ class _ContentCard extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: onReview,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3B3FA6),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    style: AdminButtonStyles.primary,
                     child: const Text(
                       'Review',
                       style: TextStyle(
@@ -820,19 +745,9 @@ class _ContentCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: OutlinedButton(
+                  child: ElevatedButton(
                     onPressed: onRemove,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF3B3FA6),
-                      side: const BorderSide(
-                        color: Color(0xFF3B3FA6),
-                        width: 1.5,
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    style: AdminButtonStyles.secondary,
                     child: const Text(
                       'Remove',
                       style: TextStyle(
@@ -857,11 +772,13 @@ class _ContentReviewModal extends StatefulWidget {
   final ContentData content;
   final VoidCallback onApprove;
   final VoidCallback onRemove;
+  final ScrollController? scrollController;
 
   const _ContentReviewModal({
     required this.content,
     required this.onApprove,
     required this.onRemove,
+    this.scrollController,
   });
 
   @override
@@ -907,17 +824,35 @@ class _ContentReviewModalState extends State<_ContentReviewModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+      child: SafeArea(
+        top: false,
         child: SingleChildScrollView(
+          controller: widget.scrollController,
+          padding: EdgeInsets.fromLTRB(
+            24,
+            14,
+            24,
+            24 + MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD1D5DB),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1186,14 +1121,7 @@ class _ContentReviewModalState extends State<_ContentReviewModal> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: widget.onApprove,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3B3FA6),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: AdminButtonStyles.primary,
                   child: const Text(
                     'Approve Content',
                     style: TextStyle(
@@ -1206,19 +1134,9 @@ class _ContentReviewModalState extends State<_ContentReviewModal> {
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
-                child: OutlinedButton(
+                child: ElevatedButton(
                   onPressed: widget.onRemove,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF3B3FA6),
-                    side: const BorderSide(
-                      color: Color(0xFF3B3FA6),
-                      width: 1.5,
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: AdminButtonStyles.secondary,
                   child: const Text(
                     'Remove Content',
                     style: TextStyle(
@@ -1231,12 +1149,9 @@ class _ContentReviewModalState extends State<_ContentReviewModal> {
               const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
-                child: TextButton(
+                child: OutlinedButton(
                   onPressed: () => Navigator.pop(context),
-                  style: TextButton.styleFrom(
-                    foregroundColor: const Color(0xFF374151),
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                  ),
+                  style: AdminButtonStyles.secondary,
                   child: const Text(
                     'Cancel',
                     style: TextStyle(

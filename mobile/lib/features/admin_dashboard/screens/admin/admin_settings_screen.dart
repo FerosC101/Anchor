@@ -1,0 +1,27 @@
+import 'package:flutter/material.dart';
+
+import '../../widgets/admin/admin_app_bar.dart';
+import '../../widgets/admin/admin_drawer.dart';
+
+class AdminSettingsScreen extends StatelessWidget {
+  const AdminSettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFFF5F5F5),
+      appBar: const AdminAppBar(),
+      endDrawer: const AdminDrawer(),
+      body: const Center(
+        child: Text(
+          'Admin Settings',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1A1A1A),
+          ),
+        ),
+      ),
+    );
+  }
+}

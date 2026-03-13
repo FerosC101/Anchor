@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const Color _bg = Color(0xFFF4F4F8);
+import '../../widgets/admin/admin_button.dart';
+import '../../widgets/admin/admin_search_bar.dart';
+
+const Color _bg = Color(0xFFF5F5F5);
 
 const BoxShadow _subtleBoxShadow = BoxShadow(
   color: Color.fromRGBO(0, 0, 0, 0.04),
@@ -125,29 +128,38 @@ class _JobListingScreenState extends ConsumerState<JobListingScreen> {
   }
 
   void _showJobReviewModal(JobData job) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => _JobReviewModal(
-        job: job,
-        onApprove: () {
-          setState(() {
-            final index = _jobsList.indexWhere((item) => item.id == job.id);
-            if (index != -1) {
-              _jobsList[index] = JobData(
-                id: job.id,
-                position: job.position,
-                employer: job.employer,
-                country: job.country,
-                salary: job.salary,
-                submittedDate: job.submittedDate,
-                status: 'Approved',
-                riskLevel: job.riskLevel,
-                complaints: job.complaints,
-              );
-            }
-          });
-          Navigator.pop(context);
-        },
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.82,
+        maxChildSize: 0.92,
+        minChildSize: 0.55,
+        expand: false,
+        builder: (context, scrollController) => _JobReviewModal(
+          job: job,
+          scrollController: scrollController,
+          onApprove: () {
+            setState(() {
+              final index = _jobsList.indexWhere((item) => item.id == job.id);
+              if (index != -1) {
+                _jobsList[index] = JobData(
+                  id: job.id,
+                  position: job.position,
+                  employer: job.employer,
+                  country: job.country,
+                  salary: job.salary,
+                  submittedDate: job.submittedDate,
+                  status: 'Approved',
+                  riskLevel: job.riskLevel,
+                  complaints: job.complaints,
+                );
+              }
+            });
+            Navigator.pop(context);
+          },
+        ),
       ),
     );
   }
@@ -275,32 +287,9 @@ class _SearchBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: const [_subtleBoxShadow],
-      ),
-      child: TextField(
-        onChanged: onChanged,
-        decoration: InputDecoration(
-          hintText: 'Search content',
-          hintStyle: const TextStyle(
-            color: Color(0xFF9CA3AF),
-            fontSize: 14,
-          ),
-          prefixIcon: const Icon(
-            Icons.search_rounded,
-            color: Color(0xFF6B7280),
-            size: 20,
-          ),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-        ),
-      ),
+    return AdminSearchBar(
+      hintText: 'Search content',
+      onChanged: onChanged,
     );
   }
 }
@@ -654,14 +643,7 @@ class _PendingJobCard extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: onReview,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3B3FA6),
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    style: AdminButtonStyles.primary,
                     child: const Text(
                       'Approve',
                       style: TextStyle(
@@ -673,19 +655,9 @@ class _PendingJobCard extends StatelessWidget {
                 ),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: OutlinedButton(
+                  child: ElevatedButton(
                     onPressed: onRemove,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF3B3FA6),
-                      side: const BorderSide(
-                        color: Color(0xFF3B3FA6),
-                        width: 1.5,
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    style: AdminButtonStyles.secondary,
                     child: const Text(
                       'Remove',
                       style: TextStyle(
@@ -699,17 +671,7 @@ class _PendingJobCard extends StatelessWidget {
                 Expanded(
                   child: OutlinedButton(
                     onPressed: onReview,
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF3B3FA6),
-                      side: const BorderSide(
-                        color: Color(0xFF3B3FA6),
-                        width: 1.5,
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
+                    style: AdminButtonStyles.secondary,
                     child: const Text(
                       'Review',
                       style: TextStyle(
@@ -820,14 +782,7 @@ class _ApprovedJobCard extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: onReview,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B3FA6),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                style: AdminButtonStyles.primary,
                 child: const Text(
                   'Review',
                   style: TextStyle(
@@ -887,10 +842,12 @@ class _JobInfoField extends StatelessWidget {
 class _JobReviewModal extends StatefulWidget {
   final JobData job;
   final VoidCallback onApprove;
+  final ScrollController? scrollController;
 
   const _JobReviewModal({
     required this.job,
     required this.onApprove,
+    this.scrollController,
   });
 
   @override
@@ -936,17 +893,35 @@ class _JobReviewModalState extends State<_JobReviewModal> {
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
+      child: SafeArea(
+        top: false,
         child: SingleChildScrollView(
+          controller: widget.scrollController,
+          padding: EdgeInsets.fromLTRB(
+            24,
+            14,
+            24,
+            24 + MediaQuery.of(context).viewInsets.bottom,
+          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
             children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD1D5DB),
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 14),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -1096,16 +1071,9 @@ class _JobReviewModalState extends State<_JobReviewModal> {
               const SizedBox(height: 24),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
+                child: OutlinedButton(
                   onPressed: widget.onApprove,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF3B3FA6),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
+                  style: AdminButtonStyles.secondary,
                   child: const Text(
                     'Cancel',
                     style: TextStyle(

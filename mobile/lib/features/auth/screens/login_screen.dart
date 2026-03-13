@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../core/theme/app_colors.dart';
 import '../providers/auth_provider.dart';
 
+const _blueDark = Color(0xFF003696);
+const _blueLight = Color(0xFFDFEDFF);
+
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
@@ -75,7 +78,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 gradient: const LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFF95D6F5), Color(0xFF4F90F0)],
+                  colors: [_blueLight, _blueDark],
                 ),
                 borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(32),
@@ -238,8 +241,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             child: ElevatedButton(
                               onPressed: isLoading ? null : _submit,
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFCAEBFA),
-                                foregroundColor: const Color(0xFF003696),
+                                backgroundColor: _blueDark,
+                                foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -250,7 +253,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                       height: 22,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2.5,
-                                        color: Color(0xFF003696),
+                                        color: Colors.white,
                                       ),
                                     )
                                   : const Text('Sign In'),

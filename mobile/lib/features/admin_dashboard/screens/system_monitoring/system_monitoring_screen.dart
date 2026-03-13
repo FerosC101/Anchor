@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-const Color _bg = Color(0xFFF4F4F8);
+import '../../widgets/admin/admin_button.dart';
+import '../../widgets/admin/admin_tab_bar.dart';
+
+const Color _bg = Color(0xFFF5F5F5);
 
 const BoxShadow _subtleBoxShadow = BoxShadow(
   color: Color.fromRGBO(0, 0, 0, 0.04),
@@ -155,83 +158,18 @@ class _TabSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: [
-          _TabButton(
-            label: 'AI Activity',
-            isSelected: selectedTab == 0,
-            onTap: () => onTabChanged(0),
-          ),
-          const SizedBox(width: 8),
-          _TabButton(
-            label: 'Usage Metrics',
-            isSelected: selectedTab == 1,
-            onTap: () => onTabChanged(1),
-          ),
-          const SizedBox(width: 8),
-          _TabButton(
-            label: 'Risk Alerts',
-            isSelected: selectedTab == 2,
-            onTap: () => onTabChanged(2),
-          ),
-          const SizedBox(width: 8),
-          _TabButton(
-            label: 'Error Logs',
-            isSelected: selectedTab == 3,
-            onTap: () => onTabChanged(3),
-          ),
-          const SizedBox(width: 8),
+    return DefaultTabController(
+      length: 4,
+      initialIndex: selectedTab,
+      child: AdminTabBar(
+        isScrollable: false,
+        onTap: onTabChanged,
+        tabs: const [
+          Tab(text: 'AI Activity'),
+          Tab(text: 'Usage Metrics'),
+          Tab(text: 'Risk Alerts'),
+          Tab(text: 'Error Logs'),
         ],
-      ),
-    );
-  }
-}
-
-// ─── Tab Button ────────────────────────────────────────────────────────────────
-
-class _TabButton extends StatelessWidget {
-  final String label;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _TabButton({
-    required this.label,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          decoration: BoxDecoration(
-            color: isSelected ? const Color(0xFF0052CC) : Colors.white,
-            borderRadius: BorderRadius.circular(24),
-            border: Border.all(
-              color: isSelected
-                  ? const Color(0xFF0052CC)
-                  : const Color(0xFFE5E7EB),
-              width: 1,
-            ),
-            boxShadow: const [_subtleBoxShadow],
-          ),
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: isSelected ? Colors.white : const Color(0xFF374151),
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ),
       ),
     );
   }
@@ -364,12 +302,12 @@ class _ActivityCard extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: const Color(0xFFF3F0FF),
+                color: const Color(0xFFDFEDFF),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Icon(
                 icon,
-                color: const Color(0xFF6B46C1),
+                color: const Color(0xFF003696),
                 size: 20,
               ),
             ),
@@ -383,7 +321,7 @@ class _ActivityCard extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF3B3FA6),
+                      color: Color(0xFF003696),
                     ),
                   ),
                   const SizedBox(height: 2),
@@ -953,14 +891,7 @@ class _RiskAlertCard extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () => onStatusChanged('Acknowledged'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B3FA6),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                style: AdminButtonStyles.primary,
                 child: const Text(
                   'Acknowledge',
                   style: TextStyle(
@@ -974,17 +905,7 @@ class _RiskAlertCard extends StatelessWidget {
             Expanded(
               child: OutlinedButton(
                 onPressed: () => onStatusChanged('Escalated'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF3B3FA6),
-                  side: const BorderSide(
-                    color: Color(0xFF3B3FA6),
-                    width: 1.5,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                style: AdminButtonStyles.secondary,
                 child: const Text(
                   'Escalate',
                   style: TextStyle(
@@ -998,17 +919,7 @@ class _RiskAlertCard extends StatelessWidget {
             Expanded(
               child: OutlinedButton(
                 onPressed: () => onStatusChanged('Resolved'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF3B3FA6),
-                  side: const BorderSide(
-                    color: Color(0xFF3B3FA6),
-                    width: 1.5,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                style: AdminButtonStyles.secondary,
                 child: const Text(
                   'Mark Resolved',
                   style: TextStyle(
@@ -1026,14 +937,7 @@ class _RiskAlertCard extends StatelessWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () => onStatusChanged('Escalated'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF3B3FA6),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                style: AdminButtonStyles.primary,
                 child: const Text(
                   'Escalate',
                   style: TextStyle(
@@ -1047,17 +951,7 @@ class _RiskAlertCard extends StatelessWidget {
             Expanded(
               child: OutlinedButton(
                 onPressed: () => onStatusChanged('Resolved'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: const Color(0xFF3B3FA6),
-                  side: const BorderSide(
-                    color: Color(0xFF3B3FA6),
-                    width: 1.5,
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
+                style: AdminButtonStyles.secondary,
                 child: const Text(
                   'Resolve',
                   style: TextStyle(
@@ -1074,14 +968,7 @@ class _RiskAlertCard extends StatelessWidget {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () => onStatusChanged('Resolved'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFF3B3FA6),
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
+            style: AdminButtonStyles.primary,
             child: const Text(
               'Mark Resolved',
               style: TextStyle(
@@ -1094,19 +981,9 @@ class _RiskAlertCard extends StatelessWidget {
       case 'Resolved':
         return SizedBox(
           width: double.infinity,
-          child: OutlinedButton(
+          child: ElevatedButton(
             onPressed: onRemove,
-            style: OutlinedButton.styleFrom(
-              foregroundColor: const Color(0xFF3B3FA6),
-              side: const BorderSide(
-                color: Color(0xFF3B3FA6),
-                width: 1.5,
-              ),
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
+            style: AdminButtonStyles.danger,
             child: const Text(
               'Remove',
               style: TextStyle(

@@ -8,6 +8,9 @@ import '../../../core/theme/app_colors.dart';
 import '../../../models/user_model.dart';
 import '../providers/auth_provider.dart';
 
+const _blueDark = Color(0xFF003696);
+const _blueLight = Color(0xFFDFEDFF);
+
 // ─── Register Screen ──────────────────────────────────────────────────────────
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -242,7 +245,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color(0xFF95D6F5), Color(0xFF4F90F0)],
+          colors: [_blueLight, _blueDark],
         ),
       ),
       child: SafeArea(
@@ -381,8 +384,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           child: ElevatedButton(
             onPressed: isLoading ? null : _next,
             style: ElevatedButton.styleFrom(
-              backgroundColor: const Color(0xFFCAEBFA),
-              foregroundColor: const Color(0xFF003696),
+              backgroundColor: _blueDark,
+              foregroundColor: Colors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),
