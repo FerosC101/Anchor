@@ -9,6 +9,7 @@ import '../../features/auth/screens/login_screen.dart';
 import '../../features/auth/screens/register_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/government_dashboard/screens/government_dashboard_screen.dart';
+import '../../features/admin_dashboard/screens/admin_dashboard_home_screen.dart';
 import '../../features/community/screens/community_post_detail_screen.dart';
 import '../../features/contracts/screens/contract_scan_detail_screen.dart';
 import '../../features/ngo/screens/ngo_home_screen.dart';
@@ -106,76 +107,8 @@ class _RoleDispatcher extends ConsumerWidget {
         return const GovernmentDashboardScreen();
       case UserRole.ngo:
         return const NgoHomeScreen();
-      default:
-        return _ComingSoonScaffold(
-          title: 'Admin Dashboard',
-          icon: Icons.admin_panel_settings_rounded,
-          color: const Color(0xFFF59E0B),
-          ref: ref,
-        );
+      case UserRole.admin:
+        return const AdminDashboardHomeScreen();
     }
-  }
-}
-
-class _ComingSoonScaffold extends StatelessWidget {
-  const _ComingSoonScaffold({
-    required this.title,
-    required this.icon,
-    required this.color,
-    required this.ref,
-  });
-
-  final String title;
-  final IconData icon;
-  final Color color;
-  final WidgetRef ref;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [color, color.withValues(alpha: 0.7)],
-          ),
-        ),
-        child: SafeArea(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(icon, size: 72, color: Colors.white),
-                const SizedBox(height: 24),
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Coming soon',
-                  style: TextStyle(fontSize: 15, color: Colors.white70),
-                ),
-                const SizedBox(height: 48),
-                TextButton.icon(
-                  onPressed: () =>
-                      ref.read(authNotifierProvider.notifier).signOut(),
-                  icon: const Icon(Icons.logout, color: Colors.white),
-                  label: const Text(
-                    'Sign Out',
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }
