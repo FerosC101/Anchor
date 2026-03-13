@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import '../../../shared/utils/risk_utils.dart';
 import '../../../shared/widgets/worker_app_bar.dart';
 import '../../../shared/widgets/worker_drawer.dart';
+import '../../../models/contract_model.dart';
 import '../../../models/scan_model.dart';
+import '../../../core/services/firestore_service.dart';
+import '../../../core/services/functions_service.dart';
+import '../../../core/services/storage_service.dart';
 
 class ContractScannerScreen extends StatefulWidget {
   const ContractScannerScreen({super.key});
@@ -18,38 +25,39 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
   static const Color _blueLight = Color(0xFFCAEBFA);
   static const Color _bg = Color(0xFFF5F5F5);
 
-  // ── Sample data ─────────────────────────────────────────────────────────────
+  final _auth = FirebaseAuth.instance;
+  final _firestoreService = FirestoreService();
+  final _storageService = StorageService();
+  final _functionsService = FunctionsService();
+
+  // ── Data ───────────────────────────────────────────────────────────────────
+  bool _isUploading = false;
   bool _showScans = true;
 
-  final List<ScanModel> _recentScans = [
-    ScanModel(
-      id: 1,
-      name: 'TechSafe Build',
-      fullName: 'TechSafe Build Contract',
-      subtitle: 'Savings Goal (Return Home)',
-      date: 'March 1',
-      time: '10:14 AM',
-      score: 74,
-    ),
-    ScanModel(
-      id: 2,
-      name: 'TechSafe Build',
-      fullName: 'TechSafe Build Contract',
-      subtitle: 'Savings Goal (Return Home)',
-      date: 'March 1',
-      time: '12:27 PM',
-      score: 22,
-    ),
-    ScanModel(
-      id: 3,
-      name: 'TechSafe Build',
-      fullName: 'TechSafe Build Contract',
-      subtitle: 'Savings Goal (Return Home)',
-      date: 'March 1',
-      time: '09:03 AM',
-      score: 38,
-    ),
-  ];
+  final List<ScanModel> _recentScans = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRecentScans();
+  }
+
+  Future<void> _loadRecentScans() async {
+    final userId = _auth.currentUser?.uid;
+    if (userId == null) return;
+
+    try {
+      final scans = await _firestoreService.fetchRecentScans(userId: userId);
+      if (!mounted || scans.isEmpty) return;
+      setState(() {
+        _recentScans
+          ..clear()
+          ..addAll(scans);
+      });
+    } catch (_) {
+      // Ignore read failures in UI bootstrapping.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -86,12 +94,7 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
 
   Widget _buildUploadArea() {
     return InkWell(
-      onTap: () {
-        // Handle file upload
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('File picker would open here')),
-        );
-      },
+      onTap: _isUploading ? null : _uploadAndAnalyzeContract,
       borderRadius: BorderRadius.circular(16),
       child: Container(
         width: double.infinity,
@@ -114,6 +117,10 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
         ),
         child: Column(
           children: [
+            if (_isUploading) ...[
+              const CircularProgressIndicator(),
+              const SizedBox(height: 16),
+            ],
             // Upload icon - larger
             Container(
               width: 80,
@@ -129,8 +136,10 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
               ),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Tap to upload document',
+            Text(
+              _isUploading
+                  ? 'Uploading and analyzing...'
+                  : 'Tap to upload document',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
@@ -149,6 +158,185 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _uploadAndAnalyzeContract() async {
+    final user = _auth.currentUser;
+    if (user == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please sign in again to upload.')),
+      );
+      return;
+    }
+
+    final result = await FilePicker.platform.pickFiles(
+      type: kIsWeb ? FileType.any : FileType.custom,
+      withData: true,
+      allowedExtensions: kIsWeb ? null : ['pdf', 'jpg', 'jpeg', 'png', 'txt'],
+    );
+
+    if (result == null || result.files.isEmpty) return;
+
+    final picked = result.files.first;
+    final extension = picked.name.split('.').last.toLowerCase();
+    const allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png', 'txt'];
+    if (!allowedExtensions.contains(extension)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+            content: Text('Unsupported file type. Use PDF, JPG, PNG, or TXT.')),
+      );
+      return;
+    }
+
+    final size = picked.size;
+    if (size > 10 * 1024 * 1024) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('File too large. Maximum is 10MB.')),
+      );
+      return;
+    }
+
+    final path = picked.path;
+    if (!kIsWeb && (path == null || path.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to read selected file path.')),
+      );
+      return;
+    }
+
+    if (kIsWeb && picked.bytes == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Unable to read selected file data.')),
+      );
+      return;
+    }
+
+    setState(() => _isUploading = true);
+
+    try {
+      final contractId = _firestoreService.newContractId();
+      final fileName = picked.name;
+
+      final fileUrl = await _storageService.uploadContractFile(
+        userId: user.uid,
+        contractId: contractId,
+        filePath: path,
+        fileBytes: picked.bytes,
+        fileName: fileName,
+      );
+
+      await _firestoreService.createContractUpload(
+        ContractUploadModel(
+          contractId: contractId,
+          userId: user.uid,
+          fileName: fileName,
+          fileUrl: fileUrl,
+          uploadedAt: DateTime.now(),
+        ),
+      );
+
+      final extractedText = (extension == 'txt' && picked.bytes != null)
+          ? String.fromCharCodes(picked.bytes!)
+          : '';
+
+      final analysis = await _functionsService.analyzeContractUpload(
+        contractId: contractId,
+        fileUrl: fileUrl,
+        fileName: fileName,
+        extractedText: extractedText,
+      );
+
+      final now = DateTime.now();
+      final score = (analysis.riskScore * 100).round().clamp(0, 100);
+
+      final scan = ScanModel(
+        id: now.millisecondsSinceEpoch,
+        contractId: contractId,
+        name: fileName,
+        fullName: fileName,
+        subtitle: analysis.riskLevel.toUpperCase(),
+        date: _formatDate(now),
+        time: _formatTime(now),
+        score: score,
+        issueCount: analysis.issueCount,
+        criticalCount: analysis.criticalCount,
+        overviewSummary: analysis.overviewSummary.isNotEmpty
+            ? analysis.overviewSummary
+            : analysis.aiSummary,
+        comparisonItems: analysis.comparisonItems
+            .map(
+              (item) => ScanComparisonItem(
+                category: item.category,
+                status: item.status,
+                yourContract: item.yourContract,
+                standardPractice: item.standardPractice,
+              ),
+            )
+            .toList(),
+        recommendedActions: analysis.recommendedActions,
+      );
+
+      if (!mounted) return;
+      setState(() {
+        _recentScans.insert(0, scan);
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            analysis.modelLoaded
+                ? 'Contract analysis complete.'
+                : 'Contract analysis complete (fallback scoring).',
+          ),
+        ),
+      );
+
+      context.push('/contracts/detail', extra: scan);
+    } catch (error) {
+      final raw = error.toString();
+      final message = (kIsWeb &&
+              (raw.contains('CORS') ||
+                  raw.contains('XMLHttpRequest') ||
+                  raw.contains('ERR_FAILED')))
+          ? 'Upload blocked by Storage CORS. Apply bucket CORS config, then retry.'
+          : 'Upload failed: $error';
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(message)),
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isUploading = false);
+      }
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    return '${months[date.month - 1]} ${date.day}';
+  }
+
+  String _formatTime(DateTime date) {
+    final hour12 = date.hour == 0
+        ? 12
+        : date.hour > 12
+            ? date.hour - 12
+            : date.hour;
+    final minute = date.minute.toString().padLeft(2, '0');
+    final suffix = date.hour >= 12 ? 'PM' : 'AM';
+    return '$hour12:$minute $suffix';
   }
 
   // ── Recent Scans Section ─────────────────────────────────────────────────────

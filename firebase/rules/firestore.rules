@@ -48,21 +48,27 @@ service cloud.firestore {
     match /contracts/{contractId} {
       allow read: if request.auth != null &&
         (resource.data.user_id == request.auth.uid || _isGovernmentOrNgo() || _isAdmin());
-      allow create, update: if request.auth != null;
+      allow create: if request.auth != null &&
+        request.resource.data.user_id == request.auth.uid;
+      allow update: if request.auth != null &&
+        resource.data.user_id == request.auth.uid &&
+        request.resource.data.user_id == resource.data.user_id;
       allow delete: if false;
     }
 
     // ── Contract analysis ─────────────────────────────────────────────────────
     match /contract_analysis/{analysisId} {
-      allow read: if request.auth != null;
-      allow create, update: if request.auth != null;
+      allow read: if request.auth != null &&
+        (resource.data.user_id == request.auth.uid || _isGovernmentOrNgo() || _isAdmin());
+      // Analysis records are written by backend admin SDK only.
+      allow create, update: if false;
       allow delete: if false;
     }
 
     // ── Contract reviews ──────────────────────────────────────────────────────
     match /contract_reviews/{reviewId} {
       allow read: if request.auth != null;
-      allow create, update: if request.auth != null;
+      allow create, update: if request.auth != null && (_isGovernmentOrNgo() || _isAdmin());
       allow delete: if false;
     }
 

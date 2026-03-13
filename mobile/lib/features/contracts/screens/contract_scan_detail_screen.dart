@@ -10,9 +10,8 @@ class ContractScanDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: replace with dynamic data
-    final int issueCount = 3;
-    final int criticalCount = 5;
+    final int issueCount = scan.issueCount ?? _estimateIssueCount();
+    final int criticalCount = scan.criticalCount ?? _estimateCriticalCount();
 
     return DefaultTabController(
       length: 3,
@@ -322,6 +321,41 @@ class ContractScanDetailScreen extends StatelessWidget {
               ],
             ),
           ),
+          if ((scan.overviewSummary ?? '').trim().isNotEmpty) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(
+                  color: const Color(0xFFCAEBFA),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Quick Summary',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF003696),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    scan.overviewSummary!.trim(),
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           // Bottom action buttons
           Row(
@@ -383,6 +417,8 @@ class ContractScanDetailScreen extends StatelessWidget {
   // ━━━ TAB 2: Comparison ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   Widget _buildComparisonTab() {
+    final comparisons = scan.comparisonItems;
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -417,30 +453,30 @@ class ContractScanDetailScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Comparison cards
-          const _ComparisonCard(
-            icon: Icons.attach_money,
-            category: 'Salary & Payment',
-            status: 'REVIEW',
-            yourContract: 'SGD \$1,200/month with unclear deductions',
-            standardPractice: 'SGD \$1,800/month, itemized deductions',
-          ),
-          const SizedBox(height: 12),
-          const _ComparisonCard(
-            icon: Icons.access_time_outlined,
-            category: 'Working Hours',
-            status: 'RED FLAG',
-            yourContract: '10-12 hours/day, 6 days/week',
-            standardPractice: '8 hours/day, overtime at 1.5x pay',
-          ),
-          const SizedBox(height: 12),
-          const _ComparisonCard(
-            icon: Icons.home_outlined,
-            category: 'Accommodation',
-            status: 'RED FLAG',
-            yourContract: '"Reasonable fees" — amount not specified',
-            standardPractice: 'Capped accommodation fees, itemized billing',
-          ),
+          if (comparisons.isEmpty)
+            const _ComparisonCard(
+              icon: Icons.info_outline,
+              category: 'No detailed comparison yet',
+              status: 'REVIEW',
+              yourContract:
+                  'Detailed extracted contract terms are not available.',
+              standardPractice:
+                  'Upload clear contract text (or TXT) to generate side-by-side comparison details.',
+            )
+          else
+            ...comparisons.asMap().entries.map(
+                  (entry) => Padding(
+                    padding: EdgeInsets.only(
+                        bottom: entry.key == comparisons.length - 1 ? 0 : 12),
+                    child: _ComparisonCard(
+                      icon: _comparisonIcon(entry.value.category),
+                      category: entry.value.category,
+                      status: _normalizeStatus(entry.value.status),
+                      yourContract: entry.value.yourContract,
+                      standardPractice: entry.value.standardPractice,
+                    ),
+                  ),
+                ),
         ],
       ),
     );
@@ -451,10 +487,25 @@ class ContractScanDetailScreen extends StatelessWidget {
   Widget _buildActionsTab() {
     final riskBgColor = RiskUtils.getRiskBgColor(scan.score);
     final riskColor = RiskUtils.getRiskColor(scan.score);
+    final recommended = scan.recommendedActions;
 
     // Determine actions based on score
     List<_ActionItemData> actions;
-    if (scan.score >= 70) {
+    if (recommended.isNotEmpty) {
+      actions = recommended
+          .asMap()
+          .entries
+          .map(
+            (entry) => _ActionItemData(
+              entry.key + 1,
+              _actionIcon(entry.value),
+              _actionTitle(entry.value),
+              entry.value,
+              isUrgent: scan.score >= 70 && entry.key == 0,
+            ),
+          )
+          .toList();
+    } else if (scan.score >= 70) {
       // High risk
       actions = [
         _ActionItemData(
@@ -658,45 +709,81 @@ class ContractScanDetailScreen extends StatelessWidget {
       ),
     );
   }
+
+  int _estimateIssueCount() {
+    if (scan.score >= 70) return 5;
+    if (scan.score >= 40) return 3;
+    return 1;
+  }
+
+  int _estimateCriticalCount() {
+    if (scan.score >= 70) return 2;
+    if (scan.score >= 40) return 1;
+    return 0;
+  }
+
+  String _normalizeStatus(String raw) {
+    final value = raw.trim().toLowerCase();
+    if (value == 'red_flag' || value == 'red flag') return 'RED FLAG';
+    if (value == 'ok') return 'OK';
+    return 'REVIEW';
+  }
+
+  IconData _comparisonIcon(String category) {
+    final value = category.toLowerCase();
+    if (value.contains('salary') || value.contains('payment')) {
+      return Icons.attach_money;
+    }
+    if (value.contains('hour') || value.contains('overtime')) {
+      return Icons.access_time_outlined;
+    }
+    if (value.contains('accommodation') || value.contains('housing')) {
+      return Icons.home_outlined;
+    }
+    if (value.contains('termination')) {
+      return Icons.gavel_outlined;
+    }
+    if (value.contains('document') || value.contains('passport')) {
+      return Icons.badge_outlined;
+    }
+    return Icons.rule_folder_outlined;
+  }
+
+  IconData _actionIcon(String action) {
+    final value = action.toLowerCase();
+    if (value.contains('do not sign') || value.contains('pause signing')) {
+      return Icons.block_outlined;
+    }
+    if (value.contains('embassy') || value.contains('poea')) {
+      return Icons.account_balance_outlined;
+    }
+    if (value.contains('legal')) {
+      return Icons.gavel_outlined;
+    }
+    if (value.contains('save') ||
+        value.contains('copy') ||
+        value.contains('record')) {
+      return Icons.download_outlined;
+    }
+    if (value.contains('review') ||
+        value.contains('clarify') ||
+        value.contains('request')) {
+      return Icons.search_outlined;
+    }
+    return Icons.check_circle_outline;
+  }
+
+  String _actionTitle(String action) {
+    final trimmed = action.trim();
+    if (trimmed.isEmpty) return 'Recommended Action';
+    final periodIndex = trimmed.indexOf('.');
+    final base = periodIndex > 0 ? trimmed.substring(0, periodIndex) : trimmed;
+    if (base.length <= 42) return base;
+    return '${base.substring(0, 39)}...';
+  }
 }
 
 // ─── Helper Widgets ──────────────────────────────────────────────────────────
-
-class _StatBox extends StatelessWidget {
-  const _StatBox({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final String value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 12,
-            color: color,
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 28,
-            fontWeight: FontWeight.w800,
-            color: color,
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class _ComparisonCard extends StatelessWidget {
   const _ComparisonCard({
@@ -766,7 +853,8 @@ class _ComparisonCard extends StatelessWidget {
               ),
               // Status badge
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: statusBgColor,
                   borderRadius: BorderRadius.circular(20),
@@ -905,7 +993,8 @@ class _ActionItem extends StatelessWidget {
             width: 28,
             height: 28,
             decoration: BoxDecoration(
-              color: isUrgent ? const Color(0xFF8E0012) : const Color(0xFF003696),
+              color:
+                  isUrgent ? const Color(0xFF8E0012) : const Color(0xFF003696),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Center(
