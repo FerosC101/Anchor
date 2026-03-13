@@ -35,6 +35,7 @@ class _GovernmentDashboardScreenState extends State<GovernmentDashboardScreen> {
         children: [
           HomeTab(
             onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
+            onViewAllTap: () => setState(() => _selectedTab = 2),
           ),
           MonitoringTab(
             selectedCountry: _selectedCountry,

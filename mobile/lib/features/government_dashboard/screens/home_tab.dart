@@ -4,25 +4,24 @@ import '../utils/dashboard_theme.dart';
 
 class HomeTab extends StatelessWidget {
   final VoidCallback? onMenuTap;
-  
-  const HomeTab({super.key, this.onMenuTap});
+  final VoidCallback? onViewAllTap;
+
+  const HomeTab({super.key, this.onMenuTap, this.onViewAllTap});
 
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 14, 16, 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 16),
           _buildTitleSection(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 22),
           _buildStatsGrid(),
           const SizedBox(height: 24),
           _buildChartSection(),
           const SizedBox(height: 24),
           _buildAlertsSection(),
-          const SizedBox(height: 24),
         ],
       ),
     );
@@ -36,7 +35,8 @@ class HomeTab extends StatelessWidget {
         style: TextStyle(
           fontSize: 24,
           fontWeight: FontWeight.w700,
-          color: Color(0xFF0F172A),
+          color: DashboardTheme.textPrimary,
+          height: 1.1,
         ),
       ),
     );
@@ -47,22 +47,22 @@ class HomeTab extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const Text(
-          'System overview',
+          'System Overview',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: DashboardTheme.textPrimary,
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         GridView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
-            childAspectRatio: 1.0,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
+            childAspectRatio: 0.96,
           ),
           itemCount: statsData.length,
           itemBuilder: (_, i) => _buildStatCard(statsData[i]),
@@ -73,76 +73,60 @@ class HomeTab extends StatelessWidget {
 
   Widget _buildStatCard(Map<String, dynamic> stat) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: DashboardTheme.cardDecoration,
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(22),
+        border: Border.all(color: const Color(0xFFD1D5DB)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: 44,
-                height: 44,
-                decoration: const BoxDecoration(
-                  color: DashboardTheme.purple,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  stat['icon'] as IconData,
-                  color: Colors.white,
-                  size: 22,
-                ),
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(
-                    Icons.north_east_rounded,
-                    size: 11,
-                    color: DashboardTheme.green,
-                  ),
-                  const SizedBox(width: 2),
-                  Text(
-                    stat['change'] as String,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w600,
-                      color: DashboardTheme.green,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+          Container(
+            width: 46,
+            height: 46,
+            decoration: BoxDecoration(
+              color: DashboardTheme.blueDark,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              stat['icon'] as IconData,
+              color: Colors.white,
+              size: 24,
+            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 8),
           Text(
             stat['number'] as String,
             style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.w700,
-              color: Color(0xFF0F172A),
+              color: DashboardTheme.textPrimary,
+              height: 1,
             ),
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
           Text(
             stat['label'] as String,
             style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF0F172A),
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: DashboardTheme.textPrimary,
             ),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 2),
+          const SizedBox(height: 4),
           Text(
             stat['sublabel'] as String,
             style: const TextStyle(
-              fontSize: 11,
+              fontSize: 10,
               fontWeight: FontWeight.w400,
-              color: Color(0xFF64748B),
+              color: DashboardTheme.textSecondary,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -156,38 +140,24 @@ class HomeTab extends StatelessWidget {
         const Text(
           'Abuse Reports Summary',
           style: TextStyle(
-            fontSize: 16,
+            fontSize: 18,
             fontWeight: FontWeight.w600,
-            color: Color(0xFF0F172A),
+            color: DashboardTheme.textPrimary,
           ),
         ),
-        const SizedBox(height: 4),
-        const Text(
-          'Reports by country',
-          style: TextStyle(
-            fontSize: 13,
-            color: Color(0xFF64748B),
-          ),
-        ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 14),
         Container(
-          padding: const EdgeInsets.fromLTRB(8, 16, 16, 12),
+          padding: const EdgeInsets.fromLTRB(8, 14, 14, 12),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
+            borderRadius: BorderRadius.circular(24),
+            border: Border.all(color: const Color(0xFFD1D5DB)),
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               SizedBox(
-                height: 200,
+                height: 215,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -196,63 +166,67 @@ class HomeTab extends StatelessWidget {
                         (v) => Text(
                           v.toString(),
                           style: const TextStyle(
-                            fontSize: 9,
-                            color: Color(0xFFCBD5E1),
+                            fontSize: 10,
+                            color: Color(0xFFB7BDC6),
                           ),
                         ),
                       )
                       .toList(),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: 10),
               Expanded(
                 child: SizedBox(
-                  height: 200,
+                  height: 215,
                   child: Stack(
                     children: [
                       ...List.generate(gridLines.length, (i) {
-                        final top = i * (200 / (gridLines.length - 1));
+                        final top = i * (215 / (gridLines.length - 1));
                         return Positioned(
                           top: top,
                           left: 0,
                           right: 0,
                           child: Container(
                             height: 1,
-                            color: const Color(0xFFE2E8F0),
+                            color: const Color(0xFFE5E7EB),
                           ),
                         );
                       }),
                       Positioned.fill(
                         child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: chartData.map((d) {
-                            final barH = (d['value'] as int) / chartMax * 185;
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  width: 28,
-                                  height: barH,
-                                  decoration: const BoxDecoration(
-                                    gradient: DashboardTheme.primaryGradient,
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(6),
+                            final barH = (d['value'] as int) / chartMax * 198;
+                            return Expanded(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Container(
+                                    width: 34,
+                                    height: barH,
+                                    decoration: const BoxDecoration(
+                                      color: Color(0xFFC7D5EB),
+                                      borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(8),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 6),
-                                Text(
-                                  d['label'] as String,
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    fontSize: 9,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xFF94A3B8),
-                                    height: 1.2,
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    (d['label'] as String).replaceAll('\n', ' '),
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w400,
+                                      color: Color(0xFF6B7280),
+                                      height: 1.2,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             );
                           }).toList(),
                         ),
@@ -270,6 +244,7 @@ class HomeTab extends StatelessWidget {
 
   Widget _buildAlertsSection() {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -277,182 +252,218 @@ class HomeTab extends StatelessWidget {
             const Text(
               'Recent Alerts Feed',
               style: TextStyle(
-                fontSize: 16,
+                fontSize: 18,
                 fontWeight: FontWeight.w600,
-                color: Color(0xFF0F172A),
+                color: DashboardTheme.textPrimary,
               ),
             ),
-            GestureDetector(
-              onTap: () {},
-              child: const Row(
-                children: [
-                  Text(
-                    'View all  \u2192',
-                    style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF64748B),
-                    ),
-                  ),
-                ],
+            TextButton(
+              onPressed: onViewAllTap,
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                minimumSize: const Size(0, 30),
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: const Text(
+                'View all  →',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF888888),
+                ),
               ),
             ),
           ],
         ),
-        const SizedBox(height: 4),
-        const Align(
-          alignment: Alignment.centerLeft,
-          child: Text(
-            'Showing 5 of 67 alerts',
-            style: TextStyle(
-              fontSize: 12,
-              color: Color(0xFF64748B),
-            ),
-          ),
-        ),
-        const SizedBox(height: 12),
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.06),
-                blurRadius: 12,
-                offset: const Offset(0, 4),
-              ),
-            ],
-          ),
-          child: Column(
-            children: List.generate(alertsData.length, (i) {
-              return Column(
-                children: [
-                  _buildAlertRow(alertsData[i]),
-                  if (i < alertsData.length - 1)
-                    const Divider(
-                      height: 1,
-                      thickness: 1,
-                      color: Color(0xFFF1F5F9),
-                      indent: 16,
-                      endIndent: 16,
-                    ),
-                ],
-              );
-            }),
-          ),
-        ),
+        const SizedBox(height: 10),
+        ...alertsData.take(4).map(_buildAlertCard),
       ],
     );
   }
 
-  Widget _buildAlertRow(Map<String, String> alert) {
+  Widget _buildAlertCard(Map<String, String> alert) {
+    final risk = alert['riskLevel']?.toLowerCase() ?? 'high';
+    final dateText = _formatDate(alert['date'] ?? '2026-03-06');
+
+    Color riskBg;
+    Color riskText;
+    String riskLabel;
+    if (risk.contains('critical') || risk.contains('high')) {
+      riskBg = DashboardTheme.red;
+      riskText = Colors.white;
+      riskLabel = 'HIGH';
+    } else if (risk.contains('review') || risk.contains('medium')) {
+      riskBg = DashboardTheme.yellowBg;
+      riskText = DashboardTheme.yellow;
+      riskLabel = 'MED';
+    } else {
+      riskBg = DashboardTheme.greenBg;
+      riskText = DashboardTheme.green;
+      riskLabel = 'LOW';
+    }
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: const BoxDecoration(
-              color: Color(0xFF94A3B8),
-              shape: BoxShape.circle,
-            ),
-            child: const Icon(
-              Icons.person_rounded,
-              color: Colors.white,
-              size: 24,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Container(
+        padding: const EdgeInsets.all(14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(22),
+          border: Border.all(color: const Color(0xFFD1D5DB)),
+        ),
+        child: Column(
+          children: [
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  alert['workerName']!,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF0A2463),
-                  ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  alert['country']!,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF64748B),
-                  ),
-                ),
-                const SizedBox(height: 6),
                 Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 3,
-                  ),
+                  width: 56,
+                  height: 56,
                   decoration: BoxDecoration(
-                    color: DashboardTheme.blueLight,
-                    borderRadius: BorderRadius.circular(20),
+                    color: DashboardTheme.blueDark,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  child: const Text(
-                    'In review',
+                  child: const Icon(
+                    Icons.description_outlined,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: DashboardTheme.textPrimary,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: alert['workerName'] ?? 'Worker Name',
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.w700),
+                            ),
+                            TextSpan(
+                              text: '  ${alert['country'] ?? 'Country'}',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w400,
+                                color: Color(0xFF7A7A7A),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        alert['employer'] ?? 'Employer Name',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Color(0xFF7A7A7A),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                  decoration: BoxDecoration(
+                    color: riskBg,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: Text(
+                    riskLabel,
                     style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: DashboardTheme.blue,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w700,
+                      color: riskText,
+                      height: 1,
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: 8),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _detailLine(
-                  'Employer: ', alert['employer']!, const Color(0xFF64748B)),
-              _detailLine('Date: ', alert['date']!, const Color(0xFF64748B)),
-              _detailLine(
-                  'Risk Level: ', alert['riskLevel']!, DashboardTheme.red),
-            ],
-          ),
-          const SizedBox(width: 4),
-          const Icon(
-            Icons.chevron_right,
-            color: Color(0xFF94A3B8),
-            size: 20,
-          ),
-        ],
+            const SizedBox(height: 10),
+            const Divider(height: 1, thickness: 1, color: Color(0xFFE6E6E6)),
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Text(
+                  dateText,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Color(0xFF7A7A7A),
+                  ),
+                ),
+                const SizedBox(width: 16),
+                const Icon(
+                  Icons.location_on,
+                  size: 16,
+                  color: Color(0xFF9A9A9A),
+                ),
+                const SizedBox(width: 4),
+                const Expanded(
+                  child: Text(
+                    'Location',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Color(0xFF7A7A7A),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                  decoration: BoxDecoration(
+                    color: DashboardTheme.blueLight,
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                  child: const Text(
+                    'In Review',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      color: DashboardTheme.blueDark,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _detailLine(String label, String value, Color valueColor) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: label,
-            style: const TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w500,
-              color: Color(0xFF0F172A),
-              height: 1.7,
-            ),
-          ),
-          TextSpan(
-            text: value,
-            style: TextStyle(
-              fontSize: 11,
-              fontWeight: FontWeight.w400,
-              color: valueColor,
-              height: 1.7,
-            ),
-          ),
-        ],
-      ),
-    );
+  String _formatDate(String rawDate) {
+    try {
+      final parts = rawDate.split('-');
+      if (parts.length != 3) return rawDate;
+      const months = [
+        '',
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December',
+      ];
+      final month = int.parse(parts[1]);
+      final day = int.parse(parts[2]);
+      final year = parts[0];
+      return '${months[month]} $day, $year';
+    } catch (_) {
+      return rawDate;
+    }
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../utils/dashboard_theme.dart';
 
 /// Pagination row used by Monitoring and Assistance tabs.
 class DashboardPagination extends StatelessWidget {
@@ -88,7 +89,7 @@ class TimelineItem extends StatelessWidget {
                 width: 10,
                 height: 10,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF3730A3),
+                  color: DashboardTheme.blueDark,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -96,7 +97,7 @@ class TimelineItem extends StatelessWidget {
                 Expanded(
                   child: Container(
                     width: 2,
-                    color: const Color(0xFF3730A3),
+                    color: DashboardTheme.blueDark,
                   ),
                 ),
             ],
@@ -204,7 +205,7 @@ class DocumentRow extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: const Color(0xFFEEF2FF),
+        color: DashboardTheme.blueLight,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -215,7 +216,7 @@ class DocumentRow extends StatelessWidget {
             style: const TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w500,
-              color: Color(0xFF3730A3),
+              color: DashboardTheme.blueDark,
             ),
           ),
           Row(
@@ -226,11 +227,11 @@ class DocumentRow extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF3730A3),
+                  color: DashboardTheme.blueDark,
                 ),
               ),
               SizedBox(width: 4),
-              Icon(Icons.arrow_forward, size: 14, color: Color(0xFF3730A3)),
+              Icon(Icons.arrow_forward, size: 14, color: DashboardTheme.blueDark),
             ],
           ),
         ],
