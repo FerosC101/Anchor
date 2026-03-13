@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../core/ngo_theme.dart';
 import '../models/ngo_models.dart';
 import '../widgets/ngo_shared_widgets.dart';
 import '../widgets/ngo_stat_card.dart';
@@ -44,29 +43,13 @@ class _NgoHomeTabState extends State<NgoHomeTab> {
           const SizedBox(height: 20),
 
           // Dashboard header
-          const Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Text(
-                'Dashboard Overview',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF0F172A),
-                ),
-              ),
-              SizedBox(height: 6),
-              Text(
-                'Monitor risks, assist workers, and identify emerging exploitation patterns',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 13,
-                  color: NgoTheme.textSecondary,
-                  height: 1.45,
-                ),
-              ),
-            ],
+          const Text(
+            'Dashboard Overview',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF0F172A),
+            ),
           ),
           const SizedBox(height: 20),
 

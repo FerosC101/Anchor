@@ -21,7 +21,7 @@ class PrivacyScreen extends StatelessWidget {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF1A1A1A),
+                color: Color(0xFF0F172A),
               ),
             ),
           ),
@@ -320,7 +320,7 @@ class PrivacyScreen extends StatelessWidget {
                       style: const TextStyle(
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
-                        color: Color(0xFF1A1A1A),
+                        color: Color(0xFF0F172A),
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -328,7 +328,7 @@ class PrivacyScreen extends StatelessWidget {
                       description,
                       style: const TextStyle(
                         fontSize: 12,
-                        color: Color(0xFF888888),
+                        color: Color(0xFF64748B),
                       ),
                     ),
                   ],
@@ -336,7 +336,7 @@ class PrivacyScreen extends StatelessWidget {
               ),
               const Icon(
                 Icons.chevron_right,
-                color: Color(0xFF888888),
+                color: Color(0xFF64748B),
                 size: 20,
               ),
             ],

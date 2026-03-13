@@ -155,7 +155,7 @@ class WorkerDrawer extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(20, 48, 20, 24),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF95D6F5), Color(0xFF003696)], // New blue gradient
+          colors: [Color(0xFFDFEDFF), Color(0xFF003696)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

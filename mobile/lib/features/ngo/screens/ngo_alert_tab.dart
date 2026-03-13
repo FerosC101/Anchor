@@ -44,22 +44,12 @@ class _NgoAlertTabState extends State<NgoAlertTab> {
           const SizedBox(height: 16),
 
           // ── Title ──
-          const Center(
-            child: Text(
-              'Alert Generation',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF0F172A),
-              ),
-            ),
-          ),
-          const SizedBox(height: 6),
-          const Center(
-            child: Text(
-              'Create safety alerts and issue warnings about employers or agencies',
-              style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
-              textAlign: TextAlign.center,
+          const Text(
+            'Alert Generation',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF0F172A),
             ),
           ),
           const SizedBox(height: 16),

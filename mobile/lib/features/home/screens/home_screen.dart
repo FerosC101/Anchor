@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedTab = 0;
 
   static const Color _blue = Color(0xFF003696); // Deep Blue
-  static const Color _blueLight = Color(0xFFCAEBFA); // Light Teal
+  static const Color _blueLight = Color(0xFFDFEDFF);
   static const Color _blueDark = Color(0xFF003696); // Deep Blue
   static const Color _bg = Color(0xFFF4F4F8);
   static const Color _textSecondary = Color(0xFF64748B);
@@ -145,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
       padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: const Color(0xFFCAEBFA),
+        color: const Color(0xFFDFEDFF),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

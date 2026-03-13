@@ -5,10 +5,10 @@ class ExitSimulationDialog extends StatelessWidget {
 
   // ── Colors ──────────────────────────────────────────────────────────────────
   static const Color _blue = Color(0xFF003696);
-  static const Color _blueMid = Color(0xFF4F90F0);
-  static const Color _blueLight = Color(0xFFCAEBFA);
-  static const Color _successGreen = Color(0xFF2E7D32);
-  static const Color _dangerRed = Color(0xFFC62828);
+  static const Color _blueMid = Color(0xFF003696);
+  static const Color _blueLight = Color(0xFFDFEDFF);
+  static const Color _successGreen = Color(0xFF00AA28);
+  static const Color _dangerRed = Color(0xFF8E0012);
 
   @override
   Widget build(BuildContext context) {

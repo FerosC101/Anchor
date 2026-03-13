@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../core/ngo_theme.dart';
 import '../models/ngo_models.dart';
 import '../widgets/ngo_shared_widgets.dart';
 import '../widgets/ngo_monitoring_card.dart';
@@ -41,21 +40,12 @@ class _NgoMonitoringTabState extends State<NgoMonitoringTab> {
         children: [
           const SizedBox(height: 20),
 
-          const Center(
-            child: Text(
-              'Report Management',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF0F172A),
-              ),
-            ),
-          ),
-          const SizedBox(height: 4),
-          const Center(
-            child: Text(
-              'Review and verify worker exploitation reports',
-              style: TextStyle(fontSize: 13, color: NgoTheme.textSecondary),
+          const Text(
+            'Report Management',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF0F172A),
             ),
           ),
           const SizedBox(height: 20),

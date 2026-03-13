@@ -27,12 +27,12 @@ class DrawerMenuItem extends StatelessWidget {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: iconBg ?? const Color(0xFFF5F5F5),
+          color: iconBg ?? const Color(0xFFDFEDFF),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
           icon,
-          color: iconColor ?? const Color(0xFF3D3790),
+          color: iconColor ?? const Color(0xFF003696),
           size: 20,
         ),
       ),

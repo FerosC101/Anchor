@@ -13,11 +13,11 @@ class WageMonitorScreen extends StatefulWidget {
 class _WageMonitorScreenState extends State<WageMonitorScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
   static const Color _blue = Color(0xFF003696);
-  static const Color _blueMid = Color(0xFF4F90F0);
-  static const Color _blueLight = Color(0xFFCAEBFA);
+  static const Color _blueMid = Color(0xFF003696);
+  static const Color _blueLight = Color(0xFFDFEDFF);
   static const Color _bg = Color(0xFFF5F5F5);
-  static const Color _alertRed = Color(0xFFFF6B6B);
-  static const Color _alertBg = Color(0xFFFFF0F0);
+  static const Color _alertRed = Color(0xFF8E0012);
+  static const Color _alertBg = Color(0xFFFFF3F3);
 
   // ── Sample data ─────────────────────────────────────────────────────────────
   final List<double> _wageData = [190, 300, 140, 260, 210, 210, 200];

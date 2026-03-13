@@ -11,8 +11,8 @@ class CommunityPostDetailScreen extends StatefulWidget {
 
 class _CommunityPostDetailScreenState extends State<CommunityPostDetailScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _blueMid = Color(0xFF4F90F0);
-  static const Color _blueLight = Color(0xFFCAEBFA);
+  static const Color _blueMid = Color(0xFF003696);
+  static const Color _blueLight = Color(0xFFDFEDFF);
   static const Color _bg = Color(0xFFF5F5F5);
 
   // ── Sample data ─────────────────────────────────────────────────────────────

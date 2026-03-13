@@ -35,7 +35,7 @@ class NotificationsScreen extends StatelessWidget {
           _buildNotificationTile(
             icon: Icons.description_outlined,
             iconColor: const Color(0xFF003696),
-            iconBgColor: const Color(0xFFCAEBFA),
+            iconBgColor: const Color(0xFFDFEDFF),
             title: 'Contract Scan Complete',
             message: 'Review results for "Employment Agreement 2026"',
             time: '5 hours ago',
@@ -71,7 +71,7 @@ class NotificationsScreen extends StatelessWidget {
           _buildNotificationTile(
             icon: Icons.shield_outlined,
             iconColor: const Color(0xFF003696),
-            iconBgColor: const Color(0xFFCAEBFA),
+            iconBgColor: const Color(0xFFDFEDFF),
             title: 'Emergency Contact Added',
             message: 'Philippine Embassy contact saved to your profile',
             time: '1 week ago',

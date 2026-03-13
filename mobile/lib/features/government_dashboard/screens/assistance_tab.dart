@@ -41,54 +41,48 @@ class AssistanceTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Search bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(28),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.06),
-                            blurRadius: 12,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: const [
-                          Icon(Icons.search,
-                              size: 20, color: Color(0xFF94A3B8)),
-                          SizedBox(width: 10),
-                          Text(
-                            'Search worker by name or case ID',
-                            style: TextStyle(
-                                fontSize: 14, color: Color(0xFF94A3B8)),
-                          ),
-                        ],
-                      ),
-                    ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 12,
+                    offset: const Offset(0, 2),
                   ),
-                  const SizedBox(height: 12),
-                  _buildAssistanceFilterChips(context),
-                  const SizedBox(height: 16),
-                  ...List.generate(assistanceCasesData.length, (i) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 6),
-                      child:
-                          _buildAssistanceCard(context, assistanceCasesData[i]),
-                    );
-                  }),
-                  const SizedBox(height: 16),
-                  const DashboardPagination(),
-                  const SizedBox(height: 24),
                 ],
               ),
+              child: const Row(
+                children: [
+                  Icon(Icons.search, size: 20, color: Color(0xFF94A3B8)),
+                  SizedBox(width: 10),
+                  Text(
+                    'Search worker by name or case ID',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildAssistanceFilterChips(context),
+          const SizedBox(height: 16),
+          ...List.generate(assistanceCasesData.length, (i) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: _buildAssistanceCard(context, assistanceCasesData[i]),
             );
+          }),
+          const SizedBox(height: 16),
+          const DashboardPagination(),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
   }
 
   Widget _buildAssistanceFilterChips(BuildContext context) {
@@ -144,54 +138,104 @@ class AssistanceTab extends StatelessWidget {
     );
   }
 
-  Color _assistanceStatusColor(String status) {
+  Color _assistanceStatusBg(String status) {
     switch (status) {
       case 'In review':
-        return const Color(0xFF3730A3);
+        return DashboardTheme.blueLight;
+      case 'Resolved':
+        return DashboardTheme.greenBg;
+      case 'Critical':
+        return DashboardTheme.redBg;
+      default:
+        return DashboardTheme.blueLight;
+    }
+  }
+
+  Color _assistanceStatusText(String status) {
+    switch (status) {
+      case 'In review':
+        return DashboardTheme.blueDark;
       case 'Resolved':
         return DashboardTheme.green;
       case 'Critical':
         return DashboardTheme.red;
       default:
-        return const Color(0xFF64748B);
+        return DashboardTheme.blueDark;
     }
   }
 
-  Color _assistanceStatusBg(String status) {
+  String _assistanceStatusLabel(String status) {
     switch (status) {
       case 'In review':
-        return const Color(0xFFEEF2FF);
+        return 'In Review';
       case 'Resolved':
-        return const Color(0xFFECFDF5);
+        return 'Resolved';
       case 'Critical':
-        return const Color(0xFFFEF2F2);
+        return 'High';
       default:
-        return const Color(0xFFF1F5F9);
+        return status;
     }
+  }
+
+  Widget _profileIconBadge({double size = 42}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: DashboardTheme.blueLight,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.person,
+          size: size * 0.52,
+          color: DashboardTheme.blueDark,
+        ),
+      ),
+    );
   }
 
   Widget _buildAssistanceCard(BuildContext context, Map<String, String> c) {
     final status = c['status']!;
     final isResolved = status == 'Resolved';
+    final issueTitle = isResolved ? 'Passport Retention' : 'Contract Substitution';
+    final issueBg = isResolved ? DashboardTheme.redBg : DashboardTheme.yellowBg;
+    final statusLabel = _assistanceStatusLabel(status);
+    final statusBg = _assistanceStatusBg(status);
+    final statusText = _assistanceStatusText(status);
+
     return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: DashboardTheme.cardDecoration,
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x10000000),
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            issueTitle,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: DashboardTheme.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 10),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 44,
-                height: 44,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF94A3B8),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(Icons.person_rounded,
-                    color: Colors.white, size: 24),
+                child: _profileIconBadge(),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -201,119 +245,165 @@ class AssistanceTab extends StatelessWidget {
                       style: const TextStyle(
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
+                        color: DashboardTheme.textPrimary,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
-                      c['country']!,
+                      c['employer']!,
                       style: const TextStyle(
-                          fontSize: 12, color: Color(0xFF64748B)),
+                        fontSize: 12,
+                        color: DashboardTheme.textSecondary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
-                  color: _assistanceStatusBg(status),
+                  color: statusBg,
                   borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                      color: _assistanceStatusColor(status), width: 1),
                 ),
                 child: Text(
-                  status,
+                  statusLabel,
                   style: TextStyle(
                     fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: _assistanceStatusColor(status),
+                    fontWeight: FontWeight.w700,
+                    color: statusText,
+                    height: 1,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          RichText(
-            text: TextSpan(children: [
-              const TextSpan(
-                text: 'Employer: ',
+          const SizedBox(height: 12),
+          const Divider(height: 1, thickness: 1, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Country: ',
                 style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: DashboardTheme.textPrimary,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  c['country']!,
+                  style: const TextStyle(
                     fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF0F172A)),
+                    color: DashboardTheme.textPrimary,
+                  ),
+                ),
               ),
-              TextSpan(
-                text: c['employer']!,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF64748B)),
-              ),
-            ]),
+            ],
           ),
-          const SizedBox(height: 2),
-          RichText(
-            text: TextSpan(children: [
-              const TextSpan(
-                text: 'Issue: ',
+          const SizedBox(height: 6),
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Date: ',
                 style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xFF0F172A)),
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: DashboardTheme.textPrimary,
+                ),
               ),
-              TextSpan(
-                text: c['issue']!,
-                style: const TextStyle(fontSize: 13, color: Color(0xFF64748B)),
+              Expanded(
+                child: Text(
+                  'March 6, 2026',
+                  style: TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+                ),
               ),
-            ]),
+            ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: 6),
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Location: ',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: DashboardTheme.textPrimary,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  'Bangkok, Thailand',
+                  style: TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Contract signed in home country differs from actual employment terms. '
+            'Salary reduced by 30% and impacted ${c['name']!}.',
+            style: const TextStyle(
+              fontSize: 13,
+              height: 1.45,
+              color: DashboardTheme.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 16),
           Row(
             children: [
               Expanded(
                 child: GestureDetector(
                   onTap: () => _showViewCaseModal(context, c),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 11),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
-                      gradient: DashboardTheme.primaryGradient,
-                      borderRadius: BorderRadius.circular(10),
+                      color: const Color(0xFF003696),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: const Text(
                       'View Case',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                         color: Colors.white,
+                        height: 1,
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: GestureDetector(
-                  onTap: isResolved
-                      ? () => _showViewCaseModal(context, c)
-                      : () => _showSendGuidanceModal(context, c),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 11),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                          color: const Color(0xFF3730A3), width: 1.5),
-                    ),
-                    child: Text(
-                      isResolved ? 'View Case' : 'Send Guidance',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF3730A3),
+              if (!isResolved) ...[
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _showSendGuidanceModal(context, c),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFDFEDFF),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: const Text(
+                        'Send Guidance',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF003696),
+                          height: 1,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
+              ],
             ],
           ),
         ],
@@ -346,16 +436,9 @@ class AssistanceTab extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 52,
-                      height: 52,
-                      decoration: const BoxDecoration(
-                        color: Color(0xFF334155),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(Icons.person_rounded,
-                          color: Colors.white, size: 28),
+                      child: _profileIconBadge(size: 52),
                     ),
-                    const SizedBox(width: 12),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -391,7 +474,7 @@ class AssistanceTab extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF3730A3),
+                    color: DashboardTheme.blueDark,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -412,7 +495,7 @@ class AssistanceTab extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF3730A3),
+                    color: DashboardTheme.blueDark,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -428,7 +511,7 @@ class AssistanceTab extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF3730A3),
+                    color: DashboardTheme.blueDark,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -453,7 +536,7 @@ class AssistanceTab extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
-                    color: Color(0xFF3730A3),
+                    color: DashboardTheme.blueDark,
                   ),
                 ),
                 const SizedBox(height: 12),
@@ -495,23 +578,29 @@ class AssistanceTab extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Container(
+                      child: _profileIconBadge(size: 52),
+                    ),
+                    const SizedBox(width: 14),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
+                        children: [
+                          const Text(
                             'Send Official Guidance',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.w700,
-                              color: Color(0xFF0F172A),
+                              color: DashboardTheme.textPrimary,
                             ),
                           ),
-                          SizedBox(height: 2),
+                          const SizedBox(height: 2),
                           Text(
-                            'to Maria Santos',
-                            style: TextStyle(
-                                fontSize: 13, color: Color(0xFF64748B)),
+                            'to ${c['name']!}',
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: DashboardTheme.textSecondary,
+                            ),
                           ),
                         ],
                       ),
@@ -519,7 +608,7 @@ class AssistanceTab extends StatelessWidget {
                     GestureDetector(
                       onTap: () => Navigator.pop(context),
                       child: const Icon(Icons.close,
-                          size: 24, color: Color(0xFF64748B)),
+                          size: 24, color: DashboardTheme.textSecondary),
                     ),
                   ],
                 ),
@@ -535,7 +624,7 @@ class AssistanceTab extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                const ReadOnlyField(text: 'Maria Santos'),
+                ReadOnlyField(text: c['name']!),
                 const SizedBox(height: 16),
                 const Text(
                   'Case ID',
@@ -655,7 +744,7 @@ class AssistanceTab extends StatelessWidget {
                         child: Container(
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF3730A3),
+                            color: DashboardTheme.blueDark,
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: const Text(

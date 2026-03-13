@@ -11,10 +11,10 @@ class NgoMonitoringCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final severityColor = report.severity == 'High'
-        ? const Color(0xFFF4A261)
-        : report.severity == 'Medium'
-            ? const Color(0xFFF59E0B)
-            : const Color(0xFF10B981);
+      ? NgoTheme.escalatedText
+      : report.severity == 'Medium'
+        ? NgoTheme.pendingText
+        : NgoTheme.resolvedText;
     final credibilityPct = (report.credibility * 100).round();
 
     return Container(
@@ -80,7 +80,7 @@ class NgoMonitoringCard extends StatelessWidget {
           ngoDetailRow('Issue:', report.issue),
           const SizedBox(height: 4),
           ngoDetailRow('Report ID:', report.reportId,
-              valueColor: const Color(0xFF9500FF)),
+              valueColor: NgoTheme.navy),
           const SizedBox(height: 4),
 
           // Severity row
@@ -130,7 +130,7 @@ class NgoMonitoringCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFF10B981),
+                  color: NgoTheme.resolvedText,
                 ),
               ),
             ],
@@ -145,7 +145,7 @@ class NgoMonitoringCard extends StatelessWidget {
               minHeight: 6,
               backgroundColor: const Color(0xFFE2E8F0),
               valueColor:
-                  const AlwaysStoppedAnimation<Color>(Color(0xFF4C3D9E)),
+                  const AlwaysStoppedAnimation<Color>(NgoTheme.navy),
             ),
           ),
           const SizedBox(height: 14),
@@ -161,7 +161,7 @@ class NgoMonitoringCard extends StatelessWidget {
                     onPressed: () =>
                         showNgoReportDetailSheet(context, report),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF3D3790),
+                      backgroundColor: NgoTheme.navy,
                       foregroundColor: Colors.white,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
@@ -180,13 +180,14 @@ class NgoMonitoringCard extends StatelessWidget {
                 flex: 4,
                 child: SizedBox(
                   height: 38,
-                  child: OutlinedButton(
+                  child: ElevatedButton(
                     onPressed: () {},
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: const Color(0xFF0F172A),
-                      side: const BorderSide(color: Color(0xFFE2E8F0)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: NgoTheme.blueLight,
+                      foregroundColor: NgoTheme.blueDark,
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8)),
+                      elevation: 0,
                     ),
                     child: const Text(
                       'Verify',

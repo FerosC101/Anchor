@@ -3,6 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/auth/providers/auth_provider.dart';
+import '../../features/profile/screens/profile_screen.dart';
+import '../../features/profile/screens/notifications_screen.dart';
+import '../../features/profile/screens/privacy_screen.dart';
+import 'drawer_menu_item.dart';
+import 'drawer_section_label.dart';
 
 class GovernmentDrawer extends ConsumerWidget {
   const GovernmentDrawer({super.key});
@@ -10,133 +15,169 @@ class GovernmentDrawer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
+      width: MediaQuery.of(context).size.width * 0.85,
       child: Column(
         children: [
-          // Header with gradient
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(24, 60, 24, 24),
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF95D6F5), Color(0xFF003696)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-            ),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Government',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  'Dashboard Portal',
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.white70,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
-          // Menu items
+          _buildHeader(),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: EdgeInsets.zero,
               children: [
-                _buildMenuItem(
-                  context,
-                  icon: Icons.home_rounded,
-                  label: 'Dashboard',
+                const DrawerSectionLabel('ACCOUNT'),
+                DrawerMenuItem(
+                  icon: Icons.person_outline,
+                  label: 'My Profile',
                   onTap: () {
-                    context.pop();
-                    context.go('/home');
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfileScreen(),
+                      ),
+                    );
                   },
                 ),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.bar_chart_rounded,
-                  label: 'Monitoring',
+                DrawerMenuItem(
+                  icon: Icons.notifications_none,
+                  label: 'Notifications',
+                  badge: '3',
                   onTap: () {
-                    context.pop();
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen(),
+                      ),
+                    );
                   },
                 ),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.people_outline_rounded,
-                  label: 'Assistance',
+                const DrawerSectionLabel('SECURITY'),
+                DrawerMenuItem(
+                  icon: Icons.lock_outline,
+                  label: 'Privacy & Security',
                   onTap: () {
-                    context.pop();
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyScreen(),
+                      ),
+                    );
                   },
                 ),
-                const Divider(height: 32, thickness: 1),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.settings_outlined,
-                  label: 'Settings',
-                  onTap: () {
-                    context.pop();
-                  },
+                const SizedBox(height: 8),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Divider(color: Colors.grey.shade300),
                 ),
-                _buildMenuItem(
-                  context,
-                  icon: Icons.help_outline_rounded,
-                  label: 'Help & Support',
-                  onTap: () {
-                    context.pop();
-                  },
+                DrawerMenuItem(
+                  icon: Icons.logout,
+                  label: 'Logout',
+                  onTap: () => _showLogoutDialog(context, ref),
                 ),
               ],
             ),
           ),
+          _buildFooter(),
+        ],
+      ),
+    );
+  }
 
-          // Logout button
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: OutlinedButton.icon(
-              onPressed: () => _showLogoutDialog(context, ref),
-              icon: const Icon(Icons.logout_rounded),
-              label: const Text('Logout'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: const Color(0xFF003696),
-                side: const BorderSide(color: Color(0xFF003696)),
-                minimumSize: const Size(double.infinity, 48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+  Widget _buildHeader() {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(20, 48, 20, 24),
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFFDFEDFF), Color(0xFF003696)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.white.withValues(alpha: 0.25),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.account_balance_outlined,
+                  color: Colors.white,
+                  size: 32,
                 ),
               ),
-            ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Government User',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      'gov@demo.com',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.white.withValues(alpha: 0.85),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Text(
+                        'Government Officer',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ],
       ),
     );
   }
 
-  Widget _buildMenuItem(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return ListTile(
-      leading: Icon(icon, color: const Color(0xFF003696)),
-      title: Text(
-        label,
-        style: const TextStyle(
-          fontSize: 15,
-          fontWeight: FontWeight.w500,
-          color: Color(0xFF0F172A),
-        ),
+  Widget _buildFooter() {
+    return const Padding(
+      padding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Anchor v1.0.0',
+            style: TextStyle(fontSize: 11, color: Color(0xFF888888)),
+          ),
+          Text(
+            '© 2026',
+            style: TextStyle(fontSize: 11, color: Color(0xFF888888)),
+          ),
+        ],
       ),
-      onTap: onTap,
-      horizontalTitleGap: 8,
     );
   }
 

@@ -18,11 +18,11 @@ class WorkerAppBar extends StatelessWidget implements PreferredSizeWidget {
       // LEFT — back button OR notifications icon
       leading: showBackButton
           ? IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.grey),
+              icon: const Icon(Icons.arrow_back, color: Color(0xFF003696)),
               onPressed: () => Navigator.pop(context),
             )
           : IconButton(
-              icon: const Icon(Icons.notifications_none, color: Colors.grey),
+              icon: const Icon(Icons.notifications_none, color: Color(0xFF003696)),
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -45,7 +45,7 @@ class WorkerAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Builder(
           builder: (ctx) => IconButton(
-            icon: const Icon(Icons.menu, color: Colors.grey),
+            icon: const Icon(Icons.menu, color: Color(0xFF003696)),
             onPressed: () => Scaffold.of(ctx).openEndDrawer(),
           ),
         ),
