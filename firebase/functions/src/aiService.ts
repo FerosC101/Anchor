@@ -45,68 +45,97 @@ type AnalyzeInput = {
 export async function analyzeContractWithModel(
   input: AnalyzeInput,
 ): Promise<ContractAnalysisPayload> {
-  const gemini = await analyzeWithGemini(input);
+  const [gemini, modelApi] = await Promise.all([
+    analyzeWithGemini(input),
+    fetchContractAnalyzerResult(input),
+  ]);
+
+  if (gemini != null && modelApi != null) {
+    return mergeGeminiAndModel(gemini, modelApi);
+  }
+
   if (gemini != null) {
     return gemini;
   }
 
+  if (modelApi != null) {
+    return modelApi;
+  }
+
+  if (input.text.trim().length === 0) {
+    return buildUnreadableContractPayload(input.fileName);
+  }
+
+  return analyzeHeuristically(input);
+}
+
+async function fetchContractAnalyzerResult(
+  input: AnalyzeInput,
+): Promise<ContractAnalysisPayload | null> {
   const processAny = (
     globalThis as { process?: { env?: Record<string, string> } }
   ).process;
   const endpoint = processAny?.env?.CONTRACT_ANALYZER_URL;
+  if (!endpoint) return null;
 
-  if (!endpoint) {
-    if (input.text.trim().length === 0) {
-      return buildUnreadableContractPayload(input.fileName);
-    }
-    return analyzeHeuristically(input);
-  }
-
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      text: input.text,
-      file_name: input.fileName,
-      contract_id: input.contractId,
-    }),
-  });
-
-  if (!response.ok) {
-    const body = await response.text();
-    console.error("Contract analyzer API error", {
-      status: response.status,
-      body,
-      endpoint,
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text: input.text,
+        file_name: input.fileName,
+        contract_id: input.contractId,
+      }),
     });
-    throw new Error(
-      `Contract analyzer API failed (${response.status}): ${body}`,
-    );
-  }
 
-  const data = (await response.json()) as ContractAnalysisPayload;
+    if (!response.ok) {
+      const body = await response.text();
+      console.error("Contract analyzer API error", {
+        status: response.status,
+        body,
+        endpoint,
+      });
+      return null;
+    }
+
+    const data = (await response.json()) as ContractAnalysisPayload;
+    return normalizePayload(data);
+  } catch (error) {
+    console.error("Contract analyzer API request failed", error);
+    return null;
+  }
+}
+
+function normalizePayload(
+  data: ContractAnalysisPayload,
+): ContractAnalysisPayload {
+  const normalizedFlagged = Array.isArray(data.flagged_clauses)
+    ? data.flagged_clauses
+    : [];
+  const normalizedCriticalCount = normalizedFlagged.filter(
+    (item) => item?.severity === "high",
+  ).length;
 
   return {
-    risk_score: Number(data.risk_score ?? 0),
-    risk_level: data.risk_level ?? "low",
+    risk_score: clamp01(Number(data.risk_score ?? 0)),
+    risk_level: toRiskLevel(data.risk_level, Number(data.risk_score ?? 0)),
     ai_summary: data.ai_summary ?? "No summary provided.",
     overview_summary:
       typeof data.overview_summary === "string"
-        ? data.overview_summary
+        ? data.overview_summary.trim().slice(0, 160)
         : undefined,
-    flagged_clauses: Array.isArray(data.flagged_clauses)
-      ? data.flagged_clauses
-      : [],
+    flagged_clauses: normalizedFlagged,
     issue_count:
       typeof data.issue_count === "number"
         ? data.issue_count
-        : Array.isArray(data.flagged_clauses)
-          ? data.flagged_clauses.length
-          : 0,
+        : normalizedFlagged.length,
     critical_count:
-      typeof data.critical_count === "number" ? data.critical_count : 0,
+      typeof data.critical_count === "number"
+        ? data.critical_count
+        : normalizedCriticalCount,
     comparison_items: Array.isArray(data.comparison_items)
       ? data.comparison_items
       : [],
@@ -116,6 +145,81 @@ export async function analyzeContractWithModel(
     model_loaded: Boolean(data.model_loaded),
     model_note: data.model_note,
   };
+}
+
+function mergeGeminiAndModel(
+  gemini: ContractAnalysisPayload,
+  modelApi: ContractAnalysisPayload,
+): ContractAnalysisPayload {
+  const mergedFlags = mergeFlaggedClauses(
+    gemini.flagged_clauses,
+    modelApi.flagged_clauses,
+  );
+  const mergedScore = clamp01(
+    gemini.risk_score * 0.7 + modelApi.risk_score * 0.3,
+  );
+  const mergedLevel = toRiskLevel(undefined, mergedScore);
+  const criticalCount = mergedFlags.filter(
+    (item) => item.severity === "high",
+  ).length;
+  const comparisonItems = ensureComparisonItems(
+    [...(gemini.comparison_items ?? []), ...(modelApi.comparison_items ?? [])],
+    mergedFlags,
+  );
+  const recommendedActions = ensureRecommendedActions(
+    [
+      ...(gemini.recommended_actions ?? []),
+      ...(modelApi.recommended_actions ?? []),
+    ],
+    mergedLevel,
+  );
+
+  const modelSignal = `Model signal: ${modelApi.risk_level.toUpperCase()} (${modelApi.risk_score.toFixed(2)}).`;
+  const geminiSummary = gemini.ai_summary.trim();
+  const mergedSummary = geminiSummary.includes("Model signal:")
+    ? geminiSummary
+    : `${geminiSummary} ${modelSignal}`;
+
+  return {
+    risk_score: mergedScore,
+    risk_level: mergedLevel,
+    ai_summary: mergedSummary,
+    overview_summary:
+      gemini.overview_summary?.trim().slice(0, 160) ??
+      buildOverviewSummary(mergedLevel, mergedFlags.length, criticalCount),
+    flagged_clauses: mergedFlags,
+    issue_count: mergedFlags.length,
+    critical_count: criticalCount,
+    comparison_items: comparisonItems,
+    recommended_actions: recommendedActions,
+    model_loaded: gemini.model_loaded || modelApi.model_loaded,
+    model_note: `Gemini + Contract Analyst model combined (${gemini.model_note ?? "Gemini"}; ${modelApi.model_note ?? "Model API"})`,
+  };
+}
+
+function mergeFlaggedClauses(
+  primary: FlaggedClause[],
+  secondary: FlaggedClause[],
+): FlaggedClause[] {
+  const merged = [...primary, ...secondary];
+  const unique: FlaggedClause[] = [];
+  const seen = new Set<string>();
+
+  for (const item of merged) {
+    const key = `${item.clause}|${item.reason}`.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+
+    unique.push({
+      clause: item.clause,
+      reason: item.reason,
+      severity: item.severity,
+      category: item.category,
+      suggested_fix: item.suggested_fix,
+    });
+  }
+
+  return unique;
 }
 
 async function analyzeWithGemini(
