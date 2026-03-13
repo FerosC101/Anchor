@@ -49,12 +49,6 @@ export interface UserModel {
   updatedAt: Date;
 }
 
-const USER_ROLE_VALUES: UserRole[] = [
-  USER_ROLE.OFW,
-  USER_ROLE.AGENCY,
-  USER_ROLE.VERIFIER,
-  USER_ROLE.ADMIN,
-];
 const VERIFICATION_STATUS_VALUES: VerificationStatus[] = [
   VERIFICATION_STATUS.PENDING,
   VERIFICATION_STATUS.VERIFIED,
@@ -62,8 +56,19 @@ const VERIFICATION_STATUS_VALUES: VerificationStatus[] = [
 ];
 
 function parseRole(value: unknown): UserRole {
-  if (typeof value === "string" && USER_ROLE_VALUES.includes(value as UserRole))
-    return value as UserRole;
+  if (typeof value === "string") {
+    // Map Flutter role names to web role names
+    const roleMap: Record<string, UserRole> = {
+      ofw: USER_ROLE.OFW,
+      agency: USER_ROLE.AGENCY,
+      government: USER_ROLE.AGENCY, // Flutter uses "government", web uses "agency"
+      verifier: USER_ROLE.VERIFIER,
+      ngo: USER_ROLE.VERIFIER, // Flutter uses "ngo", web uses "verifier"
+      admin: USER_ROLE.ADMIN,
+    };
+    const mapped = roleMap[value as string];
+    if (mapped) return mapped;
+  }
   return USER_ROLE.OFW;
 }
 

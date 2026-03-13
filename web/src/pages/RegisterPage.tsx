@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../core/context/AuthContext";
-import { ROUTES } from "../core/config/routes";
+import { ROUTES, getDefaultRouteForRole } from "../core/config/routes";
 import { USER_ROLE, type UserRole } from "@/types";
 
 const GRADIENT: React.CSSProperties = {
@@ -292,7 +292,7 @@ export default function RegisterPage() {
         phoneNumber: phone.trim(),
         country: country.trim(),
       });
-      if (ok) navigate(ROUTES.HOME, { replace: true });
+      if (ok) navigate(getDefaultRouteForRole(role as UserRole), { replace: true });
     }
   }
 

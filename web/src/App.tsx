@@ -1,13 +1,15 @@
 import { Navigate, Route, Routes } from "react-router-dom";
-import { ROUTES } from "./core/config/routes";
+import { ROUTES, getDefaultRouteForRole } from "./core/config/routes";
 import { useAuth } from "./core/context/AuthContext";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
-import DashboardPage from "./pages/DashboardPage";
+import AlertPage from "./pages/AlertPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
+import MonitoringPage from "./pages/MonitoringPage";
+import NGODashboardPage from "./pages/NGODashboardPage";
+import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import UsersPageWrapper from "./pages/UsersPage";
-import { USER_ROLE } from "./types/user";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuth();
@@ -34,12 +36,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
     );
   }
   if (user) {
-    return (
-      <Navigate
-        to={user.role === USER_ROLE.ADMIN ? ROUTES.ADMIN : ROUTES.HOME}
-        replace
-      />
-    );
+    return <Navigate to={getDefaultRouteForRole(user.role)} replace />;
   }
   return <>{children}</>;
 }
@@ -47,6 +44,7 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
+      <Route path="/" element={<LoginPage />} />
       <Route
         path={ROUTES.LOGIN}
         element={
@@ -75,7 +73,31 @@ export default function App() {
         path={ROUTES.DASHBOARD}
         element={
           <ProtectedRoute>
-            <DashboardPage />
+            <NGODashboardPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.MONITORING}
+        element={
+          <ProtectedRoute>
+            <MonitoringPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ALERT}
+        element={
+          <ProtectedRoute>
+            <AlertPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PROFILE}
+        element={
+          <ProtectedRoute>
+            <ProfilePage />
           </ProtectedRoute>
         }
       />
@@ -95,7 +117,7 @@ export default function App() {
           </ProtectedRoute>
         }
       />
-      <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
