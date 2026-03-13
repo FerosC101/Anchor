@@ -16,6 +16,7 @@ class GovernmentDashboardScreen extends StatefulWidget {
 
 class _GovernmentDashboardScreenState extends State<GovernmentDashboardScreen> {
   int _selectedTab = 0;
+  int? _forceMonitoringSubTab;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   // ── Shared filter state ──────────────────────────────────────────────────────
@@ -29,15 +30,19 @@ class _GovernmentDashboardScreenState extends State<GovernmentDashboardScreen> {
       key: _scaffoldKey,
       backgroundColor: DashboardTheme.bg,
       appBar: const GovernmentAppBar(),
-      drawer: const GovernmentDrawer(),
+      endDrawer: const GovernmentDrawer(),
       body: IndexedStack(
         index: _selectedTab,
         children: [
           HomeTab(
-            onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
-            onViewAllTap: () => setState(() => _selectedTab = 2),
+            onMenuTap: () => _scaffoldKey.currentState?.openEndDrawer(),
+            onViewAllTap: () => setState(() {
+              _selectedTab = 1;
+              _forceMonitoringSubTab = 0;
+            }),
           ),
           MonitoringTab(
+            forceSubTab: _forceMonitoringSubTab,
             selectedCountry: _selectedCountry,
             selectedStatus: _selectedStatus,
             selectedDate: _selectedDate,
@@ -72,7 +77,10 @@ class _GovernmentDashboardScreenState extends State<GovernmentDashboardScreen> {
       child: BottomNavigationBar(
         backgroundColor: Colors.white,
         currentIndex: _selectedTab,
-        onTap: (i) => setState(() => _selectedTab = i),
+        onTap: (i) => setState(() {
+          _selectedTab = i;
+          if (i != 1) _forceMonitoringSubTab = null;
+        }),
         type: BottomNavigationBarType.fixed,
         selectedItemColor: const Color(0xFF003696),
         unselectedItemColor: const Color(0xFFCBD5E1),

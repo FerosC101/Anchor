@@ -62,7 +62,7 @@ class HomeTab extends StatelessWidget {
             crossAxisCount: 2,
             crossAxisSpacing: 14,
             mainAxisSpacing: 14,
-            childAspectRatio: 0.96,
+            childAspectRatio: 1.12,
           ),
           itemCount: statsData.length,
           itemBuilder: (_, i) => _buildStatCard(statsData[i]),
@@ -72,56 +72,88 @@ class HomeTab extends StatelessWidget {
   }
 
   Widget _buildStatCard(Map<String, dynamic> stat) {
+    final change = (stat['change'] as String?) ?? '';
+    final isNegative = (stat['label'] as String?)
+            ?.toLowerCase()
+            .contains('high risk') ==
+        true;
+    final trendColor = isNegative ? DashboardTheme.red : DashboardTheme.green;
+
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(22),
-        border: Border.all(color: const Color(0xFFD1D5DB)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x12000000),
+            blurRadius: 10,
+            offset: Offset(0, 2),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: DashboardTheme.blueDark,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              stat['icon'] as IconData,
-              color: Colors.white,
-              size: 24,
-            ),
+          Row(
+            children: [
+              Container(
+                width: 36,
+                height: 36,
+                decoration: BoxDecoration(
+                  color: DashboardTheme.blueDark,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  stat['icon'] as IconData,
+                  color: Colors.white,
+                  size: 18,
+                ),
+              ),
+              const Spacer(),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.north_east_rounded, size: 16, color: trendColor),
+                  const SizedBox(width: 2),
+                  Text(
+                    change,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: trendColor,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-          const SizedBox(height: 8),
+          const Spacer(),
           Text(
             stat['number'] as String,
             style: const TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
+              fontSize: 22,
+              fontWeight: FontWeight.w800,
               color: DashboardTheme.textPrimary,
               height: 1,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             stat['label'] as String,
             style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
               color: DashboardTheme.textPrimary,
             ),
-            maxLines: 2,
+            maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 2),
           Text(
             stat['sublabel'] as String,
             style: const TextStyle(
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: FontWeight.w400,
               color: DashboardTheme.textSecondary,
             ),
@@ -151,7 +183,13 @@ class HomeTab extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
-            border: Border.all(color: const Color(0xFFD1D5DB)),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x14000000),
+                blurRadius: 14,
+                offset: Offset(0, 4),
+              ),
+            ],
           ),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
@@ -285,139 +323,90 @@ class HomeTab extends StatelessWidget {
     final risk = alert['riskLevel']?.toLowerCase() ?? 'high';
     final dateText = _formatDate(alert['date'] ?? '2026-03-06');
 
-    Color riskBg;
-    Color riskText;
     String riskLabel;
+    Color riskDotColor;
     if (risk.contains('critical') || risk.contains('high')) {
-      riskBg = DashboardTheme.red;
-      riskText = Colors.white;
       riskLabel = 'HIGH';
+      riskDotColor = DashboardTheme.red;
     } else if (risk.contains('review') || risk.contains('medium')) {
-      riskBg = DashboardTheme.yellowBg;
-      riskText = DashboardTheme.yellow;
       riskLabel = 'MED';
+      riskDotColor = DashboardTheme.yellow;
     } else {
-      riskBg = DashboardTheme.greenBg;
-      riskText = DashboardTheme.green;
       riskLabel = 'LOW';
+      riskDotColor = DashboardTheme.green;
     }
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(22),
-          border: Border.all(color: const Color(0xFFD1D5DB)),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x10000000),
+              blurRadius: 10,
+              offset: Offset(0, 3),
+            ),
+          ],
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  width: 56,
-                  height: 56,
+                  width: 42,
+                  height: 42,
                   decoration: BoxDecoration(
-                    color: DashboardTheme.blueDark,
-                    borderRadius: BorderRadius.circular(12),
+                    color: DashboardTheme.blueLight,
+                    borderRadius: BorderRadius.circular(10),
                   ),
                   child: const Icon(
-                    Icons.description_outlined,
-                    color: Colors.white,
-                    size: 30,
+                    Icons.person,
+                    color: DashboardTheme.blueDark,
+                    size: 22,
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                            fontSize: 16,
-                            color: DashboardTheme.textPrimary,
-                          ),
-                          children: [
-                            TextSpan(
-                              text: alert['workerName'] ?? 'Worker Name',
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w700),
-                            ),
-                            TextSpan(
-                              text: '  ${alert['country'] ?? 'Country'}',
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: Color(0xFF7A7A7A),
-                              ),
-                            ),
-                          ],
+                      Text(
+                        alert['workerName'] ?? 'Worker Name',
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: DashboardTheme.textPrimary,
                         ),
                       ),
                       const SizedBox(height: 2),
-                      Text(
-                        alert['employer'] ?? 'Employer Name',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Color(0xFF7A7A7A),
-                        ),
+                      Row(
+                        children: [
+                          const Icon(Icons.location_on_outlined,
+                              size: 16, color: DashboardTheme.textSecondary),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              alert['country'] ?? 'Country',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: DashboardTheme.textSecondary,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8),
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                  decoration: BoxDecoration(
-                    color: riskBg,
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                  child: Text(
-                    riskLabel,
-                    style: TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.w700,
-                      color: riskText,
-                      height: 1,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            const Divider(height: 1, thickness: 1, color: Color(0xFFE6E6E6)),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                Text(
-                  dateText,
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF7A7A7A),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                const Icon(
-                  Icons.location_on,
-                  size: 16,
-                  color: Color(0xFF9A9A9A),
-                ),
-                const SizedBox(width: 4),
-                const Expanded(
-                  child: Text(
-                    'Location',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Color(0xFF7A7A7A),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                   decoration: BoxDecoration(
                     color: DashboardTheme.blueLight,
                     borderRadius: BorderRadius.circular(999),
@@ -425,10 +414,87 @@ class HomeTab extends StatelessWidget {
                   child: const Text(
                     'In Review',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                       color: DashboardTheme.blueDark,
+                      height: 1,
                     ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Employer: ',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: DashboardTheme.textPrimary,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    alert['employer'] ?? 'Employer Name',
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: DashboardTheme.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                const Text(
+                  'Date: ',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: DashboardTheme.textPrimary,
+                  ),
+                ),
+                Expanded(
+                  child: Text(
+                    dateText,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: DashboardTheme.textPrimary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 6),
+            Row(
+              children: [
+                const Text(
+                  'Risk Level: ',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: DashboardTheme.textPrimary,
+                  ),
+                ),
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: riskDotColor,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  riskLabel,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: DashboardTheme.textPrimary,
                   ),
                 ),
               ],

@@ -13,10 +13,10 @@ class CommunitySafetyScreen extends StatefulWidget {
 
 class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blueMid = Color(0xFF003696);
   static const Color _blue = Color(0xFF003696);
   static const Color _bg = Color(0xFFF5F5F5);
-  static const Color _alertRed = Color(0xFFD32F2F);
+  static const Color _alertRed = Color(0xFF8E0012);
 
   // ── Sample data ─────────────────────────────────────────────────────────────
   final List<Map<String, dynamic>> _posts = [
@@ -117,7 +117,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
     return Container(
       height: 180,
       decoration: BoxDecoration(
-        color: const Color(0xFFC5CAE9),
+        color: const Color(0xFFDFEDFF),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -382,7 +382,7 @@ class _CommunitySafetyScreenState extends State<CommunitySafetyScreen> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: Colors.grey[700],
-                        side: const BorderSide(color: Color(0xFFCAEBFA)),
+                        side: const BorderSide(color: Color(0xFFDFEDFF)),
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

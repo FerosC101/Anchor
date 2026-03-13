@@ -13,13 +13,13 @@ class FinancialShieldScreen extends StatefulWidget {
 
 class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _blueMid = Color(0xFF4F90F0);
+  static const Color _blueMid = Color(0xFF003696);
   static const Color _blue = Color(0xFF003696);
-  static const Color _softBlue = Color(0xFF95D6F5);
-  static const Color _blueLight = Color(0xFFCAEBFA);
+  static const Color _softBlue = Color(0xFFDFEDFF);
+  static const Color _blueLight = Color(0xFFDFEDFF);
   static const Color _bg = Color(0xFFF5F5F5);
-  static const Color _debtAlertBg = Color(0xFFFFF8E1);
-  static const Color _debtAlertText = Color(0xFFE07B00);
+  static const Color _debtAlertBg = Color(0xFFFFFBE8);
+  static const Color _debtAlertText = Color(0xFFAD4B00);
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +61,7 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 16),
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        color: const Color(0xFFCAEBFA),
+        color: const Color(0xFFDFEDFF),
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -203,10 +203,10 @@ class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: const Color(0xFFCAEBFA),
+                color: const Color(0xFFDFEDFF),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: Icon(icon, color: const Color(0xFF4F90F0), size: 26),
+              child: Icon(icon, color: const Color(0xFF003696), size: 26),
             ),
             const SizedBox(height: 14),
             Text(

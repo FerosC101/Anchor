@@ -140,7 +140,7 @@ class SafetyResourcesScreen extends StatelessWidget {
             description: 'Emergency financial assistance for workers in crisis',
             contact: '+60 3-2272 4404',
             website: 'www.migrantfund.org',
-            color: const Color(0xFF4F90F0),
+            color: const Color(0xFF003696),
           ),
         ],
       ),

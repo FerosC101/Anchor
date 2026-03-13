@@ -32,12 +32,12 @@ class _SettingsToggleState extends State<SettingsToggle> {
         width: 36,
         height: 36,
         decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
+          color: const Color(0xFFDFEDFF),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Icon(
           widget.icon,
-          color: const Color(0xFF8575B6),
+          color: const Color(0xFF003696),
           size: 20,
         ),
       ),
@@ -46,14 +46,15 @@ class _SettingsToggleState extends State<SettingsToggle> {
         style: const TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.w500,
-          color: Color(0xFF1A1A1A),
+          color: Color(0xFF0F172A),
         ),
       ),
       value: _value,
       onChanged: (value) {
         setState(() => _value = value);
       },
-      activeColor: const Color(0xFF3D3790),
+      activeColor: const Color(0xFF003696),
+      activeTrackColor: const Color(0xFFDFEDFF),
     );
   }
 }

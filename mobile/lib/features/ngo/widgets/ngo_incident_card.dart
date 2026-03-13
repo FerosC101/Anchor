@@ -70,7 +70,7 @@ class NgoIncidentCard extends StatelessWidget {
           ngoDetailRow('Issue:', report.issue),
           const SizedBox(height: 4),
           ngoDetailRow('Report ID:', report.reportId,
-              valueColor: const Color(0xFF9500FF)),
+              valueColor: NgoTheme.navy),
           const SizedBox(height: 14),
           // View Case button
           SizedBox(
@@ -79,7 +79,7 @@ class NgoIncidentCard extends StatelessWidget {
             child: ElevatedButton(
               onPressed: () {},
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF3D3790),
+                backgroundColor: NgoTheme.navy,
                 foregroundColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 8),

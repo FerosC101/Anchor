@@ -59,7 +59,7 @@ class ContractScanDetailScreen extends StatelessWidget {
             width: 52,
             height: 52,
             decoration: BoxDecoration(
-              color: const Color(0xFFCAEBFA),
+              color: const Color(0xFFDFEDFF),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(
@@ -330,7 +330,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                 color: Colors.white,
                 borderRadius: BorderRadius.circular(14),
                 border: Border.all(
-                  color: const Color(0xFFCAEBFA),
+                  color: const Color(0xFFDFEDFF),
                 ),
               ),
               child: Column(
@@ -375,7 +375,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFCAEBFA)),
+                    side: const BorderSide(color: Color(0xFFDFEDFF)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -399,7 +399,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                     ),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: const BorderSide(color: Color(0xFFCAEBFA)),
+                    side: const BorderSide(color: Color(0xFFDFEDFF)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
@@ -427,7 +427,7 @@ class ContractScanDetailScreen extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(14),
             decoration: BoxDecoration(
-              color: const Color(0xFFCAEBFA).withValues(alpha: 0.4),
+              color: const Color(0xFFDFEDFF).withValues(alpha: 0.4),
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Column(
@@ -446,7 +446,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                   'See how your contract compares to international labor standards and typical Singapore/Malaysia contracts.',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF4F90F0),
+                    color: Color(0xFF003696),
                   ),
                 ),
               ],
@@ -687,7 +687,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                       : 'Based on your contract analysis, here\'s what we recommend:',
                   style: const TextStyle(
                     fontSize: 13,
-                    color: Color(0xFF4F90F0),
+                    color: Color(0xFF003696),
                   ),
                 ),
               ],
@@ -839,7 +839,7 @@ class _ComparisonCard extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Icon(icon, color: const Color(0xFF4F90F0), size: 20),
+                  Icon(icon, color: const Color(0xFF003696), size: 20),
                   const SizedBox(width: 8),
                   Text(
                     category,

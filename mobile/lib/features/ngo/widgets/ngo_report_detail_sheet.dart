@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../core/ngo_theme.dart';
 import '../models/ngo_models.dart';
-import 'ngo_shared_widgets.dart';
 
 // ── Credibility gauge painter ─────────────────────────────────────────────────
 
@@ -26,11 +25,11 @@ class _CredibilityGaugePainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeWidth = 12
       ..strokeCap = StrokeCap.round
-      ..color = NgoTheme.purple;
+      ..color = const Color(0xFF6157B8);
 
     final rect = Rect.fromCircle(center: Offset(cx, cy), radius: radius);
-    canvas.drawArc(rect, pi, -pi, false, bgPaint);
-    canvas.drawArc(rect, pi, -pi * value, false, fgPaint);
+    canvas.drawArc(rect, pi, pi, false, bgPaint);
+    canvas.drawArc(rect, pi, pi * value, false, fgPaint);
   }
 
   @override
@@ -45,10 +44,10 @@ void showNgoReportDetailSheet(
   final notesController = TextEditingController();
   final credibilityPct = (report.credibility * 100).round();
   final severityColor = report.severity == 'High'
-      ? const Color(0xFFF4A261)
+      ? NgoTheme.escalatedText
       : report.severity == 'Medium'
-          ? const Color(0xFFF59E0B)
-          : const Color(0xFF10B981);
+        ? NgoTheme.pendingText
+        : NgoTheme.resolvedText;
 
   final mq = MediaQuery.of(context);
 
@@ -156,15 +155,13 @@ void showNgoReportDetailSheet(
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      // Left details card
                       Expanded(
                         child: Container(
                           padding: const EdgeInsets.all(14),
                           decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                                color: const Color(0xFFE2E8F0)),
+                            border: Border.all(color: const Color(0xFFE2E8F0)),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,11 +188,12 @@ void showNgoReportDetailSheet(
                               const SizedBox(height: 12),
                               _modalLabel('SEVERITY'),
                               Container(
+                                height: 28,
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
+                                    horizontal: 10, vertical: 5),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFFF3E0),
-                                  borderRadius: BorderRadius.circular(20),
+                                  color: NgoTheme.pendingBg,
+                                  borderRadius: BorderRadius.circular(999),
                                 ),
                                 child: Text(
                                   report.severity.toUpperCase(),
@@ -208,22 +206,19 @@ void showNgoReportDetailSheet(
                               ),
                               const SizedBox(height: 12),
                               _modalLabel('STATUS'),
-                              ngoStatusBadge(report.status),
+                              _underReviewBadge(report.status),
                             ],
                           ),
                         ),
                       ),
                       const SizedBox(width: 10),
-
-                      // Right credibility gauge card
                       Container(
                         width: 160,
                         padding: const EdgeInsets.fromLTRB(14, 20, 14, 16),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                              color: const Color(0xFFE2E8F0)),
+                          border: Border.all(color: const Color(0xFFE2E8F0)),
                         ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -241,8 +236,7 @@ void showNgoReportDetailSheet(
                                     ),
                                   ),
                                   Padding(
-                                    padding:
-                                        const EdgeInsets.only(bottom: 2),
+                                    padding: const EdgeInsets.only(bottom: 2),
                                     child: Text(
                                       '$credibilityPct%',
                                       style: const TextStyle(
@@ -261,7 +255,7 @@ void showNgoReportDetailSheet(
                               style: TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.w700,
-                                color: Color(0xFF94A3B8),
+                                color: Color(0xFF6B7280),
                                 letterSpacing: 0.5,
                               ),
                               textAlign: TextAlign.center,
@@ -269,8 +263,8 @@ void showNgoReportDetailSheet(
                             const SizedBox(height: 4),
                             const Text(
                               'Last updated: Mar 9, 2026',
-                              style: TextStyle(
-                                  fontSize: 10, color: Color(0xFF94A3B8)),
+                              style:
+                                  TextStyle(fontSize: 10, color: Color(0xFF6B7280)),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -329,7 +323,7 @@ void showNgoReportDetailSheet(
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(10),
                       borderSide:
-                          const BorderSide(color: NgoTheme.purple),
+                          const BorderSide(color: NgoTheme.navy),
                     ),
                     contentPadding: const EdgeInsets.all(12),
                   ),
@@ -337,69 +331,61 @@ void showNgoReportDetailSheet(
                 const SizedBox(height: 20),
 
                 // ── Action buttons ──
-                Row(
+                Column(
                   children: [
-                    Expanded(
-                      child: SizedBox(
-                        height: 44,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF3D3790),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            'Verify Report',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 13),
-                          ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 44,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: NgoTheme.navy,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Verify Report',
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 44,
-                        child: ElevatedButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFFB8AEDC),
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            elevation: 0,
-                          ),
-                          child: const Text(
-                            'Mark Resolved',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 13),
-                          ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 44,
+                      child: ElevatedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: NgoTheme.resolvedText,
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          'Mark Resolved',
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: SizedBox(
-                        height: 44,
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.pop(ctx),
-                          style: OutlinedButton.styleFrom(
-                            foregroundColor: const Color(0xFF0F172A),
-                            side: const BorderSide(
-                                color: Color(0xFFE2E8F0)),
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10)),
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 16),
-                          ),
-                          child: const Text(
-                            'Dismiss',
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 13),
-                          ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 44,
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: const Color(0xFF0F172A),
+                          side: const BorderSide(color: Color(0xFFE2E8F0)),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                        child: const Text(
+                          'Dismiss',
+                          style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
                         ),
                       ),
                     ),
@@ -430,7 +416,7 @@ Widget _infoCard(IconData icon, String label, String value) {
         children: [
           Row(
             children: [
-              Icon(icon, size: 13, color: const Color(0xFF7C3AED)),
+              Icon(icon, size: 13, color: NgoTheme.navy),
               const SizedBox(width: 4),
               Flexible(
                 child: Text(
@@ -472,6 +458,29 @@ Widget _modalLabel(String text) {
         fontWeight: FontWeight.w700,
         color: Color(0xFF94A3B8),
         letterSpacing: 0.8,
+      ),
+    ),
+  );
+}
+
+Widget _underReviewBadge(NgoCaseStatus status) {
+  final isInReview = status == NgoCaseStatus.inReview;
+  final label = isInReview ? 'Under Review' : ngoCaseStatusLabel(status);
+
+  return Container(
+    height: 30,
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    decoration: BoxDecoration(
+      color: const Color(0xFFDFEDFF),
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(color: const Color(0xFF1D6FFF), width: 1),
+    ),
+    child: Text(
+      label,
+      style: const TextStyle(
+        fontSize: 12,
+        fontWeight: FontWeight.w600,
+        color: Color(0xFF1D6FFF),
       ),
     ),
   );

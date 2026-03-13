@@ -22,8 +22,8 @@ class CommunityPostCard extends StatelessWidget {
     this.onTap,
   });
 
-  static const Color _blueMid = Color(0xFF4F90F0);
-  static const Color _blueLight = Color(0xFFCAEBFA);
+  static const Color _blueMid = Color(0xFF003696);
+  static const Color _blueLight = Color(0xFFDFEDFF);
   static const Color _textSecondary = Color(0xFF64748B);
 
   @override

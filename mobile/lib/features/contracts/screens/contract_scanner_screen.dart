@@ -21,8 +21,8 @@ class ContractScannerScreen extends StatefulWidget {
 
 class _ContractScannerScreenState extends State<ContractScannerScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _blueMid = Color(0xFF4F90F0);
-  static const Color _blueLight = Color(0xFFCAEBFA);
+  static const Color _blueMid = Color(0xFF003696);
+  static const Color _blueLight = Color(0xFFDFEDFF);
   static const Color _bg = Color(0xFFF5F5F5);
 
   final _auth = FirebaseAuth.instance;
@@ -35,6 +35,30 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
   bool _showScans = true;
 
   final List<ScanModel> _recentScans = [];
+  final List<ScanModel> _fallbackScans = const [
+    ScanModel(
+      id: 1001,
+      name: 'Employment_Agreement.pdf',
+      fullName: 'Employment_Agreement.pdf',
+      subtitle: 'MEDIUM RISK',
+      date: 'Mar 10',
+      time: '2:35 PM',
+      score: 58,
+      issueCount: 3,
+      criticalCount: 1,
+    ),
+    ScanModel(
+      id: 1002,
+      name: 'Work_Contract_Final.pdf',
+      fullName: 'Work_Contract_Final.pdf',
+      subtitle: 'LOW RISK',
+      date: 'Mar 04',
+      time: '10:12 AM',
+      score: 24,
+      issueCount: 1,
+      criticalCount: 0,
+    ),
+  ];
 
   @override
   void initState() {
@@ -342,6 +366,8 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
   // ── Recent Scans Section ─────────────────────────────────────────────────────
 
   Widget _buildRecentScansSection() {
+    final scansToShow = _recentScans.isNotEmpty ? _recentScans : _fallbackScans;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -392,7 +418,7 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
         ),
         if (_showScans) ...[
           const SizedBox(height: 12),
-          ..._recentScans.map((scan) => Padding(
+          ...scansToShow.map((scan) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: InkWell(
                   onTap: () {
@@ -435,7 +461,7 @@ class _ContractScannerScreenState extends State<ContractScannerScreen> {
             width: 48,
             height: 48,
             decoration: BoxDecoration(
-              color: const Color(0xFFCAEBFA),
+              color: const Color(0xFFDFEDFF),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(

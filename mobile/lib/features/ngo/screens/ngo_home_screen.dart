@@ -1,7 +1,7 @@
 ﻿import 'package:flutter/material.dart';
 import '../../../shared/widgets/anchor_drawer.dart';
+import '../../../shared/widgets/government_app_bar.dart';
 import '../core/ngo_theme.dart';
-import '../widgets/ngo_top_bar.dart';
 import 'ngo_alert_tab.dart';
 import 'ngo_home_tab.dart';
 import 'ngo_monitoring_tab.dart';
@@ -18,10 +18,9 @@ class _NgoHomeScreenState extends State<NgoHomeScreen> {
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   static const _navItems = [
-    (Icons.home_rounded, Icons.home_outlined, 'Home'),
-    (Icons.bar_chart_rounded, Icons.bar_chart_outlined, 'Monitoring'),
-    (Icons.notifications_rounded, Icons.notifications_outlined, 'Alert'),
-    (Icons.person_rounded, Icons.person_outlined, 'Profile'),
+    (Icons.home_rounded, 'Home'),
+    (Icons.bar_chart_rounded, 'Monitoring'),
+    (Icons.notifications_rounded, 'Alert'),
   ];
 
   @override
@@ -29,25 +28,15 @@ class _NgoHomeScreenState extends State<NgoHomeScreen> {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: NgoTheme.bg,
-      drawer: const AnchorDrawer(),
-      body: SafeArea(
-        child: Column(
-          children: [
-            NgoTopBar(
-              onMenuTap: () => _scaffoldKey.currentState?.openDrawer(),
-            ),
-            Expanded(
-              child: IndexedStack(
-                index: _selectedNav.clamp(0, 2),
-                children: const [
-                  NgoHomeTab(),
-                  NgoMonitoringTab(),
-                  NgoAlertTab(),
-                ],
-              ),
-            ),
-          ],
-        ),
+      appBar: const GovernmentAppBar(),
+      endDrawer: const AnchorDrawer(),
+      body: IndexedStack(
+        index: _selectedNav,
+        children: const [
+          NgoHomeTab(),
+          NgoMonitoringTab(),
+          NgoAlertTab(),
+        ],
       ),
       bottomNavigationBar: _buildBottomNav(),
     );
@@ -57,58 +46,30 @@ class _NgoHomeScreenState extends State<NgoHomeScreen> {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x14000000),
-            blurRadius: 12,
-            offset: Offset(0, -4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            children: List.generate(_navItems.length, (i) {
-              final (activeIcon, inactiveIcon, label) = _navItems[i];
-              final isActive = _selectedNav == i;
-              final activeColor = i == 2
-                  ? const Color(0xFFF4A261)
-                  : NgoTheme.navy;
-              return Expanded(
-                child: GestureDetector(
-                  onTap: () => setState(() => _selectedNav = i),
-                  behavior: HitTestBehavior.opaque,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        isActive ? activeIcon : inactiveIcon,
-                        size: 24,
-                        color: isActive
-                            ? activeColor
-                            : const Color(0xFF94A3B8),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        label,
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: isActive
-                              ? FontWeight.w600
-                              : FontWeight.w400,
-                          color: isActive
-                              ? activeColor
-                              : const Color(0xFF94A3B8),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            }),
-          ),
+        border: Border(
+          top: BorderSide(color: Color(0xFFE2E8F0), width: 1),
         ),
+      ),
+      child: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        currentIndex: _selectedNav,
+        onTap: (i) => setState(() => _selectedNav = i),
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: const Color(0xFF003696),
+        unselectedItemColor: const Color(0xFFCBD5E1),
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        elevation: 0,
+        selectedFontSize: 11,
+        unselectedFontSize: 11,
+        items: _navItems
+            .map(
+              (item) => BottomNavigationBarItem(
+                icon: Icon(item.$1),
+                label: item.$2,
+              ),
+            )
+            .toList(),
       ),
     );
   }

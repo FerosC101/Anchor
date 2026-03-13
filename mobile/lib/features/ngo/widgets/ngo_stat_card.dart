@@ -30,10 +30,10 @@ class NgoStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final trendColor = isStable || positive
-        ? const Color(0xFF10B981)
-        : const Color(0xFFEF4444);
+        ? NgoTheme.resolvedText
+        : NgoTheme.escalatedText;
     return Container(
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: NgoTheme.cardBg,
         borderRadius: BorderRadius.circular(16),
@@ -51,13 +51,13 @@ class NgoStatCard extends StatelessWidget {
           Row(
             children: [
               Container(
-                width: 40,
-                height: 40,
+                width: 36,
+                height: 36,
                 decoration: BoxDecoration(
                   color: iconBg,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: Center(child: Icon(icon, size: 20, color: iconColor)),
+                child: Center(child: Icon(icon, size: 18, color: iconColor)),
               ),
               const Spacer(),
               Row(
@@ -82,7 +82,7 @@ class NgoStatCard extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
-              fontSize: 26,
+              fontSize: 22,
               fontWeight: FontWeight.w800,
               color: Color(0xFF0F172A),
             ),
@@ -90,22 +90,26 @@ class NgoStatCard extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-              fontSize: 13,
+              fontSize: 12,
               fontWeight: FontWeight.w700,
               color: Color(0xFF4A5565),
               fontFamily: 'Inter',
-              height: 20 / 13,
+              height: 1.2,
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
           const SizedBox(height: 2),
           Text(
             changeLabel,
             style: const TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               fontWeight: FontWeight.w400,
               color: Color(0xFF4A5565),
               fontFamily: 'Inter',
             ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
           ),
         ],
       ),
@@ -126,12 +130,12 @@ class NgoStatCardGrid extends StatelessWidget {
       mainAxisSpacing: 12,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      childAspectRatio: 1.45,
+      childAspectRatio: 1.15,
       children: const [
         NgoStatCard(
           icon: Icons.warning_amber_rounded,
           iconColor: Colors.white,
-          iconBg: Color(0xFF8575B6),
+          iconBg: NgoTheme.navy,
           label: 'Total Reports',
           value: '8',
           change: '+12%',
@@ -141,7 +145,7 @@ class NgoStatCardGrid extends StatelessWidget {
         NgoStatCard(
           icon: Icons.analytics_rounded,
           iconColor: Colors.white,
-          iconBg: Color(0xFF8575B6),
+          iconBg: NgoTheme.navy,
           label: 'Active Cases',
           value: '5',
           change: '+8%',
@@ -151,7 +155,7 @@ class NgoStatCardGrid extends StatelessWidget {
         NgoStatCard(
           icon: Icons.group_rounded,
           iconColor: Colors.white,
-          iconBg: Color(0xFF8575B6),
+          iconBg: NgoTheme.navy,
           label: 'High Risk Employers',
           value: '4',
           change: '+3',
@@ -161,7 +165,7 @@ class NgoStatCardGrid extends StatelessWidget {
         NgoStatCard(
           icon: Icons.location_on_rounded,
           iconColor: Colors.white,
-          iconBg: Color(0xFF8575B6),
+          iconBg: NgoTheme.navy,
           label: 'Countries Monitored',
           value: '10',
           change: 'Stable',

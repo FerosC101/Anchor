@@ -5,22 +5,36 @@ import '../models/ngo_models.dart';
 // ── Avatar ───────────────────────────────────────────────────────────────────
 
 Widget ngoAvatar(String name) {
-  final initials = name.trim().split(' ').take(2).map((w) => w[0]).join('');
   return Container(
     width: 44,
     height: 44,
-    decoration: const BoxDecoration(
-      color: Color(0xFFE5E7EB),
-      shape: BoxShape.circle,
+    decoration: BoxDecoration(
+      color: NgoTheme.blueLight,
+      borderRadius: BorderRadius.circular(10),
+    ),
+    child: const Center(
+      child: Icon(
+        Icons.person,
+        size: 22,
+        color: NgoTheme.blueDark,
+      ),
+    ),
+  );
+}
+
+Widget ngoGovProfileIconBadge({double size = 42}) {
+  return Container(
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: NgoTheme.blueLight,
+      borderRadius: BorderRadius.circular(10),
     ),
     child: Center(
-      child: Text(
-        initials.toUpperCase(),
-        style: const TextStyle(
-          fontWeight: FontWeight.w700,
-          fontSize: 15,
-          color: Color(0xFF364153),
-        ),
+      child: Icon(
+        Icons.person,
+        size: size * 0.52,
+        color: NgoTheme.blueDark,
       ),
     ),
   );
@@ -34,8 +48,8 @@ Widget ngoStatusBadge(NgoCaseStatus status) {
   String label;
   switch (status) {
     case NgoCaseStatus.inReview:
-      bg = const Color(0x332B7FFF);
-      text = const Color(0xFF2B7FFF);
+      bg = NgoTheme.inReviewBg;
+      text = NgoTheme.inReviewText;
       label = 'In Review';
     case NgoCaseStatus.escalated:
       bg = NgoTheme.escalatedBg;
@@ -50,24 +64,22 @@ Widget ngoStatusBadge(NgoCaseStatus status) {
       text = NgoTheme.resolvedText;
       label = 'Resolved';
   }
-  final bool isInReview = status == NgoCaseStatus.inReview;
   return Container(
-    height: 24,
-    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+    height: 28,
+    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
     decoration: BoxDecoration(
       color: bg,
-      borderRadius: BorderRadius.circular(8),
-      border: isInReview
-          ? Border.all(color: const Color(0xFF2B7FFF), width: 1)
-          : null,
+      borderRadius: BorderRadius.circular(999),
     ),
     child: Text(
       label,
       style: TextStyle(
-        fontSize: 11,
+        fontSize: 12,
         fontWeight: FontWeight.w600,
         color: text,
       ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
     ),
   );
 }
@@ -125,22 +137,24 @@ class NgoSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 46,
+      width: double.infinity,
+      height: 54,
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(2030),
-        border: Border.all(color: const Color(0xFFE2E8F0)),
+        color: const Color(0xFFF1F5F9),
+        borderRadius: BorderRadius.circular(999),
       ),
       child: TextField(
         onChanged: onChanged,
-        style: const TextStyle(fontSize: 14),
+        style: const TextStyle(fontSize: 14, color: Color(0xFF334155)),
         decoration: const InputDecoration(
           hintText: 'Search worker by name or case ID',
-          hintStyle: TextStyle(color: Color(0xFFADB5BD), fontSize: 14),
+          hintStyle: TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
           prefixIcon:
-              Icon(Icons.search_rounded, color: Color(0xFFADB5BD), size: 20),
+              Icon(Icons.search_rounded, color: Color(0xFF94A3B8), size: 20),
+          prefixIconConstraints: BoxConstraints(minWidth: 28, minHeight: 20),
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(vertical: 13),
+          contentPadding: EdgeInsets.symmetric(vertical: 15),
         ),
       ),
     );
@@ -233,29 +247,42 @@ class NgoFilterChips extends StatelessWidget {
     return GestureDetector(
       onTap: () => _showFilterSheet(context, current, options, onChanged),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE2E8F0)),
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 14, color: const Color(0xFF64748B)),
-            const SizedBox(width: 4),
-            Text(
-              current,
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-                color: Color(0xFF374151),
+            Icon(icon, size: 15, color: const Color(0xFF64748B)),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                current,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xFF334155),
+                ),
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(Icons.keyboard_arrow_down_rounded,
-                size: 14, color: Color(0xFF64748B)),
+            const Icon(
+              Icons.keyboard_arrow_down_rounded,
+              size: 16,
+              color: Color(0xFF64748B),
+            ),
           ],
         ),
       ),
@@ -291,7 +318,7 @@ class NgoFilterChips extends StatelessWidget {
               (o) => ListTile(
                 title: Text(o),
                 trailing: o == current
-                    ? const Icon(Icons.check_rounded, color: NgoTheme.purple)
+                  ? const Icon(Icons.check_rounded, color: NgoTheme.blueDark)
                     : null,
                 onTap: () {
                   onChanged(o);

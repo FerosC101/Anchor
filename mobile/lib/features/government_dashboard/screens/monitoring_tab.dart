@@ -6,6 +6,7 @@ import '../data/dashboard_data.dart';
 import '../utils/dashboard_theme.dart';
 
 class MonitoringTab extends StatefulWidget {
+  final int? forceSubTab;
   final String selectedCountry;
   final String selectedStatus;
   final String selectedDate;
@@ -15,6 +16,7 @@ class MonitoringTab extends StatefulWidget {
 
   const MonitoringTab({
     super.key,
+    this.forceSubTab,
     required this.selectedCountry,
     required this.selectedStatus,
     required this.selectedDate,
@@ -29,6 +31,22 @@ class MonitoringTab extends StatefulWidget {
 
 class _MonitoringTabState extends State<MonitoringTab> {
   int _monitoringSubTab = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.forceSubTab != null) {
+      _monitoringSubTab = widget.forceSubTab!.clamp(0, 2);
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant MonitoringTab oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.forceSubTab != null && widget.forceSubTab != oldWidget.forceSubTab) {
+      setState(() => _monitoringSubTab = widget.forceSubTab!.clamp(0, 2));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -205,35 +223,117 @@ class _MonitoringTabState extends State<MonitoringTab> {
     return DashboardTheme.green;
   }
 
+  Widget _profileIconBadge({double size = 44}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: DashboardTheme.blueLight,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.person,
+          size: size * 0.52,
+          color: DashboardTheme.blueDark,
+        ),
+      ),
+    );
+  }
+
+  String _employerRiskLabel(int score) {
+    if (score >= 70) return 'High Risk';
+    if (score >= 40) return 'Medium Risk';
+    return 'Low Risk';
+  }
+
+  Widget _detailRow(String label, String value, {Color? valueColor}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: 92,
+          child: Text(
+            '$label:',
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: DashboardTheme.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 13,
+              color: valueColor ?? DashboardTheme.textPrimary,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _inlineMetric(String label, String value) {
+    return RichText(
+      text: TextSpan(
+        children: [
+          TextSpan(
+            text: '$label: ',
+            style: const TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.w700,
+              color: DashboardTheme.textPrimary,
+            ),
+          ),
+          TextSpan(
+            text: value,
+            style: const TextStyle(
+              fontSize: 13,
+              color: DashboardTheme.blueDark,
+            ),
+          ),
+        ],
+      ),
+      maxLines: 1,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
+
   Widget _buildEmployerCard(Map<String, dynamic> employer) {
     final score = employer['score'] as int;
     final bg = _scoreBg(score);
     final fg = _scoreFg(score);
+    final riskLabel = _employerRiskLabel(score);
+    final progressValue = (score / 100).clamp(0.0, 1.0);
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFD1D5DB)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x10000000),
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header row ──
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: DashboardTheme.blueDark,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: const Icon(Icons.person_rounded,
-                    color: Colors.white, size: 26),
+                child: _profileIconBadge(),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,139 +341,121 @@ class _MonitoringTabState extends State<MonitoringTab> {
                     Text(
                       employer['name'] as String,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: DashboardTheme.textPrimary,
-                        height: 1.2,
                       ),
                     ),
-                    Text(
-                      employer['country'] as String,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: DashboardTheme.textSecondary,
-                        height: 1.3,
-                      ),
-                    ),
-                    Text(
-                      'Last updated: ${employer['lastIncident'] as String}',
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: DashboardTheme.textSecondary,
-                        height: 1.3,
-                      ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        const Icon(Icons.location_on_rounded,
+                            size: 13, color: Color(0xFF94A3B8)),
+                        const SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            employer['country'] as String,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: DashboardTheme.textSecondary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              // ── Score tile ──
               Container(
-                width: 62,
-                padding: const EdgeInsets.symmetric(vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
                   color: bg,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(999),
                 ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      score.toString(),
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                        color: fg,
-                        height: 1,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      'SCORE',
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
-                        color: fg,
-                        letterSpacing: 0.5,
-                        height: 1,
-                      ),
-                    ),
-                  ],
+                child: Text(
+                  riskLabel,
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: fg,
+                  ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          // ── Stats row – 3 bordered boxes ──
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
+          _detailRow('Employer', employer['name'] as String),
+          const SizedBox(height: 4),
+          _detailRow('Last Updated', employer['lastIncident'] as String),
+          const SizedBox(height: 4),
+          _detailRow('Workers', employer['workers'] as String,
+              valueColor: DashboardTheme.blueDark),
+          const SizedBox(height: 4),
+          _detailRow('Open Reports', employer['reports'] as String,
+              valueColor: DashboardTheme.blueDark),
+          const SizedBox(height: 4),
+          _detailRow('Violations', employer['violations'] as String,
+              valueColor: DashboardTheme.blueDark),
+          const SizedBox(height: 8),
           Row(
             children: [
-              _statBox('Active Workers', employer['workers'] as String),
-              const SizedBox(width: 8),
-              _statBox('Open Reports', employer['reports'] as String),
-              const SizedBox(width: 8),
-              _statBox('Violations', employer['violations'] as String),
+              const SizedBox(
+                width: 92,
+                child: Text(
+                  'Risk Score:',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: DashboardTheme.textPrimary,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              Text(
+                '$score%',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: fg,
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 16),
-          // ── View Case button ──
-          GestureDetector(
-            onTap: () => _showReviewModal(context, employer),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                color: DashboardTheme.blueDark,
-                borderRadius: BorderRadius.circular(12),
+          const SizedBox(height: 6),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(4),
+            child: LinearProgressIndicator(
+              value: progressValue,
+              minHeight: 6,
+              backgroundColor: const Color(0xFFE2E8F0),
+              valueColor: AlwaysStoppedAnimation<Color>(fg),
+            ),
+          ),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            height: 38,
+            child: ElevatedButton(
+              onPressed: () => _showReviewModal(context, employer),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: DashboardTheme.blueDark,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 0,
               ),
               child: const Text(
-                'View Case',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  height: 1,
-                ),
+                'Review',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _statBox(String label, String value) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFD1D5DB)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 11,
-                color: DashboardTheme.blueDark,
-                height: 1.2,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w800,
-                color: DashboardTheme.blueDark,
-                height: 1,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -401,14 +483,7 @@ class _MonitoringTabState extends State<MonitoringTab> {
                 Row(
                   children: [
                     Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: DashboardTheme.blueDark,
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      child: const Icon(Icons.person_rounded,
-                          color: Colors.white, size: 26),
+                      child: _profileIconBadge(size: 52),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
@@ -734,32 +809,34 @@ class _MonitoringTabState extends State<MonitoringTab> {
     final status = report['status']!;
     final statusBg = _statusBgColor(status);
     final statusFg = _statusColor(status);
+    final severityLabel = status == 'Resolved'
+        ? 'Low'
+        : status == 'In Review'
+            ? 'Medium'
+            : 'High';
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFD1D5DB)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x10000000),
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header row ──
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: DashboardTheme.blueDark,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: const Icon(Icons.person_rounded,
-                    color: Colors.white, size: 26),
+                child: _profileIconBadge(),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -767,33 +844,33 @@ class _MonitoringTabState extends State<MonitoringTab> {
                     Text(
                       report['name']!,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: DashboardTheme.textPrimary,
-                        height: 1.2,
                       ),
                     ),
-                    Text(
-                      report['employer']!,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: DashboardTheme.textSecondary,
-                        height: 1.3,
-                      ),
-                    ),
-                    Text(
-                      report['dateFiled']!,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: DashboardTheme.textSecondary,
-                        height: 1.3,
-                      ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        const Icon(Icons.business_outlined,
+                            size: 13, color: Color(0xFF94A3B8)),
+                        const SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            report['employer']!,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: DashboardTheme.textSecondary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              // ── Status chip ──
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
@@ -812,75 +889,66 @@ class _MonitoringTabState extends State<MonitoringTab> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          // ── Two stat boxes ──
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
+          _detailRow('Employer', report['employer']!),
+          const SizedBox(height: 4),
+          _detailRow('Issue', report['abuseType']!),
+          const SizedBox(height: 4),
+          _detailRow('Report ID', report['reportId']!,
+              valueColor: DashboardTheme.blueDark),
+          const SizedBox(height: 4),
+          _detailRow('Date Filed', report['dateFiled']!),
+          const SizedBox(height: 8),
           Row(
             children: [
-              _abuseStatBox('Report ID', report['reportId']!),
-              const SizedBox(width: 10),
-              _abuseStatBox('Abuse type', report['abuseType']!),
+              const SizedBox(
+                width: 92,
+                child: Text(
+                  'Severity:',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: DashboardTheme.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: statusFg,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                severityLabel,
+                style: const TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+              ),
             ],
           ),
-          const SizedBox(height: 16),
-          // ── View Case button ──
-          GestureDetector(
-            onTap: () => _showAbuseReportModal(context, report),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                color: DashboardTheme.blueDark,
-                borderRadius: BorderRadius.circular(12),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            height: 38,
+            child: ElevatedButton(
+              onPressed: () => _showAbuseReportModal(context, report),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: DashboardTheme.blueDark,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 0,
               ),
               child: const Text(
-                'View Case',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  height: 1,
-                ),
+                'View Report',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _abuseStatBox(String label, String value) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: const Color(0xFFD1D5DB)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 11,
-                color: DashboardTheme.blueDark,
-                height: 1.2,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              value,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w800,
-                color: DashboardTheme.blueDark,
-                height: 1,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -1103,32 +1171,34 @@ class _MonitoringTabState extends State<MonitoringTab> {
     final status = contract['status']!;
     final statusBg = _contractStatusBgColor(status);
     final statusFg = _contractStatusColor(status);
+    final severityLabel = status == 'Resolved'
+        ? 'Low'
+        : status == 'Mediation'
+            ? 'Medium'
+            : 'High';
 
     return Container(
-      padding: const EdgeInsets.all(18),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFD1D5DB)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x10000000),
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // ── Header row ──
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: DashboardTheme.blueDark,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: const Icon(Icons.person_rounded,
-                    color: Colors.white, size: 26),
+                child: _profileIconBadge(),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -1136,33 +1206,33 @@ class _MonitoringTabState extends State<MonitoringTab> {
                     Text(
                       contract['name']!,
                       style: const TextStyle(
-                        fontSize: 17,
+                        fontSize: 15,
                         fontWeight: FontWeight.w700,
                         color: DashboardTheme.textPrimary,
-                        height: 1.2,
                       ),
                     ),
-                    Text(
-                      contract['employer']!,
-                      style: const TextStyle(
-                        fontSize: 13,
-                        color: DashboardTheme.textSecondary,
-                        height: 1.3,
-                      ),
-                    ),
-                    Text(
-                      contract['dateFiled']!,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: DashboardTheme.textSecondary,
-                        height: 1.3,
-                      ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        const Icon(Icons.business_outlined,
+                            size: 13, color: Color(0xFF94A3B8)),
+                        const SizedBox(width: 2),
+                        Expanded(
+                          child: Text(
+                            contract['employer']!,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: DashboardTheme.textSecondary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 10),
-              // ── Status chip ──
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
@@ -1181,35 +1251,62 @@ class _MonitoringTabState extends State<MonitoringTab> {
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          // ── Two stat boxes ──
+          const SizedBox(height: 12),
+          const Divider(height: 1, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
+          _detailRow('Employer', contract['employer']!),
+          const SizedBox(height: 4),
+          _detailRow('Issue', contract['issueType']!),
+          const SizedBox(height: 4),
+          _detailRow('Contract ID', contract['contractId']!,
+              valueColor: DashboardTheme.blueDark),
+          const SizedBox(height: 4),
+          _detailRow('Date Filed', contract['dateFiled']!),
+          const SizedBox(height: 8),
           Row(
             children: [
-              _abuseStatBox('Contract ID', contract['contractId']!),
-              const SizedBox(width: 10),
-              _abuseStatBox('Issue Type', contract['issueType']!),
+              const SizedBox(
+                width: 92,
+                child: Text(
+                  'Severity:',
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: DashboardTheme.textPrimary,
+                  ),
+                ),
+              ),
+              Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  color: statusFg,
+                  shape: BoxShape.circle,
+                ),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                severityLabel,
+                style: const TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+              ),
             ],
           ),
-          const SizedBox(height: 16),
-          // ── View Case button ──
-          GestureDetector(
-            onTap: () => _showContractModal(context, contract),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(vertical: 15),
-              decoration: BoxDecoration(
-                color: DashboardTheme.blueDark,
-                borderRadius: BorderRadius.circular(12),
+          const SizedBox(height: 14),
+          SizedBox(
+            width: double.infinity,
+            height: 38,
+            child: ElevatedButton(
+              onPressed: () => _showContractModal(context, contract),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: DashboardTheme.blueDark,
+                foregroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10)),
+                elevation: 0,
               ),
               child: const Text(
-                'View Case',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  height: 1,
-                ),
+                'View contract',
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
               ),
             ),
           ),
@@ -1242,14 +1339,7 @@ class _MonitoringTabState extends State<MonitoringTab> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: DashboardTheme.blueDark,
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      child: const Icon(Icons.person_rounded,
-                          color: Colors.white, size: 26),
+                      child: _profileIconBadge(size: 52),
                     ),
                     const SizedBox(width: 14),
                     Expanded(

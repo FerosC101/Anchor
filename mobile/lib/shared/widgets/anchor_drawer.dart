@@ -6,8 +6,6 @@ import 'drawer_section_label.dart';
 import '../../features/profile/screens/profile_screen.dart';
 import '../../features/profile/screens/notifications_screen.dart';
 import '../../features/profile/screens/privacy_screen.dart';
-import '../../features/profile/screens/safety_resources_screen.dart';
-import '../../features/profile/screens/help_screen.dart';
 import '../../features/auth/providers/auth_provider.dart';
 
 class AnchorDrawer extends ConsumerWidget {
@@ -55,40 +53,13 @@ class AnchorDrawer extends ConsumerWidget {
                 const DrawerSectionLabel('SECURITY'),
                 DrawerMenuItem(
                   icon: Icons.lock_outline,
-                  label: 'Privacy & Security',
+                  label: 'Privacy and Security',
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => const PrivacyScreen(),
-                      ),
-                    );
-                  },
-                ),
-                DrawerMenuItem(
-                  icon: Icons.shield_outlined,
-                  label: 'Safety Resources',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SafetyResourcesScreen(),
-                      ),
-                    );
-                  },
-                ),
-                const DrawerSectionLabel('SUPPORT'),
-                DrawerMenuItem(
-                  icon: Icons.help_outline,
-                  label: 'Help & Support',
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HelpScreen(),
                       ),
                     );
                   },
@@ -123,7 +94,7 @@ class AnchorDrawer extends ConsumerWidget {
                           TextButton(
                             onPressed: () => Navigator.pop(context, true),
                             style: TextButton.styleFrom(
-                              foregroundColor: const Color(0xFF3D3790),
+                              foregroundColor: const Color(0xFF003696),
                             ),
                             child: const Text('Logout'),
                           ),
@@ -153,7 +124,7 @@ class AnchorDrawer extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(20, 48, 20, 24),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF9E9DCA), Color(0xFF3D3790)],
+          colors: [Color(0xFFDFEDFF), Color(0xFF003696)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
@@ -191,7 +162,7 @@ class AnchorDrawer extends ConsumerWidget {
                       ),
                     ),
                     Text(
-                      'guest@demo.com',
+                      'ngo@demo.com',
                       style: TextStyle(
                         fontSize: 13,
                         color: Colors.white.withValues(alpha: 0.85),
@@ -208,7 +179,7 @@ class AnchorDrawer extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Text(
-                        'Migrant Worker',
+                        'NGO Advocate',
                         style: TextStyle(
                           fontSize: 12,
                           color: Colors.white,

@@ -41,54 +41,48 @@ class AssistanceTab extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          // Search bar
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 14),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(28),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.06),
-                            blurRadius: 12,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: Row(
-                        children: const [
-                          Icon(Icons.search,
-                              size: 20, color: Color(0xFF94A3B8)),
-                          SizedBox(width: 10),
-                          Text(
-                            'Search worker by name or case ID',
-                            style: TextStyle(
-                                fontSize: 14, color: Color(0xFF94A3B8)),
-                          ),
-                        ],
-                      ),
-                    ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.06),
+                    blurRadius: 12,
+                    offset: const Offset(0, 2),
                   ),
-                  const SizedBox(height: 12),
-                  _buildAssistanceFilterChips(context),
-                  const SizedBox(height: 16),
-                  ...List.generate(assistanceCasesData.length, (i) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 6),
-                      child:
-                          _buildAssistanceCard(context, assistanceCasesData[i]),
-                    );
-                  }),
-                  const SizedBox(height: 16),
-                  const DashboardPagination(),
-                  const SizedBox(height: 24),
                 ],
               ),
+              child: const Row(
+                children: [
+                  Icon(Icons.search, size: 20, color: Color(0xFF94A3B8)),
+                  SizedBox(width: 10),
+                  Text(
+                    'Search worker by name or case ID',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8)),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          const SizedBox(height: 12),
+          _buildAssistanceFilterChips(context),
+          const SizedBox(height: 16),
+          ...List.generate(assistanceCasesData.length, (i) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+              child: _buildAssistanceCard(context, assistanceCasesData[i]),
             );
+          }),
+          const SizedBox(height: 16),
+          const DashboardPagination(),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
   }
 
   Widget _buildAssistanceFilterChips(BuildContext context) {
@@ -147,7 +141,20 @@ class AssistanceTab extends StatelessWidget {
   Color _assistanceStatusBg(String status) {
     switch (status) {
       case 'In review':
-        return DashboardTheme.red;
+        return DashboardTheme.blueLight;
+      case 'Resolved':
+        return DashboardTheme.greenBg;
+      case 'Critical':
+        return DashboardTheme.redBg;
+      default:
+        return DashboardTheme.blueLight;
+    }
+  }
+
+  Color _assistanceStatusText(String status) {
+    switch (status) {
+      case 'In review':
+        return DashboardTheme.blueDark;
       case 'Resolved':
         return DashboardTheme.green;
       case 'Critical':
@@ -157,166 +164,194 @@ class AssistanceTab extends StatelessWidget {
     }
   }
 
+  String _assistanceStatusLabel(String status) {
+    switch (status) {
+      case 'In review':
+        return 'In Review';
+      case 'Resolved':
+        return 'Resolved';
+      case 'Critical':
+        return 'High';
+      default:
+        return status;
+    }
+  }
+
+  Widget _profileIconBadge({double size = 42}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: DashboardTheme.blueLight,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Center(
+        child: Icon(
+          Icons.person,
+          size: size * 0.52,
+          color: DashboardTheme.blueDark,
+        ),
+      ),
+    );
+  }
+
   Widget _buildAssistanceCard(BuildContext context, Map<String, String> c) {
     final status = c['status']!;
     final isResolved = status == 'Resolved';
     final issueTitle = isResolved ? 'Passport Retention' : 'Contract Substitution';
     final issueBg = isResolved ? DashboardTheme.redBg : DashboardTheme.yellowBg;
-    final issueText = isResolved ? DashboardTheme.red : DashboardTheme.yellow;
-
-    final statusLabel = switch (status) {
-      'Critical' => 'HIGH',
-      'Resolved' => 'RESOLVED',
-      'In review' => 'HIGH',
-      _ => status.toUpperCase(),
-    };
+    final statusLabel = _assistanceStatusLabel(status);
+    final statusBg = _assistanceStatusBg(status);
+    final statusText = _assistanceStatusText(status);
 
     return Container(
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(28),
-        border: Border.all(color: const Color(0xFFD1D5DB)),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x10000000),
+            blurRadius: 10,
+            offset: Offset(0, 3),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Text(
+            issueTitle,
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w700,
+              color: DashboardTheme.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 10),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  color: DashboardTheme.blueDark,
-                  borderRadius: BorderRadius.circular(13),
-                ),
-                child: const Icon(Icons.person_rounded,
-                    color: Colors.white, size: 26),
+                child: _profileIconBadge(),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: 10),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    RichText(
-                      text: TextSpan(
-                        style: const TextStyle(
-                          fontSize: 17,
-                          color: Color(0xFF111827),
-                          height: 1.2,
-                        ),
-                        children: [
-                          TextSpan(
-                            text: c['name']!,
-                            style: const TextStyle(fontWeight: FontWeight.w700),
-                          ),
-                          TextSpan(
-                            text: '  ${c['country']!}',
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xFF8A8A8A),
-                            ),
-                          ),
-                        ],
+                    Text(
+                      c['name']!,
+                      style: const TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        color: DashboardTheme.textPrimary,
                       ),
                     ),
+                    const SizedBox(height: 2),
                     Text(
                       c['employer']!,
                       style: const TextStyle(
-                          fontSize: 13, color: Color(0xFF8A8A8A), height: 1.25),
+                        fontSize: 12,
+                        color: DashboardTheme.textSecondary,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
-                  color: _assistanceStatusBg(status),
-                  borderRadius: BorderRadius.circular(999),
+                  color: statusBg,
+                  borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
                   statusLabel,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: Colors.white,
+                    color: statusText,
                     height: 1,
                   ),
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 14),
-          const Divider(height: 1, thickness: 1, color: Color(0xFFE6E6E6)),
-          const SizedBox(height: 14),
+          const SizedBox(height: 12),
+          const Divider(height: 1, thickness: 1, color: Color(0xFFF1F5F9)),
+          const SizedBox(height: 12),
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
-                'March 6, 2026',
-                style: TextStyle(fontSize: 12, color: Color(0xFF8A8A8A)),
+                'Country: ',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: DashboardTheme.textPrimary,
+                ),
               ),
-              const SizedBox(width: 14),
-              const Icon(Icons.location_on, size: 17, color: Color(0xFFA3A3A3)),
-              const SizedBox(width: 5),
-              const Expanded(
+              Expanded(
                 child: Text(
-                  'Bangkok, Thailand',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF8A8A8A)),
+                  c['country']!,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: DashboardTheme.textPrimary,
+                  ),
                 ),
               ),
-              if (!isResolved)
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                  decoration: BoxDecoration(
-                    color: DashboardTheme.blueLight,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Text(
-                    'In Review',
-                    style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w600,
-                      color: DashboardTheme.blueDark,
-                      height: 1,
-                    ),
-                  ),
-                ),
             ],
           ),
-          const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
-            decoration: BoxDecoration(
-              color: issueBg,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  issueTitle,
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: issueText,
-                    height: 1.2,
-                  ),
+          const SizedBox(height: 6),
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Date: ',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: DashboardTheme.textPrimary,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Contract signed in home country differs from actual '
-                  'employment terms. Salary reduced by 30% and impacted ${c['name']!}.',
-                  style: TextStyle(
-                    fontSize: 12,
-                    height: 1.35,
-                    color: issueText,
-                  ),
+              ),
+              Expanded(
+                child: Text(
+                  'March 6, 2026',
+                  style: TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 6),
+          const Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Location: ',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: DashboardTheme.textPrimary,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  'Bangkok, Thailand',
+                  style: TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          Text(
+            'Contract signed in home country differs from actual employment terms. '
+            'Salary reduced by 30% and impacted ${c['name']!}.',
+            style: const TextStyle(
+              fontSize: 13,
+              height: 1.45,
+              color: DashboardTheme.textSecondary,
             ),
           ),
           const SizedBox(height: 16),
@@ -326,18 +361,18 @@ class AssistanceTab extends StatelessWidget {
                 child: GestureDetector(
                   onTap: () => _showViewCaseModal(context, c),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 15),
+                    padding: const EdgeInsets.symmetric(vertical: 14),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFC7D5EB),
+                      color: const Color(0xFF003696),
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Text(
+                    child: const Text(
                       'View Case',
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
-                        color: Color(0xFF172B4D),
+                        color: Colors.white,
                         height: 1,
                       ),
                     ),
@@ -350,9 +385,9 @@ class AssistanceTab extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () => _showSendGuidanceModal(context, c),
                     child: Container(
-                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
-                        color: DashboardTheme.blueDark,
+                        color: const Color(0xFFDFEDFF),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Text(
@@ -361,7 +396,7 @@ class AssistanceTab extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
-                          color: Colors.white,
+                          color: Color(0xFF003696),
                           height: 1,
                         ),
                       ),
@@ -401,14 +436,7 @@ class AssistanceTab extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: DashboardTheme.blueDark,
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      child: const Icon(Icons.person_rounded,
-                          color: Colors.white, size: 26),
+                      child: _profileIconBadge(size: 52),
                     ),
                     const SizedBox(width: 14),
                     Expanded(
@@ -551,14 +579,7 @@ class AssistanceTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: DashboardTheme.blueDark,
-                        borderRadius: BorderRadius.circular(13),
-                      ),
-                      child: const Icon(Icons.person_rounded,
-                          color: Colors.white, size: 26),
+                      child: _profileIconBadge(size: 52),
                     ),
                     const SizedBox(width: 14),
                     Expanded(

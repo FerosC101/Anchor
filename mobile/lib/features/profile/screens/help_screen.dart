@@ -143,7 +143,7 @@ class HelpScreen extends StatelessWidget {
           title: 'Upload Your Contract',
           description:
               'Scan your employment contract to detect potential risks and understand your rights.',
-          color: const Color(0xFF4F90F0),
+          color: const Color(0xFF003696),
         ),
         const SectionTitle('Core Features'),
         _buildGuideCard(
@@ -158,7 +158,7 @@ class HelpScreen extends StatelessWidget {
           title: 'Financial Shield',
           description:
               'Monitor savings, track debts, and plan your financial exit strategy with our tools.',
-          color: const Color(0xFF95D6F5),
+          color: const Color(0xFFDFEDFF),
         ),
         _buildGuideCard(
           icon: Icons.group_outlined,

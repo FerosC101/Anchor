@@ -53,7 +53,7 @@ class GovernmentAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: Color(0xFF003696),
               size: 24,
             ),
-            onPressed: () => Scaffold.of(context).openDrawer(),
+            onPressed: () => Scaffold.of(context).openEndDrawer(),
           ),
         ),
       ],

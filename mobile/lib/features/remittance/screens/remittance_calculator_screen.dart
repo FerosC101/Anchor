@@ -317,7 +317,7 @@ class _RemittanceCalculatorScreenState
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
+        color: const Color(0xFFDFEDFF),
         borderRadius: BorderRadius.circular(8),
       ),
       child: DropdownButton<String>(
@@ -451,7 +451,7 @@ class _RemittanceCalculatorScreenState
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F5F5),
+                          color: const Color(0xFFDFEDFF),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -481,7 +481,7 @@ class _RemittanceCalculatorScreenState
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F5F5),
+                          color: const Color(0xFFDFEDFF),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -511,7 +511,7 @@ class _RemittanceCalculatorScreenState
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F5F5),
+                          color: const Color(0xFFDFEDFF),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Column(
@@ -552,7 +552,7 @@ class _RemittanceCalculatorScreenState
                         vertical: 6,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF5F5F5),
+                        color: const Color(0xFFDFEDFF),
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Text(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../core/ngo_theme.dart';
 import '../models/ngo_models.dart';
+import 'ngo_shared_widgets.dart';
 
 class NgoEmployerCard extends StatelessWidget {
   final NgoHighRiskEmployer employer;
@@ -8,14 +9,6 @@ class NgoEmployerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final initials = employer.name
-        .trim()
-        .split(' ')
-        .take(2)
-        .map((w) => w[0])
-        .join('')
-        .toUpperCase();
-
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -38,24 +31,7 @@ class NgoEmployerCard extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: const BoxDecoration(
-                    color: Color(0xFFE5E7EB),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(
-                    child: Text(
-                      initials,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
-                        color: Color(0xFF364153),
-                      ),
-                    ),
-                  ),
-                ),
+                ngoGovProfileIconBadge(size: 48),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -81,11 +57,11 @@ class NgoEmployerCard extends StatelessWidget {
                 const SizedBox(width: 8),
                 // High badge
                 Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  height: 28,
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFFF3E0),
-                    borderRadius: BorderRadius.circular(20),
+                    color: NgoTheme.pendingBg,
+                    borderRadius: BorderRadius.circular(999),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -104,7 +80,7 @@ class NgoEmployerCard extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w600,
-                          color: NgoTheme.highRisk,
+                          color: NgoTheme.pendingText,
                         ),
                       ),
                     ],

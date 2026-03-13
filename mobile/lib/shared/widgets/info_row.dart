@@ -24,12 +24,12 @@ class InfoRow extends StatelessWidget {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFF5F5F5),
+                  color: const Color(0xFFDFEDFF),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(
                   icon,
-                  color: const Color(0xFF8575B6),
+                  color: const Color(0xFF003696),
                   size: 20,
                 ),
               ),
@@ -42,14 +42,14 @@ class InfoRow extends StatelessWidget {
                       label,
                       style: const TextStyle(
                         fontSize: 11,
-                        color: Color(0xFF888888),
+                        color: Color(0xFF64748B),
                       ),
                     ),
                     Text(
                       value,
                       style: const TextStyle(
                         fontSize: 15,
-                        color: Color(0xFF1A1A1A),
+                        color: Color(0xFF0F172A),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -59,7 +59,7 @@ class InfoRow extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(color: Color(0xFFF5F5F5)),
+        const Divider(color: Color(0xFFDFEDFF)),
       ],
     );
   }

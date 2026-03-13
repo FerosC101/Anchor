@@ -189,7 +189,7 @@ void showEditAlertSheet(BuildContext context, NgoAlert alert) {
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide:
-                              const BorderSide(color: NgoTheme.purple),
+                          const BorderSide(color: NgoTheme.navy),
                         ),
                         contentPadding: const EdgeInsets.all(12),
                       ),
@@ -228,8 +228,7 @@ void showEditAlertSheet(BuildContext context, NgoAlert alert) {
                             child: ElevatedButton(
                               onPressed: () => Navigator.pop(ctx),
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    const Color(0xFF3D3790),
+                                backgroundColor: NgoTheme.navy,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                     borderRadius:
@@ -278,7 +277,7 @@ Widget _fieldLabel(String text, {bool required = false}) {
           ? const [
               TextSpan(
                 text: ' *',
-                style: TextStyle(color: Color(0xFFF4A261)),
+                style: TextStyle(color: NgoTheme.pendingText),
               ),
             ]
           : null,
@@ -301,7 +300,7 @@ Widget _textField(TextEditingController controller) {
         borderSide: BorderSide(color: Color(0xFFE2E8F0)),
       ),
       focusedBorder: const UnderlineInputBorder(
-        borderSide: BorderSide(color: NgoTheme.purple),
+        borderSide: BorderSide(color: NgoTheme.navy),
       ),
       contentPadding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
       isDense: true,
@@ -318,7 +317,7 @@ Widget _dropdown({
     height: 44,
     padding: const EdgeInsets.symmetric(horizontal: 12),
     decoration: BoxDecoration(
-      color: const Color(0xFFF1F0F5),
+      color: NgoTheme.blueLight,
       borderRadius: BorderRadius.circular(10),
     ),
     child: DropdownButtonHideUnderline(
