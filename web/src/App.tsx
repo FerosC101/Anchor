@@ -7,6 +7,8 @@ import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import MonitoringPage from "./pages/MonitoringPage";
 import NGODashboardPage from "./pages/NGODashboardPage";
+import NotificationsPage from "./pages/NotificationsPage";
+import PrivacyPage from "./pages/PrivacyPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
 import UsersPageWrapper from "./pages/UsersPage";
@@ -98,6 +100,22 @@ export default function App() {
         element={
           <ProtectedRoute>
             <ProfilePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.NOTIFICATIONS}
+        element={
+          <ProtectedRoute>
+            <NotificationsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.PRIVACY}
+        element={
+          <ProtectedRoute>
+            <PrivacyPage />
           </ProtectedRoute>
         }
       />

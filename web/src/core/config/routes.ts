@@ -8,6 +8,8 @@ export const ROUTES = {
   MONITORING: "/dashboard/monitoring",
   ALERT: "/dashboard/alert",
   PROFILE: "/dashboard/profile",
+  NOTIFICATIONS: "/dashboard/notifications",
+  PRIVACY: "/dashboard/privacy",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
 } as const;

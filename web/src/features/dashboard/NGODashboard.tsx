@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { ROUTES } from "../../core/config/routes";
+import { useNotifications } from "../../core/context/NotificationContext";
+import { useAuth } from "../../core/context/AuthContext";
 import OperationalDashboard, {
   type DashboardBadgeTone,
   type DashboardPrimaryCard,
@@ -30,37 +32,6 @@ interface EmployerItem {
   riskLevel: "High" | "Critical";
   reports: number;
 }
-
-const SUMMARY_CARDS: DashboardSummaryCard[] = [
-  {
-    value: "8",
-    label: "Total Reports",
-    sub: "vs last month",
-    trend: "+ 12%",
-    icon: "alert",
-  },
-  {
-    value: "5",
-    label: "Active Cases",
-    sub: "vs last month",
-    trend: "+ 8%",
-    icon: "trend",
-  },
-  {
-    value: "4",
-    label: "High Risk Employers",
-    sub: "new this week",
-    trend: "+ 3",
-    icon: "people",
-  },
-  {
-    value: "10",
-    label: "Countries Monitored",
-    sub: "no change",
-    trend: "Stable",
-    icon: "pin",
-  },
-];
 
 const REPORTS: ReportItem[] = [
   {
@@ -164,12 +135,51 @@ const EMPLOYERS: EmployerItem[] = [
   },
 ];
 
-const STATUS_TONES: Record<ReportStatus, DashboardBadgeTone> = {
-  "In Review": "sky",
-  Pending: "amber",
-  Verified: "emerald",
-  Resolved: "slate",
+const mapStatusToNgoStatus = (status: ReportStatus): DashboardBadgeTone => {
+  switch (status) {
+    case "In Review":
+      return "sky";
+    case "Pending":
+      return "amber";
+    case "Verified":
+      return "emerald";
+    case "Resolved":
+      return "slate";
+    default:
+      return "sky";
+  }
 };
+
+const SUMMARY_CARDS: DashboardSummaryCard[] = [
+  {
+    value: "8",
+    label: "Total Reports",
+    sub: "vs last month",
+    trend: "+ 12%",
+    icon: "alert",
+  },
+  {
+    value: "5",
+    label: "Active Cases",
+    sub: "vs last month",
+    trend: "+ 8%",
+    icon: "trend",
+  },
+  {
+    value: "4",
+    label: "High Risk Employers",
+    sub: "new this week",
+    trend: "+ 3",
+    icon: "people",
+  },
+  {
+    value: "10",
+    label: "Countries Monitored",
+    sub: "no change",
+    trend: "Stable",
+    icon: "pin",
+  },
+];
 
 const COUNTRY_OPTIONS = [
   "All Countries",
@@ -201,10 +211,22 @@ const STATUS_OPTIONS = [
 export default function NGODashboard() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { unreadCount } = useNotifications();
+  const { signOut } = useAuth();
   const [search, setSearch] = useState("");
   const [country, setCountry] = useState(COUNTRY_OPTIONS[0]);
   const [issue, setIssue] = useState(ISSUE_OPTIONS[0]);
   const [status, setStatus] = useState(STATUS_OPTIONS[0]);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate(ROUTES.LOGIN);
+  };
+
+  const handlePrivacy = () => {
+    navigate(ROUTES.PRIVACY);
+  };
 
   const primaryCards: DashboardPrimaryCard[] = useMemo(
     () =>
@@ -227,7 +249,7 @@ export default function NGODashboard() {
         title: item.workerName,
         subtitle: item.country,
         badgeLabel: item.status,
-        badgeTone: STATUS_TONES[item.status],
+        badgeTone: mapStatusToNgoStatus(item.status),
         fields: [
           { label: "Employer", value: item.employer },
           { label: "Issue", value: item.issue },
@@ -261,7 +283,6 @@ export default function NGODashboard() {
         { label: "Home", active: location.pathname === ROUTES.DASHBOARD, onClick: () => navigate(ROUTES.DASHBOARD) },
         { label: "Monitoring", active: location.pathname === ROUTES.MONITORING, onClick: () => navigate(ROUTES.MONITORING) },
         { label: "Alert", active: location.pathname === ROUTES.ALERT, onClick: () => navigate(ROUTES.ALERT) },
-        { label: "Profile", active: location.pathname === ROUTES.PROFILE, onClick: () => navigate(ROUTES.PROFILE) },
       ]}
       summaryCards={SUMMARY_CARDS}
       searchPlaceholder="Search worker by name or case ID"
@@ -287,15 +308,25 @@ export default function NGODashboard() {
       primarySection={{
         title: "Recent Incident Reports",
         buttonLabel: "View All Reports",
+        hideButton: true,
       }}
       primaryCards={primaryCards}
       primaryEmptyMessage="No reports found for the current filters."
       secondarySection={{
         title: "High Risk Employers",
         buttonLabel: "View All Reports",
+        hideButton: true,
         columns: ["Employer", "Location", "Risk Level", "Reports"],
       }}
       secondaryRows={secondaryRows}
+      unreadNotificationCount={unreadCount}
+      showDrawer={drawerOpen}
+      onDrawerOpen={() => setDrawerOpen(true)}
+      onDrawerClose={() => setDrawerOpen(false)}
+      onProfileClick={() => navigate(ROUTES.PROFILE)}
+      onNotificationsClick={() => navigate(ROUTES.NOTIFICATIONS)}
+      onPrivacyClick={handlePrivacy}
+      onLogoutClick={handleLogout}
     />
   );
 }

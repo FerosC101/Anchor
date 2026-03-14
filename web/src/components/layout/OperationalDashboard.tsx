@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { NgoColors } from "../../core/theme/ngo-colors";
+import { NgoDrawer } from "./NgoDrawer";
 
 export type DashboardIconName =
   | "alert"
@@ -72,7 +74,8 @@ export interface DashboardSecondaryRow {
 
 export interface DashboardSectionConfig {
   title: string;
-  buttonLabel: string;
+  buttonLabel?: string;
+  hideButton?: boolean;
 }
 
 interface OperationalDashboardProps {
@@ -94,17 +97,25 @@ interface OperationalDashboardProps {
     label: string;
     onClick: () => void;
   };
+  unreadNotificationCount?: number;
+  showDrawer?: boolean;
+  onDrawerOpen?: () => void;
+  onDrawerClose?: () => void;
+  onProfileClick?: () => void;
+  onNotificationsClick?: () => void;
+  onPrivacyClick?: () => void;
+  onLogoutClick?: () => void;
 }
 
 function getBadgeColors(tone: DashboardBadgeTone) {
-  const colorMap: Record<DashboardBadgeTone, { borderColor: string; bgColor: string }> = {
-    sky: { borderColor: "#0284C7", bgColor: "#0284C7" },
-    amber: { borderColor: "#AD4B00", bgColor: "#AD4B00" },
-    emerald: { borderColor: "#00AA28", bgColor: "#00AA28" },
-    slate: { borderColor: "#6B7280", bgColor: "#6B7280" },
-    orange: { borderColor: "#F54900", bgColor: "#F54900" },
-    rose: { borderColor: "#8E0012", bgColor: "#8E0012" },
-    violet: { borderColor: "#003696", bgColor: "#003696" },
+  const colorMap: Record<DashboardBadgeTone, { bgColor: string; textColor: string }> = {
+    sky: { bgColor: NgoColors.inReviewBg, textColor: NgoColors.inReviewText },
+    amber: { bgColor: NgoColors.pendingBg, textColor: NgoColors.pendingText },
+    emerald: { bgColor: NgoColors.resolvedBg, textColor: NgoColors.resolvedText },
+    slate: { bgColor: "#F1F5F9", textColor: "#475569" },
+    orange: { bgColor: NgoColors.highRiskBg, textColor: NgoColors.highRiskText },
+    rose: { bgColor: NgoColors.escalatedBg, textColor: NgoColors.escalatedText },
+    violet: { bgColor: NgoColors.blueDark, textColor: "#FFFFFF" },
   };
   return colorMap[tone];
 }
@@ -298,19 +309,41 @@ export default function OperationalDashboard({
   secondarySection,
   secondaryRows,
   headerAction,
+  unreadNotificationCount = 0,
+  showDrawer: initialShowDrawer = false,
+  onDrawerOpen,
+  onDrawerClose,
+  onProfileClick,
+  onNotificationsClick,
+  onPrivacyClick,
+  onLogoutClick,
 }: OperationalDashboardProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(initialShowDrawer);
+
+  const handleDrawerOpen = () => {
+    setDrawerOpen(true);
+    onDrawerOpen?.();
+  };
+
+  const handleDrawerClose = () => {
+    setDrawerOpen(false);
+    onDrawerClose?.();
+  };
 
   return (
-    <div className="min-h-screen bg-[#F6F6F8] text-slate-800">
-      <header className="sticky top-0 z-20 border-b border-[#D9DCE3] bg-white/95 backdrop-blur w-full">
-        <div className="mx-auto flex h-[54px] w-full items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-3">
+    <>
+      <div className="min-h-screen text-slate-800" style={{ backgroundColor: NgoColors.bg }}>
+        <header className="sticky top-0 z-20 border-b border-[#D9DCE3] bg-white/95 backdrop-blur w-full">
+        <div className="mx-auto flex h-[54px] w-full items-center px-4 sm:px-6 lg:px-8">
+          {/* Logo */}
+          <div className="flex items-center gap-3 flex-shrink-0">
             <span className="h-6 w-6 rounded-full bg-[#003696]" />
             <p className="text-[20px] font-extrabold text-[#003696] tracking-[-0.03em]">Anchor</p>
           </div>
 
-          <nav className="hidden md:flex items-center gap-12 text-[14px] font-semibold text-slate-500">
+          {/* Center Navigation */}
+          <nav className="hidden md:flex flex-1 items-center justify-center gap-12 text-[14px] font-semibold text-slate-500">
             {navItems.map((item) => (
               <button
                 key={item.label}
@@ -325,9 +358,21 @@ export default function OperationalDashboard({
             ))}
           </nav>
 
-          <div className="flex items-center gap-3 text-slate-500">
-            <button className="rounded-md p-1.5 hover:bg-slate-100">
+          {/* Right Actions */}
+          <div className="flex flex-shrink-0 items-center gap-3 text-slate-500 ml-auto">
+            <button 
+              className="rounded-md p-1.5 hover:bg-slate-100 relative"
+              onClick={() => onNotificationsClick?.()}
+            >
               <BellIcon />
+              {unreadNotificationCount > 0 && (
+                <span 
+                  className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                  style={{ backgroundColor: "#8E0012" }}
+                >
+                  {unreadNotificationCount}
+                </span>
+              )}
             </button>
             {headerAction ? (
               <button
@@ -338,8 +383,9 @@ export default function OperationalDashboard({
               </button>
             ) : null}
             <button
-              className="rounded-md p-1.5 hover:bg-slate-100 md:hidden"
-              onClick={() => setMobileMenuOpen((value) => !value)}
+              className="rounded-md p-1.5 hover:bg-slate-100"
+              onClick={handleDrawerOpen}
+              aria-label="Open menu"
             >
               <MenuIcon />
             </button>
@@ -385,8 +431,8 @@ export default function OperationalDashboard({
         <section className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {summaryCards.map((card) => (
             <article key={card.label} className="rounded-[14px] border border-[#DEE2E8] bg-white p-4 shadow-[0_1px_2px_rgba(15,23,42,0.04)]">
-              <div className="mb-3 flex items-start justify-between">
-                <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#8177CE] text-white">
+            <div className="mb-3 flex items-start justify-between">
+                <span className="flex h-8 w-8 items-center justify-center rounded-[8px] bg-[#003696] text-white">
                   <SummaryIcon type={card.icon} />
                 </span>
                 <span className="text-[10px] font-semibold text-emerald-500">{card.trend}</span>
@@ -401,9 +447,11 @@ export default function OperationalDashboard({
         <section className="mt-7">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-[15px] font-extrabold tracking-[-0.01em] text-slate-900">{primarySection.title}</h2>
-            <button className="rounded-md bg-[#003696] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm hover:bg-[#002060]\">
-              {primarySection.buttonLabel}
-            </button>
+            {!primarySection.hideButton && primarySection.buttonLabel ? (
+              <button className="rounded-md bg-[#003696] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm hover:bg-[#002060]\">
+                {primarySection.buttonLabel}
+              </button>
+            ) : null}
           </div>
 
           <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
@@ -469,13 +517,10 @@ export default function OperationalDashboard({
                       const colors = getBadgeColors(card.badgeTone);
                       return (
                         <span
-                          className="flex h-6 items-center whitespace-nowrap text-[10px] font-bold"
+                          className="flex h-6 items-center whitespace-nowrap rounded-full px-3 text-[10px] font-bold"
                           style={{
-                            padding: "4px 12px",
-                            borderRadius: "8px",
-                            border: `1px solid ${colors.borderColor}`,
-                            backgroundColor: `rgba(${parseInt(colors.bgColor.slice(1, 3), 16)}, ${parseInt(colors.bgColor.slice(3, 5), 16)}, ${parseInt(colors.bgColor.slice(5, 7), 16)}, 0.20)`,
-                            color: colors.borderColor,
+                            backgroundColor: colors.bgColor,
+                            color: colors.textColor,
                           }}
                         >
                           {card.badgeLabel}
@@ -493,9 +538,15 @@ export default function OperationalDashboard({
                     ))}
                   </div>
 
-                  <button className="mt-3 h-7 w-full rounded-[4px] bg-[#003696] text-[10px] font-semibold text-white hover:bg-[#002060]">
-                    {card.actionLabel}
-                  </button>
+                  <div className="mt-3 flex gap-3">
+                    <button 
+                      className="flex-1 rounded-lg px-5 py-2 text-[12px] font-bold text-white hover:opacity-90 transition"
+                      style={{ backgroundColor: NgoColors.navy }}
+                    >
+                      {card.actionLabel}
+                    </button>
+                  
+                  </div>
                 </article>
               ))}
             </div>
@@ -544,13 +595,10 @@ export default function OperationalDashboard({
                     const colors = getBadgeColors(row.badgeTone);
                     return (
                       <span
-                        className="inline-flex h-6 items-center whitespace-nowrap text-[10px] font-bold"
+                        className="inline-flex h-6 items-center whitespace-nowrap rounded-full px-3 text-[10px] font-bold"
                         style={{
-                          padding: "4px 12px",
-                          borderRadius: "8px",
-                          border: `1px solid ${colors.borderColor}`,
-                          backgroundColor: `rgba(${parseInt(colors.bgColor.slice(1, 3), 16)}, ${parseInt(colors.bgColor.slice(3, 5), 16)}, ${parseInt(colors.bgColor.slice(5, 7), 16)}, 0.20)`,
-                          color: colors.borderColor,
+                          backgroundColor: colors.bgColor,
+                          color: colors.textColor,
                         }}
                       >
                         {row.badgeLabel}
@@ -564,6 +612,16 @@ export default function OperationalDashboard({
           </div>
         </section>
       </main>
-    </div>
+      </div>
+
+      <NgoDrawer
+        isOpen={drawerOpen}
+        onClose={handleDrawerClose}
+        onProfileClick={onProfileClick || (() => {})}
+        onNotificationsClick={onNotificationsClick || (() => {})}
+        onPrivacyClick={onPrivacyClick || (() => {})}
+        onLogoutClick={onLogoutClick || (() => {})}
+      />
+    </>
   );
 }
