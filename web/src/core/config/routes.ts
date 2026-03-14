@@ -12,6 +12,9 @@ export const ROUTES = {
   PRIVACY: "/dashboard/privacy",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
+  ADMIN_CONTENTS: "/admin/contents",
+  ADMIN_JOB_LISTS: "/admin/job-lists",
+  ADMIN_SYSTEM: "/admin/system",
 } as const;
 
 export function getDefaultRouteForRole(role: UserRole): string {
