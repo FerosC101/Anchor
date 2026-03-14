@@ -75,7 +75,26 @@ function ChevronDownIcon() {
   );
 }
 
-function SlidersIcon() {
+function FlagIcon() {
+  return (
+    <svg
+      width="16"
+      height="16"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M3 3v18M3 6l9-3 9 3-9 3-9-3z"
+      />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
   return (
     <svg
       width="18"
@@ -85,90 +104,85 @@ function SlidersIcon() {
       stroke="currentColor"
       strokeWidth={2}
     >
-      <line x1="4" y1="6" x2="4" y2="6" />
-      <line x1="20" y1="18" x2="20" y2="18" />
-      <path d="M4 6h16M4 12h8m4 6h4" />
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <path d="M16 2v4M8 2v4M3 10h18" />
     </svg>
   );
 }
 
-interface UserCardProps {
-  initials: string;
-  name: string;
+interface ContentCardProps {
+  id: string;
+  status: "Pending" | "Under Review" | "Resolved";
+  reports: number;
   userId: string;
-  country: string;
-  registered: string;
-  status: "Active" | "Inactive";
-  verified?: boolean;
-  onViewProfile: () => void;
-  onVerify: () => void;
+  userName: string;
+  flagType: string;
+  submitted: string;
+  content: string;
+  onReview: () => void;
+  onRemove: () => void;
 }
 
-function UserCard({
-  initials,
-  name,
-  userId,
-  country,
-  registered,
+function ContentCard({
+  id,
   status,
-  verified = false,
-  onViewProfile,
-  onVerify,
-}: UserCardProps) {
+  reports,
+  userId,
+  userName,
+  flagType,
+  submitted,
+  content,
+  onReview,
+  onRemove,
+}: ContentCardProps) {
   return (
     <div className="bg-white border border-slate-200 rounded-lg p-6 flex flex-col gap-4">
-      {/* Header with initials and badges */}
+      {/* Header */}
       <div className="flex items-start justify-between">
-        <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-[#5B4FCB] to-[#3D33A0] flex items-center justify-center text-white font-bold text-sm">
-            {initials}
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-slate-700">{id}</span>
+            <span className="inline-flex items-center gap-1 px-2 py-1 bg-yellow-50 text-yellow-700 rounded text-xs font-medium">
+              {status}
+            </span>
           </div>
-          <div className="flex flex-col gap-1">
-            <h3 className="font-semibold text-slate-900 text-sm">{name}</h3>
-            <p className="text-slate-500 text-xs">{userId}</p>
-          </div>
+          <p className="text-xs text-slate-500">{reports} Reports</p>
         </div>
       </div>
 
-      {/* Badges */}
-      <div className="flex gap-2">
-        <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-50 text-green-700 rounded text-xs font-medium">
-          <span className="w-2 h-2 bg-green-500 rounded-full"></span>
-          {status}
+      {/* User Info */}
+      <div className="flex flex-col gap-2">
+        <p className="text-sm font-medium text-slate-900">{userName}</p>
+        <p className="text-xs text-slate-600">{userId}</p>
+      </div>
+
+      {/* Flag Info */}
+      <div className="flex items-start gap-2">
+        <span className="inline-flex items-center gap-1 text-red-600 text-xs font-medium">
+          <FlagIcon />
+          {flagType}
         </span>
-        {verified && (
-          <span className="inline-flex items-center gap-1 px-2 py-1 bg-purple-50 text-[#5B4FCB] rounded text-xs font-medium">
-            <span className="w-2 h-2 bg-[#5B4FCB] rounded-full"></span>
-            Verified
-          </span>
-        )}
+        <span className="text-xs text-slate-500">{submitted}</span>
       </div>
 
-      {/* Info */}
-      <div className="flex flex-col gap-2 text-sm">
-        <div>
-          <p className="text-slate-600">Country:</p>
-          <p className="text-slate-900 font-medium">{country}</p>
-        </div>
-        <div>
-          <p className="text-slate-600">Registered:</p>
-          <p className="text-slate-900 font-medium">{registered}</p>
-        </div>
+      {/* Content Preview */}
+      <div className="bg-slate-50 rounded-lg p-3">
+        <p className="text-xs text-slate-600 leading-relaxed">{content}</p>
       </div>
 
-      {/* Buttons */}
+      {/* Actions */}
       <div className="flex gap-3 pt-2">
         <button
-          onClick={onViewProfile}
-          className="flex-1 py-2 px-3 border border-slate-200 rounded-lg text-slate-700 font-medium text-sm hover:bg-slate-50 transition-colors"
-        >
-          View Profile
-        </button>
-        <button
-          onClick={onVerify}
+          onClick={onReview}
           className="flex-1 py-2 px-3 bg-[#5B4FCB] text-white rounded-lg font-medium text-sm hover:bg-[#4A3FC0] transition-colors"
         >
-          Verify
+          Review
+        </button>
+        <button
+          onClick={onRemove}
+          className="flex-1 py-2 px-3 border border-slate-200 rounded-lg text-slate-700 font-medium text-sm hover:bg-slate-50 transition-colors"
+        >
+          Remove
         </button>
       </div>
     </div>
@@ -196,7 +210,9 @@ function TabButton({ label, isActive, onClick }: TabButtonProps) {
   );
 }
 
-export default function UsersPage() {
+const NAV_ITEMS = ["Home", "Users", "Contents", "Job Lists", "System"];
+
+export default function ContentsPage() {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -212,123 +228,71 @@ export default function UsersPage() {
     navigate(ROUTES.LOGIN, { replace: true });
   }
 
-  // Mock data for workers
-  const workers = [
+  // Mock data for content cards
+  const contentCards = [
     {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-001",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
+      id: "PST-003",
+      status: "Pending" as const,
+      reports: 15,
+      userId: "",
+      userName: "Unknown User",
+      flagType: "Inappropriate content",
+      submitted: "Submitted on Jan 15, 2025",
+      content: "This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]",
     },
     {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-006",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
+      id: "PST-003",
+      status: "Pending" as const,
+      reports: 15,
+      userId: "",
+      userName: "Unknown User",
+      flagType: "Inappropriate content",
+      submitted: "Submitted on Jan 15, 2025",
+      content: "This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]",
     },
     {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-008",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
+      id: "PST-003",
+      status: "Pending" as const,
+      reports: 15,
+      userId: "",
+      userName: "Unknown User",
+      flagType: "Inappropriate content",
+      submitted: "Submitted on Jan 15, 2025",
+      content: "This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]",
     },
     {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-003",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
+      id: "PST-003",
+      status: "Pending" as const,
+      reports: 15,
+      userId: "",
+      userName: "Unknown User",
+      flagType: "Inappropriate content",
+      submitted: "Submitted on Jan 15, 2025",
+      content: "This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]",
     },
     {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-009",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
+      id: "PST-003",
+      status: "Pending" as const,
+      reports: 15,
+      userId: "",
+      userName: "Unknown User",
+      flagType: "Inappropriate content",
+      submitted: "Submitted on Jan 15, 2025",
+      content: "This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]",
     },
     {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-010",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
-    },
-  ];
-
-  // Mock data for NGOs
-  const ngos = [
-    {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-003",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
-    },
-    {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-008",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
-    },
-    {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-003",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
-    },
-    {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-003",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
-    },
-    {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-008",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
-    },
-    {
-      initials: "MS",
-      name: "Migrant Support Network",
-      userId: "USR-003",
-      country: "Middle East",
-      registered: "2026-03-01",
-      status: "Active" as const,
-      verified: true,
+      id: "PST-003",
+      status: "Pending" as const,
+      reports: 15,
+      userId: "",
+      userName: "Unknown User",
+      flagType: "Inappropriate content",
+      submitted: "Submitted on Jan 15, 2025",
+      content: "This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]",
     },
   ];
 
-  const displayUsers = activeTab === "workers" ? workers : ngos;
+  const displayContent = activeTab === "workers" ? contentCards : contentCards;
 
   return (
     <div className="min-h-screen bg-[#F5F6FA]">
@@ -347,29 +311,36 @@ export default function UsersPage() {
 
           {/* Desktop center nav */}
           <nav className="hidden md:flex items-stretch gap-1 h-full">
-            {[
-              { label: "Home", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "Users", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "Contents", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "Job Lists", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "System", onClick: () => { setMobileMenuOpen(false); } },
-            ].map((item) => {
-              const isActive = (item.label === "Home" && location.pathname === ROUTES.ADMIN) || 
-                               (item.label === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
-                               (item.label === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
-                               (item.label === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
-                               (item.label === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
+            {NAV_ITEMS.map((item) => {
+              const isActive =
+                (item === "Home" && location.pathname === ROUTES.ADMIN) ||
+                (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
+                (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
+                (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
+                (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
               return (
                 <Link
-                  key={item.label}
-                  to={item.label === "Users" ? ROUTES.ADMIN_USERS : item.label === "Contents" ? ROUTES.ADMIN_CONTENTS : item.label === "Job Lists" ? ROUTES.ADMIN_JOB_LISTS : item.label === "System" ? ROUTES.ADMIN_SYSTEM : item.label === "Home" ? ROUTES.ADMIN : "#"}
+                  key={item}
+                  to={
+                    item === "Users"
+                      ? ROUTES.ADMIN_USERS
+                      : item === "Contents"
+                        ? ROUTES.ADMIN_CONTENTS
+                        : item === "Job Lists"
+                          ? ROUTES.ADMIN_JOB_LISTS
+                          : item === "System"
+                            ? ROUTES.ADMIN_SYSTEM
+                            : item === "Home"
+                              ? ROUTES.ADMIN
+                              : "#"
+                  }
                   className={`relative px-4 text-sm font-medium transition-colors h-full flex items-center ${
                     isActive
                       ? "text-[#5B4FCB]"
                       : "text-slate-500 hover:text-slate-800"
                   }`}
                 >
-                  {item.label}
+                  {item}
                   {isActive && (
                     <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B4FCB] rounded-full" />
                   )}
@@ -401,26 +372,33 @@ export default function UsersPage() {
         {/* Mobile nav drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-100 bg-white px-5 py-3 flex flex-col gap-1">
-            {[
-              { label: "Home", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "Users", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "Contents", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "Job Lists", onClick: () => { setMobileMenuOpen(false); } },
-              { label: "System", onClick: () => { setMobileMenuOpen(false); } },
-            ].map((item) => {
-              const isActive = (item.label === "Home" && location.pathname === ROUTES.ADMIN) || 
-                               (item.label === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
-                               (item.label === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
-                               (item.label === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
-                               (item.label === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
+            {NAV_ITEMS.map((item) => {
+              const isActive =
+                (item === "Home" && location.pathname === ROUTES.ADMIN) ||
+                (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
+                (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
+                (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
+                (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
               return (
                 <Link
-                  key={item.label}
-                  to={item.label === "Users" ? ROUTES.ADMIN_USERS : item.label === "Contents" ? ROUTES.ADMIN_CONTENTS : item.label === "Job Lists" ? ROUTES.ADMIN_JOB_LISTS : item.label === "System" ? ROUTES.ADMIN_SYSTEM : item.label === "Home" ? ROUTES.ADMIN : "#"}
-                  onClick={item.onClick}
+                  key={item}
+                  to={
+                    item === "Users"
+                      ? ROUTES.ADMIN_USERS
+                      : item === "Contents"
+                        ? ROUTES.ADMIN_CONTENTS
+                        : item === "Job Lists"
+                          ? ROUTES.ADMIN_JOB_LISTS
+                          : item === "System"
+                            ? ROUTES.ADMIN_SYSTEM
+                            : item === "Home"
+                              ? ROUTES.ADMIN
+                              : "#"
+                  }
+                  onClick={() => setMobileMenuOpen(false)}
                   className={`text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-purple-50 text-[#5B4FCB]" : "text-slate-600 hover:bg-slate-50"}`}
                 >
-                  {item.label}
+                  {item}
                 </Link>
               );
             })}
@@ -438,10 +416,8 @@ export default function UsersPage() {
       <main className="max-w-7xl mx-auto px-5 sm:px-8 py-8 space-y-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-slate-900">User Management</h1>
-          <p className="text-slate-500 mt-2">
-            Manage user accounts, verification, and access control
-          </p>
+          <h1 className="text-3xl font-bold text-slate-900">Content Moderation</h1>
+          <p className="text-slate-500 mt-2">Review and moderate flagged content</p>
         </div>
 
         {/* Search and Filters */}
@@ -454,7 +430,7 @@ export default function UsersPage() {
               </span>
               <input
                 type="text"
-                placeholder="Search worker by name or case ID"
+                placeholder="Search content"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-full bg-white focus:outline-none focus:ring-2 focus:ring-[#5B4FCB] text-sm"
@@ -481,19 +457,19 @@ export default function UsersPage() {
             <div className="relative">
               <select className="px-4 py-3 border border-slate-200 rounded-full appearance-none bg-white cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#5B4FCB] pr-10 text-slate-700 text-sm font-medium">
                 <option>All Status</option>
-                <option>Active</option>
-                <option>Inactive</option>
-                <option>Suspended</option>
+                <option>Pending</option>
+                <option>Under Review</option>
+                <option>Resolved</option>
               </select>
               <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-slate-400 pointer-events-none">
                 <ChevronDownIcon />
               </span>
             </div>
 
-            {/* Roles Filter */}
+            {/* Dates Filter */}
             <button className="flex items-center gap-2 px-4 py-3 border border-slate-200 rounded-full bg-white hover:bg-slate-50 transition-colors text-slate-700 text-sm font-medium">
-              <SlidersIcon />
-              <span>Roles</span>
+              <CalendarIcon />
+              <span>Dates</span>
             </button>
           </div>
         </div>
@@ -507,31 +483,32 @@ export default function UsersPage() {
               onClick={() => setActiveTab("workers")}
             />
             <TabButton
-              label="NGO Verification Queue"
+              label="NGO"
               isActive={activeTab === "ngo"}
               onClick={() => setActiveTab("ngo")}
             />
           </div>
 
-          {/* User Count */}
+          {/* Content Count */}
           <h2 className="text-lg font-semibold text-slate-900 mb-6">
-            Users ({displayUsers.length})
+            Users ({displayContent.length})
           </h2>
 
-          {/* Users Grid */}
+          {/* Content Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {displayUsers.map((user, idx) => (
-              <UserCard
+            {displayContent.map((content, idx) => (
+              <ContentCard
                 key={idx}
-                initials={user.initials}
-                name={user.name}
-                userId={user.userId}
-                country={user.country}
-                registered={user.registered}
-                status={user.status}
-                verified={user.verified}
-                onViewProfile={() => console.log("View profile:", user.userId)}
-                onVerify={() => console.log("Verify:", user.userId)}
+                id={content.id}
+                status={content.status}
+                reports={content.reports}
+                userId={content.userId}
+                userName={content.userName}
+                flagType={content.flagType}
+                submitted={content.submitted}
+                content={content.content}
+                onReview={() => console.log("Review:", content.id)}
+                onRemove={() => console.log("Remove:", content.id)}
               />
             ))}
           </div>

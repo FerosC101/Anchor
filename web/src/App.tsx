@@ -3,12 +3,15 @@ import { ROUTES, getDefaultRouteForRole } from "./core/config/routes";
 import { useAuth } from "./core/context/AuthContext";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import AlertPage from "./pages/AlertPage";
+import ContentsPageWrapper from "./pages/ContentsPage";
 import HomePage from "./pages/HomePage";
+import JobListsPageWrapper from "./pages/JobListsPage";
 import LoginPage from "./pages/LoginPage";
 import MonitoringPage from "./pages/MonitoringPage";
 import NGODashboardPage from "./pages/NGODashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import RegisterPage from "./pages/RegisterPage";
+import SystemPageWrapper from "./pages/SystemPage";
 import UsersPageWrapper from "./pages/UsersPage";
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -114,6 +117,30 @@ export default function App() {
         element={
           <ProtectedRoute>
             <UsersPageWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ADMIN_CONTENTS}
+        element={
+          <ProtectedRoute>
+            <ContentsPageWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ADMIN_JOB_LISTS}
+        element={
+          <ProtectedRoute>
+            <JobListsPageWrapper />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ADMIN_SYSTEM}
+        element={
+          <ProtectedRoute>
+            <SystemPageWrapper />
           </ProtectedRoute>
         }
       />

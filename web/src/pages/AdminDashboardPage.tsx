@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "../core/config/routes";
 import { useAuth } from "../core/context/AuthContext";
 
@@ -337,10 +337,10 @@ function ActivityIcon({ icon }: { icon: string }) {
 // ── Page ──────────────────────────────────────────────────────────────────────
 
 export default function AdminDashboardPage() {
-  const [activeNav, setActiveNav] = useState("Home");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { signOut } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   async function handleSignOut() {
     await signOut();
@@ -365,16 +365,15 @@ export default function AdminDashboardPage() {
           {/* Desktop center nav */}
           <nav className="hidden md:flex items-stretch gap-1 h-full">
             {NAV_ITEMS.map((item) => {
-              const isActive = activeNav === item;
+              const isActive = (item === "Home" && location.pathname === ROUTES.ADMIN) || 
+                               (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
+                               (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
+                               (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
+                               (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
               return (
-                <button
+                <Link
                   key={item}
-                  onClick={() => {
-                    setActiveNav(item);
-                    if (item === "Users") {
-                      navigate(ROUTES.ADMIN_USERS);
-                    }
-                  }}
+                  to={item === "Users" ? ROUTES.ADMIN_USERS : item === "Contents" ? ROUTES.ADMIN_CONTENTS : item === "Job Lists" ? ROUTES.ADMIN_JOB_LISTS : item === "System" ? ROUTES.ADMIN_SYSTEM : item === "Home" ? ROUTES.ADMIN : "#"}
                   className={`relative px-4 text-sm font-medium transition-colors h-full flex items-center ${
                     isActive
                       ? "text-[#5B4FCB]"
@@ -385,7 +384,7 @@ export default function AdminDashboardPage() {
                   {isActive && (
                     <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B4FCB] rounded-full" />
                   )}
-                </button>
+                </Link>
               );
             })}
           </nav>
@@ -413,21 +412,23 @@ export default function AdminDashboardPage() {
         {/* Mobile nav drawer */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t border-slate-100 bg-white px-5 py-3 flex flex-col gap-1">
-            {NAV_ITEMS.map((item) => (
-              <button
-                key={item}
-                onClick={() => {
-                  setActiveNav(item);
-                  setMobileMenuOpen(false);
-                  if (item === "Users") {
-                    navigate(ROUTES.ADMIN_USERS);
-                  }
-                }}
-                className={`text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${activeNav === item ? "bg-purple-50 text-[#5B4FCB]" : "text-slate-600 hover:bg-slate-50"}`}
-              >
-                {item}
-              </button>
-            ))}
+            {NAV_ITEMS.map((item) => {
+              const isActive = (item === "Home" && location.pathname === ROUTES.ADMIN) || 
+                               (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
+                               (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
+                               (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
+                               (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
+              return (
+                <Link
+                  key={item}
+                  to={item === "Users" ? ROUTES.ADMIN_USERS : item === "Contents" ? ROUTES.ADMIN_CONTENTS : item === "Job Lists" ? ROUTES.ADMIN_JOB_LISTS : item === "System" ? ROUTES.ADMIN_SYSTEM : item === "Home" ? ROUTES.ADMIN : "#"}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-purple-50 text-[#5B4FCB]" : "text-slate-600 hover:bg-slate-50"}`}
+                >
+                  {item}
+                </Link>
+              );
+            })}
             <button
               onClick={handleSignOut}
               className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 mt-1"
@@ -442,10 +443,10 @@ export default function AdminDashboardPage() {
       <main className="max-w-7xl mx-auto px-5 sm:px-8 py-8 space-y-8">
         {/* Page title */}
         <div>
-          <h1 className="text-[22px] font-bold text-slate-900">
+          <h1 className="text-3xl font-bold text-slate-900">
             Admin Dashboard
           </h1>
-          <p className="text-slate-400 text-sm mt-1">
+          <p className="text-slate-500 mt-2">
             Quick overview of platform status, pending actions, and recent
             activity
           </p>
