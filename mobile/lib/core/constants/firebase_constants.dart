@@ -14,4 +14,7 @@ class FirebaseConstants {
   static const String notificationsCollection = 'notifications';
   static const String reportsCollection = 'reports';
   static const String aiUsageLogsCollection = 'ai_usage_logs';
+
+  // Wage monitoring – stored as a sub-collection under each user document.
+  static const String wageLogsSubcollection = 'wage_logs';
 }
