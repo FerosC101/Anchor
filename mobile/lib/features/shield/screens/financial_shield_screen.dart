@@ -13,13 +13,7 @@ class FinancialShieldScreen extends StatefulWidget {
 
 class _FinancialShieldScreenState extends State<FinancialShieldScreen> {
   // ── Colors ──────────────────────────────────────────────────────────────────
-  static const Color _blueMid = Color(0xFF003696);
-  static const Color _blue = Color(0xFF003696);
-  static const Color _softBlue = Color(0xFFDFEDFF);
-  static const Color _blueLight = Color(0xFFDFEDFF);
   static const Color _bg = Color(0xFFF5F5F5);
-  static const Color _debtAlertBg = Color(0xFFFFFBE8);
-  static const Color _debtAlertText = Color(0xFFAD4B00);
 
   @override
   Widget build(BuildContext context) {

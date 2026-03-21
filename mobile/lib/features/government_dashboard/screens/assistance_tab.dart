@@ -22,8 +22,72 @@ class AssistanceTab extends StatelessWidget {
     required this.onDateChanged,
   });
 
+  DateTime? _parseDate(String rawDate) {
+    final fromIso = DateTime.tryParse(rawDate);
+    if (fromIso != null) return fromIso;
+
+    final months = {
+      'jan': 1,
+      'feb': 2,
+      'mar': 3,
+      'apr': 4,
+      'may': 5,
+      'jun': 6,
+      'jul': 7,
+      'aug': 8,
+      'sep': 9,
+      'oct': 10,
+      'nov': 11,
+      'dec': 12,
+    };
+    final match = RegExp(r'^([A-Za-z]{3})\s+(\d{1,2}),\s*(\d{4})$')
+        .firstMatch(rawDate.trim());
+    if (match == null) return null;
+    final month = months[match.group(1)!.toLowerCase()];
+    final day = int.tryParse(match.group(2)!);
+    final year = int.tryParse(match.group(3)!);
+    if (month == null || day == null || year == null) return null;
+    return DateTime(year, month, day);
+  }
+
+  bool _matchesDate(String rawDate) {
+    if (selectedDate == 'All Date') return true;
+    final parsed = _parseDate(rawDate);
+    if (parsed == null) return false;
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final thatDay = DateTime(parsed.year, parsed.month, parsed.day);
+    final diff = today.difference(thatDay).inDays;
+
+    if (selectedDate == 'Today') return diff == 0;
+    if (selectedDate == 'This Week') return diff >= 0 && diff <= 7;
+    if (selectedDate == 'This Month') {
+      return parsed.year == now.year && parsed.month == now.month;
+    }
+    if (selectedDate == 'This Year') return parsed.year == now.year;
+    return true;
+  }
+
+  List<Map<String, String>> get _filteredCases {
+    return assistanceCasesData.where((c) {
+      final country = c['country'] ?? '';
+      final status = c['status'] ?? '';
+      final date = c['date'] ?? '';
+
+      final matchesCountry =
+          selectedCountry == 'All Countries' || country == selectedCountry;
+      final matchesStatus = selectedStatus == 'All Status' ||
+          !statusOptions.contains(selectedStatus) ||
+          status == selectedStatus;
+      final matchesDate = _matchesDate(date);
+
+      return matchesCountry && matchesStatus && matchesDate;
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final cases = _filteredCases;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,10 +135,10 @@ class AssistanceTab extends StatelessWidget {
           const SizedBox(height: 12),
           _buildAssistanceFilterChips(context),
           const SizedBox(height: 16),
-          ...List.generate(assistanceCasesData.length, (i) {
+          ...List.generate(cases.length, (i) {
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: _buildAssistanceCard(context, assistanceCasesData[i]),
+              child: _buildAssistanceCard(context, cases[i]),
             );
           }),
           const SizedBox(height: 16),
@@ -107,12 +171,10 @@ class AssistanceTab extends StatelessWidget {
           Expanded(
             child: DashboardFilterChip(
               icon: Icons.info_outline,
-              label: selectedStatus == 'All Status'
-                  ? 'All Issues'
-                  : selectedStatus,
+              label: selectedStatus == 'All Status' ? 'Status' : selectedStatus,
               onTap: () => showFilterModal(
                 context: context,
-                title: 'Issues',
+                title: 'Status',
                 options: statusOptions,
                 selected: selectedStatus,
                 onSelect: onStatusChanged,
@@ -123,10 +185,10 @@ class AssistanceTab extends StatelessWidget {
           Expanded(
             child: DashboardFilterChip(
               icon: Icons.filter_alt_outlined,
-              label: selectedDate == 'All Date' ? 'All Status' : selectedDate,
+              label: selectedDate == 'All Date' ? 'Date' : selectedDate,
               onTap: () => showFilterModal(
                 context: context,
-                title: 'Status',
+                title: 'Date',
                 options: dateOptions,
                 selected: selectedDate,
                 onSelect: onDateChanged,
@@ -198,8 +260,8 @@ class AssistanceTab extends StatelessWidget {
   Widget _buildAssistanceCard(BuildContext context, Map<String, String> c) {
     final status = c['status']!;
     final isResolved = status == 'Resolved';
-    final issueTitle = isResolved ? 'Passport Retention' : 'Contract Substitution';
-    final issueBg = isResolved ? DashboardTheme.redBg : DashboardTheme.yellowBg;
+    final issueTitle = c['issue'] ?? 'Contract Substitution';
+    final caseDate = c['date'] ?? 'Mar 6, 2026';
     final statusLabel = _assistanceStatusLabel(status);
     final statusBg = _assistanceStatusBg(status);
     final statusText = _assistanceStatusText(status);
@@ -262,7 +324,8 @@ class AssistanceTab extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
                   color: statusBg,
                   borderRadius: BorderRadius.circular(8),
@@ -305,7 +368,7 @@ class AssistanceTab extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 6),
-          const Row(
+          Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
@@ -318,8 +381,9 @@ class AssistanceTab extends StatelessWidget {
               ),
               Expanded(
                 child: Text(
-                  'March 6, 2026',
-                  style: TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+                  caseDate,
+                  style: TextStyle(
+                      fontSize: 13, color: DashboardTheme.textPrimary),
                 ),
               ),
             ],
@@ -339,7 +403,8 @@ class AssistanceTab extends StatelessWidget {
               Expanded(
                 child: Text(
                   'Bangkok, Thailand',
-                  style: TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+                  style: TextStyle(
+                      fontSize: 13, color: DashboardTheme.textPrimary),
                 ),
               ),
             ],

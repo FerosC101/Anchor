@@ -166,17 +166,13 @@ class _AdminStatCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
-  final String? delta;
   final String sublabel;
-  final Color? deltaColor;
 
   const _AdminStatCard({
     required this.icon,
     required this.label,
     required this.value,
-    this.delta,
     required this.sublabel,
-    this.deltaColor,
   });
 
   @override
@@ -209,26 +205,6 @@ class _AdminStatCard extends StatelessWidget {
                 child: Icon(icon, color: Colors.white, size: 18),
               ),
               const Spacer(),
-              if (delta != null)
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      Icons.north_east_rounded,
-                      size: 12,
-                      color: deltaColor ?? const Color(0xFF00AA28),
-                    ),
-                    const SizedBox(width: 2),
-                    Text(
-                      delta!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: deltaColor ?? const Color(0xFF00AA28),
-                      ),
-                    ),
-                  ],
-                ),
             ],
           ),
           const Spacer(),
@@ -295,8 +271,7 @@ class _PendingActionsSection extends StatelessWidget {
                 // TODO: Navigate to view all pending actions
               },
               style: TextButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                 minimumSize: const Size(0, 30),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
@@ -492,8 +467,7 @@ class _RecentActivitySection extends StatelessWidget {
                 // TODO: Navigate to view all activity
               },
               style: TextButton.styleFrom(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 0),
                 minimumSize: const Size(0, 30),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               ),
@@ -672,84 +646,6 @@ class _ActivityCard extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─── Bottom Navigation Bar ────────────────────────────────────────────────────
-
-class _AdminBottomNavBar extends StatelessWidget {
-  final int currentIndex;
-  final Function(int) onTabChanged;
-
-  const _AdminBottomNavBar({
-    required this.currentIndex,
-    required this.onTabChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const items = [
-      {'icon': Icons.home_rounded, 'label': 'Home'},
-      {'icon': Icons.people_rounded, 'label': 'Users'},
-      {'icon': Icons.image_rounded, 'label': 'Content'},
-      {'icon': Icons.work_rounded, 'label': 'Job List'},
-      {'icon': Icons.settings_rounded, 'label': 'System'},
-    ];
-
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(
-          top: BorderSide(
-            color: const Color(0xFFE5E7EB),
-            width: 1,
-          ),
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: List.generate(
-            items.length,
-            (index) {
-              final item = items[index];
-              final isSelected = currentIndex == index;
-
-              return GestureDetector(
-                onTap: () => onTabChanged(index),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        item['icon'] as IconData,
-                        color: isSelected
-                            ? const Color(0xFF6B46C1)
-                            : const Color(0xFFC4B5FD),
-                        size: 24,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        item['label'] as String,
-                        style: TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.w500,
-                          color: isSelected
-                              ? const Color(0xFF6B46C1)
-                              : const Color(0xFFC4B5FD),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
         ),
       ),
     );

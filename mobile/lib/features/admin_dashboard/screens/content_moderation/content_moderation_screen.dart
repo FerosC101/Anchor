@@ -27,6 +27,7 @@ class _ContentModerationScreenState
   String _selectedContentType = 'Content Type';
   String _selectedStatus = 'Status';
   String _selectedDate = 'All Date';
+  String _searchQuery = '';
   int _currentPage = 1;
 
   late List<ContentData> _workersContentList = [
@@ -56,7 +57,7 @@ class _ContentModerationScreenState
           'This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]',
       severity: 'MEDIUM',
       role: 'WORKER',
-      status: 'Pending',
+      status: 'Reviewed',
       likes: 1,
       comments: 3,
     ),
@@ -71,7 +72,7 @@ class _ContentModerationScreenState
           'This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]',
       severity: 'HIGH',
       role: 'WORKER',
-      status: 'Pending',
+      status: 'Approved',
       likes: 2,
       comments: 8,
     ),
@@ -104,7 +105,7 @@ class _ContentModerationScreenState
           'This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]',
       severity: 'HIGH',
       role: 'NGO',
-      status: 'Pending',
+      status: 'Reviewed',
       likes: 3,
       comments: 6,
     ),
@@ -119,7 +120,7 @@ class _ContentModerationScreenState
           'This contains inappropriate and offensive language that violates community guidelines. [FLAGGED CONTENT]',
       severity: 'MEDIUM',
       role: 'NGO',
-      status: 'Pending',
+      status: 'Removed',
       likes: 4,
       comments: 5,
     ),
@@ -127,6 +128,55 @@ class _ContentModerationScreenState
 
   List<ContentData> get _currentContentList =>
       _selectedTab == 0 ? _workersContentList : _ngoContentList;
+
+  List<ContentData> get _filteredContentList {
+    final query = _searchQuery.trim().toLowerCase();
+    return _currentContentList.where((content) {
+      final matchesType = _selectedContentType == 'Content Type' ||
+          content.postType == _selectedContentType;
+      final matchesStatus =
+          _selectedStatus == 'Status' || content.status == _selectedStatus;
+      final matchesDate = _matchesDateFilter(content.postDate);
+      final matchesQuery = query.isEmpty ||
+          content.id.toLowerCase().contains(query) ||
+          content.author.toLowerCase().contains(query) ||
+          content.flagReason.toLowerCase().contains(query) ||
+          content.content.toLowerCase().contains(query);
+      return matchesType && matchesStatus && matchesDate && matchesQuery;
+    }).toList();
+  }
+
+  bool _matchesDateFilter(String date) {
+    if (_selectedDate == 'All Date') return true;
+    final parsed = DateTime.tryParse(date);
+    if (parsed == null) return false;
+    final now = DateTime.now();
+    final ageInDays = now.difference(parsed).inDays;
+    if (_selectedDate == 'Last 24 hours') return ageInDays <= 1;
+    if (_selectedDate == 'Last 7 days') return ageInDays <= 7;
+    if (_selectedDate == 'Last 30 days') return ageInDays <= 30;
+    return true;
+  }
+
+  void _setContentStatus(ContentData content, String status) {
+    final index =
+        _currentContentList.indexWhere((item) => item.id == content.id);
+    if (index == -1) return;
+    _currentContentList[index] = ContentData(
+      id: content.id,
+      author: content.author,
+      postDate: content.postDate,
+      postType: content.postType,
+      flagCount: content.flagCount,
+      flagReason: content.flagReason,
+      content: content.content,
+      severity: content.severity,
+      role: content.role,
+      status: status,
+      likes: content.likes,
+      comments: content.comments,
+    );
+  }
 
   void _showContentReviewModal(ContentData content) {
     showModalBottomSheet(
@@ -143,13 +193,13 @@ class _ContentModerationScreenState
           scrollController: scrollController,
           onApprove: () {
             setState(() {
-              _currentContentList.removeWhere((item) => item.id == content.id);
+              _setContentStatus(content, 'Approved');
             });
             Navigator.pop(context);
           },
           onRemove: () {
             setState(() {
-              _currentContentList.removeWhere((item) => item.id == content.id);
+              _setContentStatus(content, 'Removed');
             });
             Navigator.pop(context);
           },
@@ -195,7 +245,7 @@ class _ContentModerationScreenState
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: _SearchBar(
                       onChanged: (value) {
-                        // TODO: Filter content based on search query
+                        setState(() => _searchQuery = value);
                       },
                     ),
                   ),
@@ -218,7 +268,7 @@ class _ContentModerationScreenState
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                     child: Text(
-                      'Flagged Contents (${_currentContentList.length})',
+                      'Flagged Contents (${_filteredContentList.length})',
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -231,16 +281,16 @@ class _ContentModerationScreenState
                     child: ListView.separated(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: _currentContentList.length,
+                      itemCount: _filteredContentList.length,
                       separatorBuilder: (_, __) => const SizedBox(height: 12),
                       itemBuilder: (context, index) {
-                        final content = _currentContentList[index];
+                        final content = _filteredContentList[index];
                         return _ContentCard(
                           content: content,
                           onReview: () => _showContentReviewModal(content),
                           onRemove: () {
                             setState(() {
-                              _currentContentList.removeAt(index);
+                              _setContentStatus(content, 'Removed');
                             });
                           },
                         );
@@ -592,6 +642,32 @@ class _ContentCard extends StatelessWidget {
     required this.onRemove,
   });
 
+  Color _statusBg(String status) {
+    switch (status) {
+      case 'Approved':
+        return const Color(0xFFD1FAE5);
+      case 'Removed':
+        return const Color(0xFFFEE2E2);
+      case 'Reviewed':
+        return const Color(0xFFDBEAFE);
+      default:
+        return const Color(0xFFFEF3C7);
+    }
+  }
+
+  Color _statusFg(String status) {
+    switch (status) {
+      case 'Approved':
+        return const Color(0xFF065F46);
+      case 'Removed':
+        return const Color(0xFF991B1B);
+      case 'Reviewed':
+        return const Color(0xFF1E40AF);
+      default:
+        return const Color(0xFF92400E);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -626,15 +702,15 @@ class _ContentCard extends StatelessWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFFEF3C7),
+                    color: _statusBg(content.status),
                     borderRadius: BorderRadius.circular(4),
                   ),
-                  child: const Text(
-                    'Pending',
+                  child: Text(
+                    content.status,
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
-                      color: Color(0xFF92400E),
+                      color: _statusFg(content.status),
                     ),
                   ),
                 ),

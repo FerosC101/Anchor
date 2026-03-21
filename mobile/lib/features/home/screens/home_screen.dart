@@ -74,36 +74,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // ── Placeholder for other tabs ───────────────────────────────────────────────
-
-  Widget _buildPlaceholder(String title) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.construction_rounded, size: 64, color: _blue),
-          const SizedBox(height: 16),
-          Text(
-            '$title Screen',
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w700,
-              color: Color(0xFF003696), // Deep Blue
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Coming Soon',
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   // ── Search bar ───────────────────────────────────────────────────────────────
 
   Widget _buildSearchBar() {

@@ -83,15 +83,6 @@ class _RemittanceCalculatorScreenState
     return _amount * rate;
   }
 
-  double get _bestRate {
-    return _convertedAmount;
-  }
-
-  double get _youSave {
-    // Calculate savings compared to worst rate (demo: 5% difference)
-    return _convertedAmount * 0.019;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -170,7 +161,7 @@ class _RemittanceCalculatorScreenState
                     ],
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Swap Button
                   Center(
                     child: Container(
@@ -197,7 +188,7 @@ class _RemittanceCalculatorScreenState
                     ),
                   ),
                   const SizedBox(height: 20),
-                  
+
                   // Recipient Gets
                   const Text(
                     'Recipient Gets',
@@ -229,9 +220,9 @@ class _RemittanceCalculatorScreenState
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Providers Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -248,14 +239,15 @@ class _RemittanceCalculatorScreenState
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Sort Dropdown
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 decoration: BoxDecoration(
                   border: Border.all(color: const Color(0xFFE0E0E0)),
                   borderRadius: BorderRadius.circular(8),
@@ -269,7 +261,8 @@ class _RemittanceCalculatorScreenState
                         value: _sortBy,
                         isExpanded: true,
                         underline: const SizedBox(),
-                        items: ['Best Value', 'Fastest', 'Cheapest'].map((String value) {
+                        items: ['Best Value', 'Fastest', 'Cheapest']
+                            .map((String value) {
                           return DropdownMenuItem<String>(
                             value: value,
                             child: Text(
@@ -293,9 +286,9 @@ class _RemittanceCalculatorScreenState
                 ),
               ),
             ),
-            
+
             const SizedBox(height: 16),
-            
+
             // Provider Cards
             ...List.generate(_providers.length, (index) {
               final provider = _providers[index];
@@ -305,7 +298,7 @@ class _RemittanceCalculatorScreenState
                 child: _buildProviderCard(provider, isFirst),
               );
             }),
-            
+
             const SizedBox(height: 24),
           ],
         ),
@@ -441,9 +434,9 @@ class _RemittanceCalculatorScreenState
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 20),
-                
+
                 // Info Cards: You Get, Fee, Speed
                 Row(
                   children: [
@@ -538,9 +531,9 @@ class _RemittanceCalculatorScreenState
                     ),
                   ],
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Tags
                 Wrap(
                   spacing: 8,
@@ -566,9 +559,9 @@ class _RemittanceCalculatorScreenState
                     );
                   }).toList(),
                 ),
-                
+
                 const SizedBox(height: 16),
-                
+
                 // Send Money Button
                 SizedBox(
                   width: double.infinity,
@@ -576,7 +569,8 @@ class _RemittanceCalculatorScreenState
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('Opening ${provider['name']} transfer...'),
+                          content:
+                              Text('Opening ${provider['name']} transfer...'),
                           backgroundColor: const Color(0xFF003696),
                         ),
                       );

@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../auth/providers/auth_provider.dart';
 import '../../screens/admin/admin_notifications_screen.dart';
 import '../../screens/admin/admin_privacy_screen.dart';
 import '../../screens/admin/admin_profile_screen.dart';
-import '../../screens/admin/role_selection_screen.dart';
 
 class AdminDrawer extends ConsumerWidget {
   const AdminDrawer({super.key});
@@ -37,8 +37,7 @@ class AdminDrawer extends ConsumerWidget {
                   icon: Icons.notifications_none,
                   label: 'Notifications',
                   badge: '3',
-                  onTap: () =>
-                      _open(context, const AdminNotificationsScreen()),
+                  onTap: () => _open(context, const AdminNotificationsScreen()),
                 ),
                 const _AdminSectionLabel('SECURITY'),
                 _AdminDrawerMenuItem(
@@ -56,13 +55,9 @@ class AdminDrawer extends ConsumerWidget {
                   label: 'Logout',
                   onTap: () async {
                     await ref.read(authNotifierProvider.notifier).signOut();
+                    if (!context.mounted) return;
                     Navigator.pop(context);
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(
-                        builder: (_) => const RoleSelectionScreen(),
-                      ),
-                      (route) => false,
-                    );
+                    context.go('/login');
                   },
                 ),
               ],

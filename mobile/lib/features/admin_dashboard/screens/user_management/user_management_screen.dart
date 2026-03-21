@@ -25,163 +25,254 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
   int _selectedTab = 0; // 0 = Workers, 1 = NGO
   String _selectedCountry = 'All Countries';
   String _selectedStatus = 'All Status';
+  String _searchQuery = '';
   int _currentPage = 1;
 
-  // Mock NGO data
-  late List<NGOData> _ngoList = [
+  final List<UserData> _workers = [
+    UserData(
+      id: 'USR-101',
+      name: 'Maria Santos',
+      email: 'maria.santos@anchor.app',
+      country: 'Saudi Arabia',
+      registered: '2026-03-01',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-10',
+      verified: false,
+    ),
+    UserData(
+      id: 'USR-102',
+      name: 'Ahmed Rahman',
+      email: 'ahmed.rahman@anchor.app',
+      country: 'UAE',
+      registered: '2026-02-28',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-11',
+      verified: true,
+    ),
+    UserData(
+      id: 'USR-103',
+      name: 'Jessa Lim',
+      email: 'jessa.lim@anchor.app',
+      country: 'Qatar',
+      registered: '2026-02-27',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-08',
+      verified: false,
+    ),
+    UserData(
+      id: 'USR-104',
+      name: 'Carlo Dela Cruz',
+      email: 'carlo.dc@anchor.app',
+      country: 'Kuwait',
+      registered: '2026-02-25',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-10',
+      verified: true,
+    ),
+    UserData(
+      id: 'USR-105',
+      name: 'Nina Velasco',
+      email: 'nina.velasco@anchor.app',
+      country: 'Bahrain',
+      registered: '2026-02-21',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-09',
+      verified: false,
+    ),
+    UserData(
+      id: 'USR-106',
+      name: 'Luis Mendoza',
+      email: 'luis.mendoza@anchor.app',
+      country: 'Saudi Arabia',
+      registered: '2026-02-19',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-07',
+      verified: true,
+    ),
+    UserData(
+      id: 'USR-107',
+      name: 'Joy Bacani',
+      email: 'joy.bacani@anchor.app',
+      country: 'UAE',
+      registered: '2026-02-18',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-06',
+      verified: false,
+    ),
+    UserData(
+      id: 'USR-108',
+      name: 'Ramon Ortega',
+      email: 'ramon.ortega@anchor.app',
+      country: 'Qatar',
+      registered: '2026-02-16',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-05',
+      verified: false,
+    ),
+    UserData(
+      id: 'USR-109',
+      name: 'Ana Gutierrez',
+      email: 'ana.gutierrez@anchor.app',
+      country: 'Kuwait',
+      registered: '2026-02-14',
+      status: 'Active',
+      role: 'Worker',
+      lastActive: '2026-03-04',
+      verified: false,
+    ),
+  ];
+
+  late final List<NGOData> _ngos = [
     NGOData(
       id: 'NGO-001',
       name: 'Green Earth Foundation',
-      date: 'Jan 15, 2025',
-      documents: ['Tax ID', 'Registration Certificate', 'Annual Report'],
+      email: 'hello@greenearth.org',
+      country: 'UAE',
+      registered: '2026-03-11',
+      lastActive: '2026-03-18',
       status: 'Approval Queue',
+      verified: false,
     ),
     NGOData(
       id: 'NGO-002',
       name: 'Global Health Initiative',
-      date: 'Jan 10, 2025',
-      documents: ['Tax ID', 'Registration Certificate', 'Annual Report'],
+      email: 'admin@ghi.org',
+      country: 'Saudi Arabia',
+      registered: '2026-03-10',
+      lastActive: '2026-03-16',
       status: 'Approval Queue',
+      verified: false,
     ),
     NGOData(
       id: 'NGO-003',
       name: 'Community Development Network',
-      date: 'Jan 08, 2025',
-      documents: ['Tax ID', 'Registration Certificate', 'Annual Report'],
-      status: 'Approval Queue',
+      email: 'contact@cdn.org',
+      country: 'Qatar',
+      registered: '2026-03-08',
+      lastActive: '2026-03-12',
+      status: 'Approved',
+      verified: true,
     ),
     NGOData(
       id: 'NGO-004',
       name: 'Education for All',
-      date: 'Jan 05, 2025',
-      documents: ['Tax ID', 'Registration Certificate', 'Annual Report'],
-      status: 'Approval Queue',
+      email: 'team@educationforall.org',
+      country: 'Kuwait',
+      registered: '2026-03-06',
+      lastActive: '2026-03-10',
+      status: 'Rejected',
+      verified: false,
     ),
     NGOData(
       id: 'NGO-005',
       name: 'Environmental Protection Society',
-      date: 'Dec 28, 2024',
-      documents: ['Tax ID', 'Registration Certificate', 'Annual Report'],
+      email: 'support@eps.org',
+      country: 'Bahrain',
+      registered: '2026-03-04',
+      lastActive: '2026-03-08',
       status: 'Approval Queue',
+      verified: false,
+    ),
+    NGOData(
+      id: 'NGO-006',
+      name: 'Safe Passage Collective',
+      email: 'ops@safepassage.org',
+      country: 'UAE',
+      registered: '2026-03-03',
+      lastActive: '2026-03-14',
+      status: 'Approved',
+      verified: true,
+    ),
+    NGOData(
+      id: 'NGO-007',
+      name: 'Workers Legal Aid Group',
+      email: 'care@wlag.org',
+      country: 'Saudi Arabia',
+      registered: '2026-03-02',
+      lastActive: '2026-03-13',
+      status: 'Approval Queue',
+      verified: false,
+    ),
+    NGOData(
+      id: 'NGO-008',
+      name: 'Bridge to Home Initiative',
+      email: 'contact@bridgehome.org',
+      country: 'Qatar',
+      registered: '2026-03-01',
+      lastActive: '2026-03-09',
+      status: 'Rejected',
+      verified: false,
     ),
   ];
 
-  // Mock user data
-  final List<UserData> _mockWorkers = [
-    UserData(
-      id: 'USR-008',
-      name: 'Migrant Support Network',
-      email: 'contact@msn.org',
-      country: 'Middle East',
-      registered: '2026-03-01',
-      status: 'Active',
-      role: 'Worker',
-      lastActive: '2026-03-10',
-      verified: false,
-    ),
-    UserData(
-      id: 'USR-008',
-      name: 'Migrant Support Network',
-      email: 'contact@msn.org',
-      country: 'Middle East',
-      registered: '2026-03-01',
-      status: 'Active',
-      role: 'Worker',
-      lastActive: '2026-03-10',
-      verified: true,
-    ),
-    UserData(
-      id: 'USR-008',
-      name: 'Migrant Support Network',
-      email: 'contact@msn.org',
-      country: 'Middle East',
-      registered: '2026-03-01',
-      status: 'Active',
-      role: 'Worker',
-      lastActive: '2026-03-10',
-      verified: false,
-    ),
-    UserData(
-      id: 'USR-008',
-      name: 'Migrant Support Network',
-      email: 'contact@msn.org',
-      country: 'Middle East',
-      registered: '2026-03-01',
-      status: 'Active',
-      role: 'Worker',
-      lastActive: '2026-03-10',
-      verified: true,
-    ),
-    UserData(
-      id: 'USR-008',
-      name: 'Migrant Support Network',
-      email: 'contact@msn.org',
-      country: 'Middle East',
-      registered: '2026-03-01',
-      status: 'Active',
-      role: 'Worker',
-      lastActive: '2026-03-10',
-      verified: false,
-    ),
-    UserData(
-      id: 'USR-008',
-      name: 'Migrant Support Network',
-      email: 'contact@msn.org',
-      country: 'Middle East',
-      registered: '2026-03-01',
-      status: 'Active',
-      role: 'Worker',
-      lastActive: '2026-03-10',
-      verified: true,
-    ),
-  ];
-
-  void _showUserProfileModal(UserData user) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => DraggableScrollableSheet(
-        initialChildSize: 0.82,
-        maxChildSize: 0.92,
-        minChildSize: 0.55,
-        expand: false,
-        builder: (context, scrollController) => _UserProfileModal(
-          user: user,
-          scrollController: scrollController,
-          onVerify: () {
-            setState(() {
-              final index = _mockWorkers.indexOf(user);
-              if (index != -1) {
-                _mockWorkers[index] = UserData(
-                  id: user.id,
-                  name: user.name,
-                  email: user.email,
-                  country: user.country,
-                  registered: user.registered,
-                  status: user.status,
-                  role: user.role,
-                  lastActive: user.lastActive,
-                  verified: true,
-                );
-              }
-            });
-            Navigator.pop(context);
-          },
-        ),
-      ),
-    );
+  List<UserData> get _filteredWorkers {
+    final query = _searchQuery.trim().toLowerCase();
+    return _workers.where((worker) {
+      final matchesCountry = _selectedCountry == 'All Countries' ||
+          worker.country == _selectedCountry;
+      final matchesStatus = _selectedStatus == 'All Status' ||
+          (_selectedStatus == 'Verified' && worker.verified) ||
+          (_selectedStatus == 'Unverified' && !worker.verified);
+      final matchesQuery = query.isEmpty ||
+          worker.id.toLowerCase().contains(query) ||
+          worker.name.toLowerCase().contains(query) ||
+          worker.email.toLowerCase().contains(query);
+      return matchesCountry && matchesStatus && matchesQuery;
+    }).toList();
   }
 
-  List<NGOData> _getFilteredNGOs() {
-    return _ngoList.where((ngo) {
-      if (_selectedStatus == 'All Status') return true;
-      return ngo.status == _selectedStatus;
+  List<NGOData> get _filteredNgos {
+    final query = _searchQuery.trim().toLowerCase();
+    return _ngos.where((ngo) {
+      final matchesCountry = _selectedCountry == 'All Countries' ||
+          ngo.country == _selectedCountry;
+      final matchesStatus =
+          _selectedStatus == 'All Status' || ngo.status == _selectedStatus;
+      final matchesQuery = query.isEmpty ||
+          ngo.id.toLowerCase().contains(query) ||
+          ngo.name.toLowerCase().contains(query) ||
+          ngo.email.toLowerCase().contains(query);
+      return matchesCountry && matchesStatus && matchesQuery;
     }).toList();
+  }
+
+  void _verifyWorker(UserData worker) {
+    final index = _workers.indexWhere((u) => u.id == worker.id);
+    if (index == -1) return;
+    setState(() {
+      _workers[index] = worker.copyWith(verified: true);
+    });
+  }
+
+  void _approveNgo(NGOData ngo) {
+    final index = _ngos.indexWhere((n) => n.id == ngo.id);
+    if (index == -1) return;
+    setState(() {
+      _ngos[index] = ngo.copyWith(status: 'Approved', verified: true);
+    });
+  }
+
+  void _rejectNgo(NGOData ngo) {
+    final index = _ngos.indexWhere((n) => n.id == ngo.id);
+    if (index == -1) return;
+    setState(() {
+      _ngos[index] = ngo.copyWith(status: 'Rejected', verified: false);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    final totalVisible =
+        _selectedTab == 0 ? _filteredWorkers.length : _filteredNgos.length;
+
     return Container(
       color: _bg,
       child: Column(
@@ -208,7 +299,10 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                     child: _TabSelector(
                       selectedTab: _selectedTab,
                       onTabChanged: (index) {
-                        setState(() => _selectedTab = index);
+                        setState(() {
+                          _selectedTab = index;
+                          _selectedStatus = 'All Status';
+                        });
                       },
                     ),
                   ),
@@ -217,7 +311,7 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: _SearchBar(
                       onChanged: (value) {
-                        // TODO: Filter users based on search query
+                        setState(() => _searchQuery = value);
                       },
                     ),
                   ),
@@ -237,7 +331,7 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                     child: Text(
-                      'Users (1, 247)',
+                      'Users ($totalVisible)',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -251,73 +345,29 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
                         ? ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: _mockWorkers.length,
+                            itemCount: _filteredWorkers.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 12),
                             itemBuilder: (context, index) {
-                              final user = _mockWorkers[index];
-                              return _UserCard(
+                              final user = _filteredWorkers[index];
+                              return _WorkerCard(
                                 user: user,
-                                onViewProfile: () =>
-                                    _showUserProfileModal(user),
-                                onVerify: () {
-                                  setState(() {
-                                    _mockWorkers[index] = UserData(
-                                      id: user.id,
-                                      name: user.name,
-                                      email: user.email,
-                                      country: user.country,
-                                      registered: user.registered,
-                                      status: user.status,
-                                      role: user.role,
-                                      lastActive: user.lastActive,
-                                      verified: true,
-                                    );
-                                  });
-                                },
+                                onVerify: () => _verifyWorker(user),
                               );
                             },
                           )
                         : ListView.separated(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: _getFilteredNGOs().length,
+                            itemCount: _filteredNgos.length,
                             separatorBuilder: (_, __) =>
                                 const SizedBox(height: 12),
                             itemBuilder: (context, index) {
-                              final ngo = _getFilteredNGOs()[index];
-                              return _NGOVerificationCard(
+                              final ngo = _filteredNgos[index];
+                              return _NgoCard(
                                 ngo: ngo,
-                                onApprove: () {
-                                  setState(() {
-                                    final ngoIndex = _ngoList.indexWhere(
-                                        (item) => item.id == ngo.id);
-                                    if (ngoIndex != -1) {
-                                      _ngoList[ngoIndex] = NGOData(
-                                        id: ngo.id,
-                                        name: ngo.name,
-                                        date: ngo.date,
-                                        documents: ngo.documents,
-                                        status: 'Approved',
-                                      );
-                                    }
-                                  });
-                                },
-                                onReject: () {
-                                  setState(() {
-                                    final ngoIndex = _ngoList.indexWhere(
-                                        (item) => item.id == ngo.id);
-                                    if (ngoIndex != -1) {
-                                      _ngoList[ngoIndex] = NGOData(
-                                        id: ngo.id,
-                                        name: ngo.name,
-                                        date: ngo.date,
-                                        documents: ngo.documents,
-                                        status: 'Rejected',
-                                      );
-                                    }
-                                  });
-                                },
+                                onApprove: () => _approveNgo(ngo),
+                                onReject: () => _rejectNgo(ngo),
                               );
                             },
                           ),
@@ -351,30 +401,26 @@ class _UserManagementScreenState extends ConsumerState<UserManagementScreen> {
   }
 }
 
-// ─── Search Bar ────────────────────────────────────────────────────────────────
-
 class _SearchBar extends StatelessWidget {
-  final Function(String) onChanged;
+  final ValueChanged<String> onChanged;
 
   const _SearchBar({required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     return AdminSearchBar(
-      hintText: 'Search user by name',
+      hintText: 'Search user by name or ID',
       onChanged: onChanged,
     );
   }
 }
 
-// ─── Filter Bar ────────────────────────────────────────────────────────────────
-
 class _FilterBar extends StatelessWidget {
   final String selectedCountry;
   final String selectedStatus;
   final int selectedTab;
-  final Function(String) onCountryChanged;
-  final Function(String) onStatusChanged;
+  final ValueChanged<String> onCountryChanged;
+  final ValueChanged<String> onStatusChanged;
 
   const _FilterBar({
     required this.selectedCountry,
@@ -394,9 +440,7 @@ class _FilterBar extends StatelessWidget {
             child: _FilterButton(
               icon: Icons.location_on_outlined,
               label: selectedCountry,
-              onTap: () {
-                _showCountriesModal(context);
-              },
+              onTap: () => _showCountriesModal(context),
             ),
           ),
           const SizedBox(width: 8),
@@ -404,9 +448,7 @@ class _FilterBar extends StatelessWidget {
             child: _FilterButton(
               icon: Icons.info_outline,
               label: selectedStatus,
-              onTap: () {
-                _showStatusModal(context);
-              },
+              onTap: () => _showStatusModal(context),
             ),
           ),
         ],
@@ -415,7 +457,7 @@ class _FilterBar extends StatelessWidget {
   }
 
   void _showCountriesModal(BuildContext context) {
-    List<String> countries = [
+    const countries = [
       'All Countries',
       'Saudi Arabia',
       'UAE',
@@ -434,14 +476,16 @@ class _FilterBar extends StatelessWidget {
         child: ListView(
           shrinkWrap: true,
           children: countries
-              .map((country) => _ModalOption(
-                    label: country,
-                    isSelected: selectedCountry == country,
-                    onTap: () {
-                      onCountryChanged(country);
-                      Navigator.pop(context);
-                    },
-                  ))
+              .map(
+                (country) => _ModalOption(
+                  label: country,
+                  isSelected: selectedCountry == country,
+                  onTap: () {
+                    onCountryChanged(country);
+                    Navigator.pop(context);
+                  },
+                ),
+              )
               .toList(),
         ),
       ),
@@ -449,9 +493,9 @@ class _FilterBar extends StatelessWidget {
   }
 
   void _showStatusModal(BuildContext context) {
-    List<String> statuses = selectedTab == 0
-        ? ['All Status', 'Verified', 'Unverified']
-        : ['All Status', 'Approval Queue', 'Approved', 'Rejected'];
+    final statuses = selectedTab == 0
+        ? const ['All Status', 'Verified', 'Unverified']
+        : const ['All Status', 'Approval Queue', 'Approved', 'Rejected'];
 
     showModalBottomSheet(
       context: context,
@@ -463,22 +507,22 @@ class _FilterBar extends StatelessWidget {
         child: ListView(
           shrinkWrap: true,
           children: statuses
-              .map((status) => _ModalOption(
-                    label: status,
-                    isSelected: selectedStatus == status,
-                    onTap: () {
-                      onStatusChanged(status);
-                      Navigator.pop(context);
-                    },
-                  ))
+              .map(
+                (status) => _ModalOption(
+                  label: status,
+                  isSelected: selectedStatus == status,
+                  onTap: () {
+                    onStatusChanged(status);
+                    Navigator.pop(context);
+                  },
+                ),
+              )
               .toList(),
         ),
       ),
     );
   }
 }
-
-// ─── Modal Option ────────────────────────────────────────────────────────────────
 
 class _ModalOption extends StatelessWidget {
   final String label;
@@ -524,8 +568,6 @@ class _ModalOption extends StatelessWidget {
   }
 }
 
-// ─── Filter Button ────────────────────────────────────────────────────────
-
 class _FilterButton extends StatelessWidget {
   final IconData icon;
   final String label;
@@ -553,14 +595,8 @@ class _FilterButton extends StatelessWidget {
         ),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              icon,
-              size: 16,
-              color: const Color(0xFF6B7280),
-            ),
+            Icon(icon, size: 16, color: const Color(0xFF6B7280)),
             const SizedBox(width: 6),
             Expanded(
               child: Text(
@@ -586,11 +622,9 @@ class _FilterButton extends StatelessWidget {
   }
 }
 
-// ─── Tab Selector ──────────────────────────────────────────────────────────────
-
 class _TabSelector extends StatelessWidget {
   final int selectedTab;
-  final Function(int) onTabChanged;
+  final ValueChanged<int> onTabChanged;
 
   const _TabSelector({
     required this.selectedTab,
@@ -613,177 +647,70 @@ class _TabSelector extends StatelessWidget {
   }
 }
 
-// ─── User Card ────────────────────────────────────────────────────────────────
-
-class _UserCard extends StatelessWidget {
+class _WorkerCard extends StatelessWidget {
   final UserData user;
-  final VoidCallback onViewProfile;
   final VoidCallback onVerify;
 
-  const _UserCard({
+  const _WorkerCard({
     required this.user,
-    required this.onViewProfile,
     required this.onVerify,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFE5E7EB),
-          width: 1,
-        ),
-        boxShadow: const [_subtleBoxShadow],
-      ),
+      decoration: _cardDecoration,
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Avatar
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFDFEDFF),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const Center(
-                    child: Icon(
-                      Icons.person,
-                      size: 24,
-                      color: Color(0xFF003696),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        user.name,
-                        style: const TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: Color(0xFF0F172A),
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        user.id,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Color(0xFF6B7280),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 8),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDEF7EC),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: const Text(
-                        'Active',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF065F46),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: user.verified
-                            ? const Color(0xFFDEF7EC)
-                            : const Color(0xFFFEE2E2),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        user.verified ? 'Verified' : 'Unverified',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: user.verified
-                              ? const Color(0xFF065F46)
-                              : const Color(0xFF991B1B),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+            _CardHeader(
+              icon: Icons.person,
+              title: user.name,
+              subtitle: user.id,
+              statusLabel: user.verified ? 'Verified' : 'Unverified',
+              statusBg: user.verified
+                  ? const Color(0xFFDEF7EC)
+                  : const Color(0xFFFEE2E2),
+              statusFg: user.verified
+                  ? const Color(0xFF065F46)
+                  : const Color(0xFF991B1B),
             ),
             const SizedBox(height: 12),
-            Row(
-              children: [
-                const Text(
-                  'Country: ',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF64748B),
-                  ),
-                ),
-                Text(
-                  user.country,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF2D2D2D),
-                  ),
-                ),
-              ],
-            ),
+            _MetaLine(label: 'Country', value: user.country),
             const SizedBox(height: 6),
-            Row(
-              children: [
-                const Text(
-                  'Registered: ',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xFF64748B),
-                  ),
-                ),
-                Text(
-                  user.registered,
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w600,
-                    color: Color(0xFF2D2D2D),
-                  ),
-                ),
-              ],
+            _MetaLine(label: 'Registered', value: user.registered),
+            const SizedBox(height: 6),
+            Text(
+              user.email,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF6B7280),
+              ),
             ),
             const SizedBox(height: 12),
-            if (user.verified)
+            if (!user.verified)
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: onVerify,
+                  style: AdminButtonStyles.primary,
+                  child: const Text(
+                    'Verify',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              )
+            else
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: onViewProfile,
+                  onPressed: () {},
                   style: AdminButtonStyles.secondary,
                   child: const Text(
                     'View Profile',
@@ -793,38 +720,6 @@ class _UserCard extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
-            else
-              Row(
-                children: [
-                  Expanded(
-                    child: OutlinedButton(
-                      onPressed: onViewProfile,
-                      style: AdminButtonStyles.secondary,
-                      child: const Text(
-                        'View Profile',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: onVerify,
-                      style: AdminButtonStyles.primary,
-                      child: const Text(
-                        'Verify',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
               ),
           ],
         ),
@@ -833,308 +728,224 @@ class _UserCard extends StatelessWidget {
   }
 }
 
-// ─── User Profile Modal ────────────────────────────────────────────────────────
+class _NgoCard extends StatelessWidget {
+  final NGOData ngo;
+  final VoidCallback onApprove;
+  final VoidCallback onReject;
 
-class _UserProfileModal extends StatefulWidget {
-  final UserData user;
-  final VoidCallback onVerify;
-  final ScrollController? scrollController;
-
-  const _UserProfileModal({
-    required this.user,
-    required this.onVerify,
-    this.scrollController,
+  const _NgoCard({
+    required this.ngo,
+    required this.onApprove,
+    required this.onReject,
   });
 
-  @override
-  State<_UserProfileModal> createState() => _UserProfileModalState();
-}
-
-class _UserProfileModalState extends State<_UserProfileModal> {
-  late TextEditingController _notesController;
-
-  @override
-  void initState() {
-    super.initState();
-    _notesController = TextEditingController();
+  Color get _statusBg {
+    switch (ngo.status) {
+      case 'Approved':
+        return const Color(0xFFDEF7EC);
+      case 'Rejected':
+        return const Color(0xFFFEE2E2);
+      default:
+        return const Color(0xFFFEF3C7);
+    }
   }
 
-  @override
-  void dispose() {
-    _notesController.dispose();
-    super.dispose();
+  Color get _statusFg {
+    switch (ngo.status) {
+      case 'Approved':
+        return const Color(0xFF065F46);
+      case 'Rejected':
+        return const Color(0xFF991B1B);
+      default:
+        return const Color(0xFF92400E);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          controller: widget.scrollController,
-          padding: EdgeInsets.fromLTRB(
-            24,
-            14,
-            24,
-            24 + MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 44,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFD1D5DB),
-                    borderRadius: BorderRadius.circular(999),
-                  ),
-                ),
+      decoration: _cardDecoration,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _CardHeader(
+              icon: Icons.business,
+              title: ngo.name,
+              subtitle: ngo.id,
+              statusLabel: ngo.status,
+              statusBg: _statusBg,
+              statusFg: _statusFg,
+            ),
+            const SizedBox(height: 12),
+            _MetaLine(label: 'Country', value: ngo.country),
+            const SizedBox(height: 6),
+            _MetaLine(label: 'Registered', value: ngo.registered),
+            const SizedBox(height: 6),
+            Text(
+              ngo.email,
+              style: const TextStyle(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: Color(0xFF6B7280),
               ),
-              const SizedBox(height: 14),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    widget.user.id,
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF2D2D2D),
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(
-                      Icons.close_rounded,
-                      size: 24,
-                      color: Color(0xFF6B7280),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
+            ),
+            const SizedBox(height: 12),
+            if (ngo.status == 'Approval Queue')
               Row(
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEBEFE),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: Text(
-                      'WORKER',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: const Color(0xFF6B46C1),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onApprove,
+                      style: AdminButtonStyles.primary,
+                      child: const Text(
+                        'Approve',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFDEF7EC),
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    child: const Text(
-                      'ACTIVE',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF065F46),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: onReject,
+                      style: AdminButtonStyles.secondary,
+                      child: const Text(
+                        'Reject',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'USER INFORMATION',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF6B7280),
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _InfoField(
-                icon: Icons.person_outline,
-                label: 'NAME',
-                value: widget.user.name,
-              ),
-              const SizedBox(height: 12),
-              _InfoField(
-                icon: Icons.email_outlined,
-                label: 'EMAIL',
-                value: widget.user.email,
-              ),
-              const SizedBox(height: 12),
-              _InfoField(
-                icon: Icons.location_on_outlined,
-                label: 'COUNTRY',
-                value: widget.user.country,
-              ),
-              const SizedBox(height: 12),
-              _InfoField(
-                icon: Icons.calendar_today_outlined,
-                label: 'REGISTERED',
-                value: widget.user.registered,
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'ACCOUNT STATUS',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF6B7280),
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 12),
-              _InfoField(
-                label: 'STATUS',
-                value: widget.user.status,
-              ),
-              const SizedBox(height: 12),
-              _InfoField(
-                label: 'LAST ACTIVE',
-                value: widget.user.lastActive,
-              ),
-              const SizedBox(height: 24),
-              const Text(
-                'ADMIN NOTES',
-                style: TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF6B7280),
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF9FAFB),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(
-                    color: const Color(0xFFE5E7EB),
-                    width: 1,
-                  ),
-                ),
-                child: TextField(
-                  controller: _notesController,
-                  maxLines: 6,
-                  decoration: InputDecoration(
-                    hintText: 'Add notes about this user...',
-                    hintStyle: const TextStyle(
-                      color: Color(0xFF9CA3AF),
-                      fontSize: 14,
-                    ),
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(12),
-                  ),
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Color(0xFF2D2D2D),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    // TODO: Implement suspend user functionality
-                  },
-                  style: AdminButtonStyles.secondary,
-                  child: const Text(
-                    'Suspend User',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
+              )
+            else
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () {},
                   style: AdminButtonStyles.secondary,
                   child: const Text(
-                    'Cancel',
+                    'View Profile',
                     style: TextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
+          ],
         ),
       ),
     );
   }
 }
 
-// ─── Info Field ────────────────────────────────────────────────────────────────
+class _CardHeader extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final String statusLabel;
+  final Color statusBg;
+  final Color statusFg;
 
-class _InfoField extends StatelessWidget {
-  final IconData? icon;
-  final String label;
-  final String value;
-
-  const _InfoField({
-    this.icon,
-    required this.label,
-    required this.value,
+  const _CardHeader({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.statusLabel,
+    required this.statusBg,
+    required this.statusFg,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            if (icon != null) ...[
-              Icon(
-                icon,
-                size: 16,
-                color: const Color(0xFF6B7280),
-              ),
-              const SizedBox(width: 6),
-            ],
-            Text(
-              label,
-              style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF6B7280),
-                letterSpacing: 0.3,
-              ),
-            ),
-          ],
+        Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: const Color(0xFFDFEDFF),
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Center(
+            child: Icon(icon, size: 24, color: const Color(0xFF003696)),
+          ),
         ),
-        const SizedBox(height: 4),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF0F172A),
+                ),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                subtitle,
+                style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xFF6B7280),
+                ),
+              ),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          decoration: BoxDecoration(
+            color: statusBg,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            statusLabel,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: statusFg,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _MetaLine extends StatelessWidget {
+  final String label;
+  final String value;
+
+  const _MetaLine({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Text(
+          '$label: ',
+          style: const TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
+            color: Color(0xFF64748B),
+          ),
+        ),
         Text(
           value,
           style: const TextStyle(
-            fontSize: 14,
+            fontSize: 12,
             fontWeight: FontWeight.w600,
             color: Color(0xFF2D2D2D),
           ),
@@ -1143,8 +954,6 @@ class _InfoField extends StatelessWidget {
     );
   }
 }
-
-// ─── Pagination Bar ────────────────────────────────────────────────────────
 
 class _PaginationBar extends StatelessWidget {
   final int currentPage;
@@ -1217,218 +1026,49 @@ class _PaginationBar extends StatelessWidget {
   }
 }
 
-// ─── NGO Verification Card ────────────────────────────────────────────────────
-
-class _NGOVerificationCard extends StatelessWidget {
-  final NGOData ngo;
-  final VoidCallback onApprove;
-  final VoidCallback onReject;
-
-  const _NGOVerificationCard({
-    required this.ngo,
-    required this.onApprove,
-    required this.onReject,
-  });
-
-  String get _statusLabel {
-    if (ngo.status == 'Approval Queue') return 'Pending';
-    return ngo.status;
-  }
-
-  Color get _statusBg {
-    switch (_statusLabel) {
-      case 'Approved':
-        return const Color(0xFFDEF7EC);
-      case 'Rejected':
-        return const Color(0xFFFEE2E2);
-      default:
-        return const Color(0xFFFDF3C7);
-    }
-  }
-
-  Color get _statusFg {
-    switch (_statusLabel) {
-      case 'Approved':
-        return const Color(0xFF065F46);
-      case 'Rejected':
-        return const Color(0xFF991B1B);
-      default:
-        return const Color(0xFF92400E);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: const Color(0xFFE5E7EB),
-          width: 1,
-        ),
-        boxShadow: const [_subtleBoxShadow],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: Text(
-                    ngo.name,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xFF3B3FA6),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.calendar_today_outlined,
-                          size: 14,
-                          color: Color(0xFF6B7280),
-                        ),
-                        const SizedBox(width: 6),
-                        Text(
-                          ngo.date,
-                          style: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFF6B7280),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10,
-                        vertical: 4,
-                      ),
-                      decoration: BoxDecoration(
-                        color: _statusBg,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Text(
-                        _statusLabel,
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: _statusFg,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            ...ngo.documents.map((doc) => Padding(
-                  padding: const EdgeInsets.only(bottom: 8),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF9FAFB),
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: const Color(0xFFE5E7EB),
-                        width: 1,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12,
-                        vertical: 10,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            doc,
-                            style: const TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF374151),
-                            ),
-                          ),
-                          const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 14,
-                            color: Color(0xFF9CA3AF),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                )),
-            const SizedBox(height: 16),
-            if (ngo.status == 'Approval Queue')
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: onApprove,
-                      style: AdminButtonStyles.primary,
-                      child: const Text(
-                        'Approve',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: onReject,
-                      style: AdminButtonStyles.secondary,
-                      child: const Text(
-                        'Reject',
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ─── User Data Model ──────────────────────────────────────────────────────
+const BoxDecoration _cardDecoration = BoxDecoration(
+  color: Colors.white,
+  borderRadius: BorderRadius.all(Radius.circular(12)),
+  boxShadow: [_subtleBoxShadow],
+);
 
 class NGOData {
   final String id;
   final String name;
-  final String date;
-  final List<String> documents;
+  final String email;
+  final String country;
+  final String registered;
+  final String lastActive;
   final String status;
+  final bool verified;
 
   NGOData({
     required this.id,
     required this.name,
-    required this.date,
-    required this.documents,
+    required this.email,
+    required this.country,
+    required this.registered,
+    required this.lastActive,
     required this.status,
+    required this.verified,
   });
-}
 
-// ─── User Data Model ──────────────────────────────────────────────────────
+  NGOData copyWith({
+    String? status,
+    bool? verified,
+  }) {
+    return NGOData(
+      id: id,
+      name: name,
+      email: email,
+      country: country,
+      registered: registered,
+      lastActive: lastActive,
+      status: status ?? this.status,
+      verified: verified ?? this.verified,
+    );
+  }
+}
 
 class UserData {
   final String id;
@@ -1452,4 +1092,20 @@ class UserData {
     required this.lastActive,
     required this.verified,
   });
+
+  UserData copyWith({
+    bool? verified,
+  }) {
+    return UserData(
+      id: id,
+      name: name,
+      email: email,
+      country: country,
+      registered: registered,
+      status: status,
+      role: role,
+      lastActive: lastActive,
+      verified: verified ?? this.verified,
+    );
+  }
 }

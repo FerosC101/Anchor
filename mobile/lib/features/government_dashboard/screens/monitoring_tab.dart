@@ -31,6 +31,19 @@ class MonitoringTab extends StatefulWidget {
 
 class _MonitoringTabState extends State<MonitoringTab> {
   int _monitoringSubTab = 0;
+  static const List<String> _abuseStatusOptions = [
+    'All Status',
+    'Investigation',
+    'In Review',
+    'Resolved',
+  ];
+
+  static const List<String> _contractStatusOptions = [
+    'All Status',
+    'Legal Review',
+    'Mediation',
+    'Resolved',
+  ];
 
   @override
   void initState() {
@@ -43,7 +56,8 @@ class _MonitoringTabState extends State<MonitoringTab> {
   @override
   void didUpdateWidget(covariant MonitoringTab oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.forceSubTab != null && widget.forceSubTab != oldWidget.forceSubTab) {
+    if (widget.forceSubTab != null &&
+        widget.forceSubTab != oldWidget.forceSubTab) {
       setState(() => _monitoringSubTab = widget.forceSubTab!.clamp(0, 2));
     }
   }
@@ -60,23 +74,23 @@ class _MonitoringTabState extends State<MonitoringTab> {
             child: Text(
               'Risk Monitoring',
               style: TextStyle(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: Color(0xFF0F172A),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildMonitoringTabs(),
-                  const SizedBox(height: 12),
-                  _buildFilterChips(),
-                  const SizedBox(height: 20),
-                  if (_monitoringSubTab == 0) ..._buildEmployersContent(),
-                  if (_monitoringSubTab == 1) ..._buildAbuseReportsContent(),
-                  if (_monitoringSubTab == 2) ..._buildContractIssuesContent(),
-                ],
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF0F172A),
               ),
-            );
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildMonitoringTabs(),
+          const SizedBox(height: 12),
+          _buildFilterChips(),
+          const SizedBox(height: 20),
+          if (_monitoringSubTab == 0) ..._buildEmployersContent(),
+          if (_monitoringSubTab == 1) ..._buildAbuseReportsContent(),
+          if (_monitoringSubTab == 2) ..._buildContractIssuesContent(),
+        ],
+      ),
+    );
   }
 
   // ── Sub-tabs ──────────────────────────────────────────────────────────────
@@ -119,8 +133,16 @@ class _MonitoringTabState extends State<MonitoringTab> {
     final isAbuseTab = _monitoringSubTab == 1;
     final isContractTab = _monitoringSubTab == 2;
     final statusLabel = (isAbuseTab || isContractTab) ? 'Status' : 'Risk Level';
-    final statusOpts =
-        (isAbuseTab || isContractTab) ? statusOptions : riskLevelOptions;
+    final statusOpts = isAbuseTab
+        ? _abuseStatusOptions
+        : isContractTab
+            ? _contractStatusOptions
+            : riskLevelOptions;
+    final defaultStatus =
+        (isAbuseTab || isContractTab) ? 'All Status' : 'Risk Level';
+    final normalizedStatus = statusOpts.contains(widget.selectedStatus)
+        ? widget.selectedStatus
+        : defaultStatus;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
@@ -142,14 +164,14 @@ class _MonitoringTabState extends State<MonitoringTab> {
           Expanded(
             child: DashboardFilterChip(
               icon: Icons.info_outline,
-              label: widget.selectedStatus == 'All Status'
+              label: normalizedStatus == defaultStatus
                   ? statusLabel
-                  : widget.selectedStatus,
+                  : normalizedStatus,
               onTap: () => showFilterModal(
                 context: context,
                 title: statusLabel,
                 options: statusOpts,
-                selected: widget.selectedStatus,
+                selected: normalizedStatus,
                 onSelect: widget.onStatusChanged,
               ),
             ),
@@ -175,13 +197,116 @@ class _MonitoringTabState extends State<MonitoringTab> {
 
   // ── Employers content ─────────────────────────────────────────────────────
 
+  DateTime? _parseDate(String rawDate) {
+    final fromIso = DateTime.tryParse(rawDate);
+    if (fromIso != null) return fromIso;
+
+    final months = {
+      'jan': 1,
+      'feb': 2,
+      'mar': 3,
+      'apr': 4,
+      'may': 5,
+      'jun': 6,
+      'jul': 7,
+      'aug': 8,
+      'sep': 9,
+      'oct': 10,
+      'nov': 11,
+      'dec': 12,
+    };
+    final match = RegExp(r'^([A-Za-z]{3})\s+(\d{1,2}),\s*(\d{4})$')
+        .firstMatch(rawDate.trim());
+    if (match == null) return null;
+    final month = months[match.group(1)!.toLowerCase()];
+    final day = int.tryParse(match.group(2)!);
+    final year = int.tryParse(match.group(3)!);
+    if (month == null || day == null || year == null) return null;
+    return DateTime(year, month, day);
+  }
+
+  bool _matchesDate(String rawDate) {
+    if (widget.selectedDate == 'All Date') return true;
+    final parsed = _parseDate(rawDate);
+    if (parsed == null) return false;
+    final now = DateTime.now();
+    final startOfToday = DateTime(now.year, now.month, now.day);
+    final startOfDate = DateTime(parsed.year, parsed.month, parsed.day);
+    final diff = startOfToday.difference(startOfDate).inDays;
+
+    if (widget.selectedDate == 'Today') return diff == 0;
+    if (widget.selectedDate == 'This Week') return diff >= 0 && diff <= 7;
+    if (widget.selectedDate == 'This Month') {
+      return parsed.year == now.year && parsed.month == now.month;
+    }
+    if (widget.selectedDate == 'This Year') return parsed.year == now.year;
+    return true;
+  }
+
+  List<Map<String, dynamic>> get _filteredEmployers {
+    return employersData.where((employer) {
+      final country = (employer['country'] as String?) ?? '';
+      final matchesCountry = widget.selectedCountry == 'All Countries' ||
+          country == widget.selectedCountry;
+
+      final score = employer['score'] as int? ?? 0;
+      final riskLabel = score >= 70
+          ? 'High'
+          : score >= 40
+              ? 'Medium'
+              : 'Low';
+      final selected = widget.selectedStatus;
+      final matchesStatus = selected == 'All Status' ||
+          selected == 'Risk Level' ||
+          !riskLevelOptions.contains(selected) ||
+          riskLabel == selected;
+
+      final date = (employer['lastIncident'] as String?) ?? '';
+      final matchesDate = _matchesDate(date);
+      return matchesCountry && matchesStatus && matchesDate;
+    }).toList();
+  }
+
+  List<Map<String, String>> get _filteredAbuseReports {
+    return abuseReportsData.where((report) {
+      final country = report['country'] ?? '';
+      final matchesCountry = widget.selectedCountry == 'All Countries' ||
+          country == widget.selectedCountry;
+
+      final status = report['status'] ?? '';
+      final matchesStatus = widget.selectedStatus == 'All Status' ||
+          !_abuseStatusOptions.contains(widget.selectedStatus) ||
+          status == widget.selectedStatus;
+
+      final matchesDate = _matchesDate(report['dateFiled'] ?? '');
+      return matchesCountry && matchesStatus && matchesDate;
+    }).toList();
+  }
+
+  List<Map<String, String>> get _filteredContractIssues {
+    return contractIssuesData.where((contract) {
+      final country = contract['country'] ?? '';
+      final matchesCountry = widget.selectedCountry == 'All Countries' ||
+          country == widget.selectedCountry;
+
+      final status = contract['status'] ?? '';
+      final matchesStatus = widget.selectedStatus == 'All Status' ||
+          !_contractStatusOptions.contains(widget.selectedStatus) ||
+          status == widget.selectedStatus;
+
+      final matchesDate = _matchesDate(contract['dateFiled'] ?? '');
+      return matchesCountry && matchesStatus && matchesDate;
+    }).toList();
+  }
+
   List<Widget> _buildEmployersContent() {
+    final employers = _filteredEmployers;
     return [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'High-Risk Employers',
               style: TextStyle(
@@ -192,17 +317,17 @@ class _MonitoringTabState extends State<MonitoringTab> {
             ),
             SizedBox(height: 4),
             Text(
-              'Showing 5 of 103 employers',
+              'Showing ${employers.length} employers',
               style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
             ),
           ],
         ),
       ),
       const SizedBox(height: 16),
-      ...List.generate(employersData.length, (i) {
+      ...List.generate(employers.length, (i) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: _buildEmployerCard(employersData[i]),
+          child: _buildEmployerCard(employers[i]),
         );
       }),
       const SizedBox(height: 16),
@@ -276,32 +401,6 @@ class _MonitoringTabState extends State<MonitoringTab> {
           ),
         ),
       ],
-    );
-  }
-
-  Widget _inlineMetric(String label, String value) {
-    return RichText(
-      text: TextSpan(
-        children: [
-          TextSpan(
-            text: '$label: ',
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w700,
-              color: DashboardTheme.textPrimary,
-            ),
-          ),
-          TextSpan(
-            text: value,
-            style: const TextStyle(
-              fontSize: 13,
-              color: DashboardTheme.blueDark,
-            ),
-          ),
-        ],
-      ),
-      maxLines: 1,
-      overflow: TextOverflow.ellipsis,
     );
   }
 
@@ -715,7 +814,8 @@ class _MonitoringTabState extends State<MonitoringTab> {
       decoration: BoxDecoration(
         color: DashboardTheme.blueLight,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: DashboardTheme.blueDark.withValues(alpha: 0.15)),
+        border:
+            Border.all(color: DashboardTheme.blueDark.withValues(alpha: 0.15)),
       ),
       child: Row(
         children: [
@@ -744,12 +844,13 @@ class _MonitoringTabState extends State<MonitoringTab> {
   // ── Abuse Reports content ─────────────────────────────────────────────────
 
   List<Widget> _buildAbuseReportsContent() {
+    final reports = _filteredAbuseReports;
     return [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'Abuse Reports',
               style: TextStyle(
@@ -760,17 +861,17 @@ class _MonitoringTabState extends State<MonitoringTab> {
             ),
             SizedBox(height: 4),
             Text(
-              'Showing 5 out of 67 reports',
+              'Showing ${reports.length} reports',
               style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
             ),
           ],
         ),
       ),
       const SizedBox(height: 16),
-      ...List.generate(abuseReportsData.length, (i) {
+      ...List.generate(reports.length, (i) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: _buildAbuseReportCard(abuseReportsData[i]),
+          child: _buildAbuseReportCard(reports[i]),
         );
       }),
       const SizedBox(height: 16),
@@ -872,7 +973,8 @@ class _MonitoringTabState extends State<MonitoringTab> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
                   color: statusBg,
                   borderRadius: BorderRadius.circular(999),
@@ -925,7 +1027,8 @@ class _MonitoringTabState extends State<MonitoringTab> {
               const SizedBox(width: 6),
               Text(
                 severityLabel,
-                style: const TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+                style: const TextStyle(
+                    fontSize: 13, color: DashboardTheme.textPrimary),
               ),
             ],
           ),
@@ -1106,12 +1209,13 @@ class _MonitoringTabState extends State<MonitoringTab> {
   // ── Contract Issues content ───────────────────────────────────────────────
 
   List<Widget> _buildContractIssuesContent() {
+    final contracts = _filteredContractIssues;
     return [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: const [
+          children: [
             Text(
               'Contract Issue Reports',
               style: TextStyle(
@@ -1122,17 +1226,17 @@ class _MonitoringTabState extends State<MonitoringTab> {
             ),
             SizedBox(height: 4),
             Text(
-              'Showing 4 flagged contracts',
+              'Showing ${contracts.length} flagged contracts',
               style: TextStyle(fontSize: 13, color: Color(0xFF64748B)),
             ),
           ],
         ),
       ),
       const SizedBox(height: 16),
-      ...List.generate(contractIssuesData.length, (i) {
+      ...List.generate(contracts.length, (i) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-          child: _buildContractCard(contractIssuesData[i]),
+          child: _buildContractCard(contracts[i]),
         );
       }),
       const SizedBox(height: 16),
@@ -1234,7 +1338,8 @@ class _MonitoringTabState extends State<MonitoringTab> {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
                 decoration: BoxDecoration(
                   color: statusBg,
                   borderRadius: BorderRadius.circular(999),
@@ -1287,7 +1392,8 @@ class _MonitoringTabState extends State<MonitoringTab> {
               const SizedBox(width: 6),
               Text(
                 severityLabel,
-                style: const TextStyle(fontSize: 13, color: DashboardTheme.textPrimary),
+                style: const TextStyle(
+                    fontSize: 13, color: DashboardTheme.textPrimary),
               ),
             ],
           ),
@@ -1358,7 +1464,8 @@ class _MonitoringTabState extends State<MonitoringTab> {
                           Text(
                             contract['contractId']!,
                             style: const TextStyle(
-                                fontSize: 13, color: DashboardTheme.textSecondary),
+                                fontSize: 13,
+                                color: DashboardTheme.textSecondary),
                           ),
                         ],
                       ),

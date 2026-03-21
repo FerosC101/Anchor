@@ -23,6 +23,7 @@ class _JobListingScreenState extends ConsumerState<JobListingScreen> {
   String _selectedCountry = 'Country';
   String _selectedStatus = 'Status';
   String _selectedDate = 'All Date';
+  String _searchQuery = '';
   int _currentPage = 1;
 
   late List<JobData> _jobsList = [
@@ -123,8 +124,27 @@ class _JobListingScreenState extends ConsumerState<JobListingScreen> {
           job.status == _selectedStatus;
       final matchesCountry =
           _selectedCountry == 'Country' || job.country == _selectedCountry;
-      return matchesStatus && matchesCountry;
+      final matchesDate = _matchesDateFilter(job.submittedDate);
+      final query = _searchQuery.trim().toLowerCase();
+      final matchesQuery = query.isEmpty ||
+          job.id.toLowerCase().contains(query) ||
+          job.position.toLowerCase().contains(query) ||
+          job.employer.toLowerCase().contains(query) ||
+          job.country.toLowerCase().contains(query);
+      return matchesStatus && matchesCountry && matchesDate && matchesQuery;
     }).toList();
+  }
+
+  bool _matchesDateFilter(String submittedDate) {
+    if (_selectedDate == 'All Date') return true;
+    final parsed = DateTime.tryParse(submittedDate);
+    if (parsed == null) return false;
+    final now = DateTime.now();
+    final ageInDays = now.difference(parsed).inDays;
+    if (_selectedDate == 'Last 24 hours') return ageInDays <= 1;
+    if (_selectedDate == 'Last 7 days') return ageInDays <= 7;
+    if (_selectedDate == 'Last 30 days') return ageInDays <= 30;
+    return true;
   }
 
   void _showJobReviewModal(JobData job) {
@@ -164,6 +184,30 @@ class _JobListingScreenState extends ConsumerState<JobListingScreen> {
     );
   }
 
+  void _approveJob(JobData job) {
+    setState(() {
+      final index = _jobsList.indexWhere(
+        (item) =>
+            item.id == job.id &&
+            item.submittedDate == job.submittedDate &&
+            item.status == job.status,
+      );
+      if (index != -1) {
+        _jobsList[index] = JobData(
+          id: job.id,
+          position: job.position,
+          employer: job.employer,
+          country: job.country,
+          salary: job.salary,
+          submittedDate: job.submittedDate,
+          status: 'Approved',
+          riskLevel: job.riskLevel,
+          complaints: job.complaints,
+        );
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -191,7 +235,7 @@ class _JobListingScreenState extends ConsumerState<JobListingScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: _SearchBar(
                       onChanged: (value) {
-                        // TODO: Filter jobs based on search query
+                        setState(() => _searchQuery = value);
                       },
                     ),
                   ),
@@ -234,6 +278,7 @@ class _JobListingScreenState extends ConsumerState<JobListingScreen> {
                         return job.status == 'Pending'
                             ? _PendingJobCard(
                                 job: job,
+                                onApprove: () => _approveJob(job),
                                 onReview: () => _showJobReviewModal(job),
                                 onRemove: () {
                                   setState(() {
@@ -288,7 +333,7 @@ class _SearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdminSearchBar(
-      hintText: 'Search content',
+      hintText: 'Search jobs',
       onChanged: onChanged,
     );
   }
@@ -552,11 +597,13 @@ class _ModalOption extends StatelessWidget {
 
 class _PendingJobCard extends StatelessWidget {
   final JobData job;
+  final VoidCallback onApprove;
   final VoidCallback onReview;
   final VoidCallback onRemove;
 
   const _PendingJobCard({
     required this.job,
+    required this.onApprove,
     required this.onReview,
     required this.onRemove,
   });
@@ -642,7 +689,7 @@ class _PendingJobCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: onReview,
+                    onPressed: onApprove,
                     style: AdminButtonStyles.primary,
                     child: const Text(
                       'Approve',

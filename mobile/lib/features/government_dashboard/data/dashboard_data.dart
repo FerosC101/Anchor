@@ -86,92 +86,97 @@ const List<Map<String, String>> alertsData = [
 // ── Employer data ───────────────────────────────────────────────────────────
 const List<Map<String, dynamic>> employersData = [
   {
-    'name': 'Employer Name',
-    'country': 'Country',
+    'name': 'Al Noor Recruitment Co.',
+    'country': 'Saudi Arabia',
     'score': 50,
     'workers': '340',
     'reports': '12',
     'violations': '5',
-    'lastIncident': 'Feb 14, 2026'
+    'lastIncident': 'Mar 18, 2026'
   },
   {
-    'name': 'Employer Name',
-    'country': 'Country',
+    'name': 'Gulf Horizon Manpower',
+    'country': 'UAE',
     'score': 92,
-    'workers': '340',
-    'reports': '12',
-    'violations': '5',
-    'lastIncident': 'Feb 14, 2026'
+    'workers': '220',
+    'reports': '19',
+    'violations': '8',
+    'lastIncident': 'Mar 16, 2026'
   },
   {
-    'name': 'Employer Name',
-    'country': 'Country',
+    'name': 'Qatar Workforce Link',
+    'country': 'Qatar',
     'score': 27,
-    'workers': '340',
-    'reports': '12',
-    'violations': '5',
-    'lastIncident': 'Feb 14, 2026'
+    'workers': '410',
+    'reports': '4',
+    'violations': '1',
+    'lastIncident': 'Mar 09, 2026'
   },
   {
-    'name': 'Employer Name',
-    'country': 'Country',
+    'name': 'Kuwait Prime Services',
+    'country': 'Kuwait',
     'score': 84,
-    'workers': '340',
-    'reports': '12',
-    'violations': '5',
-    'lastIncident': 'Feb 14, 2026'
+    'workers': '290',
+    'reports': '14',
+    'violations': '6',
+    'lastIncident': 'Mar 12, 2026'
   },
   {
-    'name': 'Employer Name',
-    'country': 'Country',
+    'name': 'Bahrain Labor Connect',
+    'country': 'Bahrain',
     'score': 84,
-    'workers': '340',
-    'reports': '12',
-    'violations': '5',
-    'lastIncident': 'Feb 14, 2026'
+    'workers': '175',
+    'reports': '9',
+    'violations': '4',
+    'lastIncident': 'Feb 25, 2026'
   },
 ];
 
 // ── Abuse reports data ──────────────────────────────────────────────────────
 const List<Map<String, String>> abuseReportsData = [
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
+    'name': 'Maria Santos',
+    'country': 'Saudi Arabia',
+    'employer': 'Al Noor Recruitment Co.',
     'reportId': 'RPT-2026-0342',
     'abuseType': 'Wage Withholding',
-    'dateFiled': 'Feb 14, 2026',
+    'dateFiled': 'Mar 19, 2026',
     'status': 'Investigation'
   },
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
-    'reportId': 'RPT-2026-0342',
-    'abuseType': 'Wage Withholding',
-    'dateFiled': 'Feb 14, 2026',
+    'name': 'Jose Ramirez',
+    'country': 'UAE',
+    'employer': 'Gulf Horizon Manpower',
+    'reportId': 'RPT-2026-0343',
+    'abuseType': 'Passport Confiscation',
+    'dateFiled': 'Mar 17, 2026',
     'status': 'Investigation'
   },
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
-    'reportId': 'RPT-2026-0342',
-    'abuseType': 'Wage Withholding',
-    'dateFiled': 'Feb 14, 2026',
+    'name': 'Lina Cruz',
+    'country': 'Qatar',
+    'employer': 'Qatar Workforce Link',
+    'reportId': 'RPT-2026-0344',
+    'abuseType': 'Contract Substitution',
+    'dateFiled': 'Mar 10, 2026',
     'status': 'In Review'
   },
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
-    'reportId': 'RPT-2026-0342',
-    'abuseType': 'Wage Withholding',
-    'dateFiled': 'Feb 14, 2026',
+    'name': 'Ramon Ortega',
+    'country': 'Kuwait',
+    'employer': 'Kuwait Prime Services',
+    'reportId': 'RPT-2026-0345',
+    'abuseType': 'Illegal Deductions',
+    'dateFiled': 'Feb 26, 2026',
     'status': 'Resolved'
   },
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
-    'reportId': 'RPT-2026-0342',
-    'abuseType': 'Wage Withholding',
-    'dateFiled': 'Feb 14, 2026',
+    'name': 'Ana Gutierrez',
+    'country': 'Bahrain',
+    'employer': 'Bahrain Labor Connect',
+    'reportId': 'RPT-2026-0346',
+    'abuseType': 'Threat of Deportation',
+    'dateFiled': 'Feb 20, 2026',
     'status': 'Investigation'
   },
 ];
@@ -179,35 +184,39 @@ const List<Map<String, String>> abuseReportsData = [
 // ── Contract issues data ────────────────────────────────────────────────────
 const List<Map<String, String>> contractIssuesData = [
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
+    'name': 'Fatima Noor',
+    'country': 'Saudi Arabia',
+    'employer': 'Al Noor Recruitment Co.',
     'contractId': 'CNT-2026-0089',
     'issueType': 'Salary Discrepancy',
-    'dateFiled': 'Feb 14, 2026',
+    'dateFiled': 'Mar 15, 2026',
     'status': 'Legal Review'
   },
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
-    'contractId': 'CNT-2026-0089',
-    'issueType': 'Salary Discrepancy',
-    'dateFiled': 'Feb 14, 2026',
+    'name': 'Joan Mercado',
+    'country': 'UAE',
+    'employer': 'Gulf Horizon Manpower',
+    'contractId': 'CNT-2026-0090',
+    'issueType': 'Hours Mismatch',
+    'dateFiled': 'Mar 11, 2026',
     'status': 'Mediation'
   },
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
-    'contractId': 'CNT-2026-0089',
-    'issueType': 'Salary Discrepancy',
-    'dateFiled': 'Feb 14, 2026',
+    'name': 'Nina Velasco',
+    'country': 'Qatar',
+    'employer': 'Qatar Workforce Link',
+    'contractId': 'CNT-2026-0091',
+    'issueType': 'Accommodation Clause',
+    'dateFiled': 'Mar 07, 2026',
     'status': 'Mediation'
   },
   {
-    'name': 'User Name',
-    'employer': 'Employer Name',
-    'contractId': 'CNT-2026-0089',
-    'issueType': 'Salary Discrepancy',
-    'dateFiled': 'Feb 14, 2026',
+    'name': 'Carlo Dela Cruz',
+    'country': 'Bahrain',
+    'employer': 'Bahrain Labor Connect',
+    'contractId': 'CNT-2026-0092',
+    'issueType': 'Contract Duration',
+    'dateFiled': 'Feb 22, 2026',
     'status': 'Resolved'
   },
 ];
@@ -215,45 +224,51 @@ const List<Map<String, String>> contractIssuesData = [
 // ── Assistance cases data ───────────────────────────────────────────────────
 const List<Map<String, String>> assistanceCasesData = [
   {
-    'name': 'User Name',
-    'country': 'Country',
-    'employer': 'Loren Ipsum',
-    'issue': 'Loren Ipsum',
+    'name': 'Maria Santos',
+    'country': 'Saudi Arabia',
+    'employer': 'Al Noor Recruitment Co.',
+    'issue': 'Contract Substitution',
+    'date': 'Mar 19, 2026',
     'status': 'In review'
   },
   {
-    'name': 'User Name',
-    'country': 'Country',
-    'employer': 'Loren Ipsum',
-    'issue': 'Loren Ipsum',
+    'name': 'Jose Ramirez',
+    'country': 'UAE',
+    'employer': 'Gulf Horizon Manpower',
+    'issue': 'Passport Retention',
+    'date': 'Mar 16, 2026',
     'status': 'Resolved'
   },
   {
-    'name': 'User Name',
-    'country': 'Country',
-    'employer': 'Loren Ipsum',
-    'issue': 'Loren Ipsum',
+    'name': 'Lina Cruz',
+    'country': 'Qatar',
+    'employer': 'Qatar Workforce Link',
+    'issue': 'Wage Delay',
+    'date': 'Mar 10, 2026',
     'status': 'In review'
   },
   {
-    'name': 'User Name',
-    'country': 'Country',
-    'employer': 'Loren Ipsum',
-    'issue': 'Loren Ipsum',
+    'name': 'Ramon Ortega',
+    'country': 'Kuwait',
+    'employer': 'Kuwait Prime Services',
+    'issue': 'Physical Threat',
+    'date': 'Mar 08, 2026',
     'status': 'Critical'
   },
   {
-    'name': 'User Name',
-    'country': 'Country',
-    'employer': 'Loren Ipsum',
-    'issue': 'Loren Ipsum',
+    'name': 'Ana Gutierrez',
+    'country': 'Bahrain',
+    'employer': 'Bahrain Labor Connect',
+    'issue': 'Contract Mismatch',
+    'date': 'Feb 24, 2026',
     'status': 'Resolved'
   },
   {
-    'name': 'User Name',
-    'country': 'Country',
-    'employer': 'Loren Ipsum',
-    'issue': 'Loren Ipsum',
+    'name': 'Fatima Noor',
+    'country': 'Saudi Arabia',
+    'employer': 'Al Noor Recruitment Co.',
+    'issue': 'Wage Withholding',
+    'date': 'Feb 14, 2026',
     'status': 'In review'
   },
 ];
