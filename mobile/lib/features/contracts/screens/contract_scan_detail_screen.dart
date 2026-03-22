@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../../../models/scan_model.dart';
+import '../../profile/screens/help_screen.dart';
 import '../../../shared/utils/risk_utils.dart';
 import '../../../shared/widgets/worker_app_bar.dart';
 
@@ -25,7 +27,7 @@ class ContractScanDetailScreen extends StatelessWidget {
             Expanded(
               child: TabBarView(
                 children: [
-                  _buildOverviewTab(issueCount, criticalCount),
+                  _buildOverviewTab(context, issueCount, criticalCount),
                   _buildComparisonTab(),
                   _buildActionsTab(),
                 ],
@@ -74,7 +76,7 @@ class ContractScanDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${scan.name}.pdf',
+                  scan.fullName,
                   style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w700,
@@ -82,7 +84,7 @@ class ContractScanDetailScreen extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Analyzed on ${scan.date}, 2026',
+                  'Analyzed on ${scan.date} ${scan.time}',
                   style: const TextStyle(
                     fontSize: 13,
                     color: Color(0xFF888888),
@@ -117,7 +119,11 @@ class ContractScanDetailScreen extends StatelessWidget {
 
   // ━━━ TAB 1: Overview ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  Widget _buildOverviewTab(int issueCount, int criticalCount) {
+  Widget _buildOverviewTab(
+    BuildContext context,
+    int issueCount,
+    int criticalCount,
+  ) {
     final riskColor = RiskUtils.getRiskColor(scan.score);
     final riskBgColor = RiskUtils.getRiskBgColor(scan.score);
     final riskHeadline = RiskUtils.getRiskHeadline(scan.score);
@@ -362,8 +368,37 @@ class ContractScanDetailScreen extends StatelessWidget {
             children: [
               Expanded(
                 child: OutlinedButton.icon(
-                  onPressed: () {
-                    // TODO: implement download
+                  onPressed: () async {
+                    final summary = StringBuffer()
+                      ..writeln('Contract Report')
+                      ..writeln('File: ${scan.fullName}')
+                      ..writeln('Risk Score: ${scan.score}%')
+                      ..writeln(
+                          'Issues: $issueCount (critical: $criticalCount)')
+                      ..writeln('Date: ${scan.date} ${scan.time}')
+                      ..writeln('')
+                      ..writeln(
+                          'Overview: ${scan.overviewSummary ?? scan.subtitle}')
+                      ..writeln('')
+                      ..writeln('Recommended Actions:')
+                      ..writeln(
+                        scan.recommendedActions.isEmpty
+                            ? '- Review terms with trusted support.'
+                            : scan.recommendedActions
+                                .map((e) => '- $e')
+                                .join('\n'),
+                      );
+
+                    await Clipboard.setData(
+                        ClipboardData(text: summary.toString()));
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Report copied to clipboard. You can paste and save/share it.',
+                        ),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.download_outlined,
                       color: Color(0xFF003696)),
@@ -387,7 +422,12 @@ class ContractScanDetailScreen extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    // TODO: implement contact help
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const HelpScreen(initialTab: 2),
+                      ),
+                    );
                   },
                   icon: const Icon(Icons.phone_outlined,
                       color: Color(0xFF003696)),

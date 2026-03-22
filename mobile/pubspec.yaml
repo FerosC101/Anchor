@@ -35,6 +35,9 @@ dependencies:
 
   # Charts
   fl_chart: ^0.69.0
+  google_maps_flutter: ^2.9.0
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
 
   cupertino_icons: ^1.0.8
 

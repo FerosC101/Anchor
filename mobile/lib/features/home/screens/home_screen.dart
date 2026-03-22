@@ -1,21 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../wages/screens/wage_monitor_screen.dart';
 import '../../contracts/screens/contract_scanner_screen.dart';
 import '../../community/screens/community_safety_screen.dart';
 import '../../shield/screens/financial_shield_screen.dart';
+import '../../community/providers/community_provider.dart';
+import '../../../models/post_model.dart';
 import '../../../shared/widgets/community_post_card.dart';
 import '../../../shared/widgets/worker_app_bar.dart';
 import '../../../shared/widgets/worker_drawer.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   int _selectedTab = 0;
 
   static const Color _blue = Color(0xFF003696); // Deep Blue
@@ -26,9 +29,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final communityPosts = ref.watch(communityPostsProvider).valueOrNull ??
+        const <CommunityPostModel>[];
+
     // Different screens for each tab
     final screens = [
-      _buildHomeContent(),
+      _buildHomeContent(communityPosts),
       const WageMonitorScreen(),
       const ContractScannerScreen(),
       const CommunitySafetyScreen(),
@@ -47,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ── Home Content ─────────────────────────────────────────────────────────────
 
-  Widget _buildHomeContent() {
+  Widget _buildHomeContent(List<CommunityPostModel> communityPosts) {
     return Scaffold(
       backgroundColor: _bg,
       appBar: const WorkerAppBar(),
@@ -66,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 16),
             _buildFinancialHealthCard(),
             const SizedBox(height: 20),
-            _buildCommunitySection(),
+            _buildCommunitySection(communityPosts),
             const SizedBox(height: 20),
           ],
         ),
@@ -177,31 +183,44 @@ class _HomeScreenState extends State<HomeScreen> {
   // ── Quick actions ────────────────────────────────────────────────────────────
 
   Widget _buildQuickActions() {
-    return Row(
+    return Column(
       children: [
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              setState(() => _selectedTab = 2);
-            },
-            child: _buildActionCard(
-              icon: Icons.description_outlined,
-              title: 'Check Contract',
-              subtitle: 'Scan for hidden clauses',
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() => _selectedTab = 2);
+                },
+                child: _buildActionCard(
+                  icon: Icons.description_outlined,
+                  title: 'Check Contract',
+                  subtitle: 'Scan for hidden clauses',
+                ),
+              ),
             ),
-          ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  setState(() => _selectedTab = 1);
+                },
+                child: _buildActionCard(
+                  icon: Icons.show_chart_rounded,
+                  title: 'Log Wages',
+                  subtitle: 'Track earnings & deductions',
+                ),
+              ),
+            ),
+          ],
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: GestureDetector(
-            onTap: () {
-              setState(() => _selectedTab = 1);
-            },
-            child: _buildActionCard(
-              icon: Icons.show_chart_rounded,
-              title: 'Log Wages',
-              subtitle: 'Track earnings & deductions',
-            ),
+        const SizedBox(height: 12),
+        GestureDetector(
+          onTap: () => context.push('/jobs'),
+          child: _buildActionCard(
+            icon: Icons.work_outline_rounded,
+            title: 'Find Jobs',
+            subtitle: 'Browse verified overseas job listings',
           ),
         ),
       ],
@@ -389,7 +408,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // ── Community posts ──────────────────────────────────────────────────────────
 
-  Widget _buildCommunitySection() {
+  Widget _buildCommunitySection(List<CommunityPostModel> posts) {
+    final previews = posts.take(2).toList();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -423,35 +444,42 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         const SizedBox(height: 10),
-        CommunityPostCard(
-          company: 'BuildRite Construction',
-          description:
-              'Salary delayed for 2 months. Dormitory has no clean water supply...',
-          tags: const ['#Delayed Salary', '#Unsafe Dorm'],
-          time: '17 hours ago',
-          location: 'Location',
-          upvotes: 45,
-          comments: 12,
-          onTap: () {
-            context.push('/community/post-detail');
-          },
-        ),
-        const SizedBox(height: 10),
-        CommunityPostCard(
-          company: 'BuildRite Construction',
-          description:
-              'Salary delayed for 2 months. Dormitory has no clean water supply...',
-          tags: const ['#Delayed Salary', '#Unsafe Dorm'],
-          time: '17 hours ago',
-          location: 'Location',
-          upvotes: 45,
-          comments: 12,
-          onTap: () {
-            context.push('/community/post-detail');
-          },
-        ),
+        if (previews.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8),
+            child: Text(
+              'No community posts yet. Tap View more to add the first post.',
+              style: TextStyle(color: _textSecondary),
+            ),
+          )
+        else
+          ...previews.expand(
+            (post) => [
+              CommunityPostCard(
+                company: post.company,
+                description: post.description,
+                tags: post.tags,
+                time: _timeAgo(post.createdAt),
+                location: post.location,
+                upvotes: post.upvotes,
+                comments: post.comments,
+                onTap: () {
+                  context.push('/community/post-detail/${post.id}');
+                },
+              ),
+              const SizedBox(height: 10),
+            ],
+          ),
       ],
     );
+  }
+
+  String _timeAgo(DateTime date) {
+    final diff = DateTime.now().difference(date);
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    return '${diff.inDays}d ago';
   }
 
   // ── Bottom navigation ────────────────────────────────────────────────────────

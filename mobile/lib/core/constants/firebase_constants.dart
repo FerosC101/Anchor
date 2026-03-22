@@ -17,4 +17,10 @@ class FirebaseConstants {
 
   // Wage monitoring – stored as a sub-collection under each user document.
   static const String wageLogsSubcollection = 'wage_logs';
+
+  // OFW financial backend
+  static const String financialShieldSubcollection = 'financial_shield';
+  static const String financialShieldProfileDoc = 'profile';
+  static const String savingsGoalsSubcollection = 'savings_goals';
+  static const String smartExitPlansSubcollection = 'smart_exit_plans';
 }

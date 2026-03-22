@@ -121,6 +121,75 @@ class FirestoreService {
     }).toList();
   }
 
+  Stream<List<ScanModel>> watchRecentScans({
+    required String userId,
+    int limit = 50,
+  }) {
+    return _firestore
+        .collection(FirebaseConstants.contractsCollection)
+        .where('user_id', isEqualTo: userId)
+        .orderBy('uploaded_at', descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snapshot) {
+      return snapshot.docs.asMap().entries.map((entry) {
+        final index = entry.key;
+        final doc = entry.value;
+        final data = doc.data();
+        final fileName = (data['file_name'] ?? 'Contract').toString();
+        final uploadedAt = (data['uploaded_at'] as Timestamp?)?.toDate();
+        final riskRaw = data['risk_score'];
+        final riskScore = riskRaw is num ? (riskRaw * 100).round() : 0;
+        final riskLevel = (data['risk_level'] ?? '').toString();
+        final overviewSummary = (data['overview_summary'] ?? '').toString();
+        final issueCount = data['issue_count'] is num
+            ? (data['issue_count'] as num).toInt()
+            : null;
+        final criticalCount = data['critical_count'] is num
+            ? (data['critical_count'] as num).toInt()
+            : null;
+
+        final comparisonRaw = data['comparison_items'];
+        final comparisonItems = comparisonRaw is List
+            ? comparisonRaw.whereType<Map>().map((item) {
+                final map = item.cast<String, dynamic>();
+                return ScanComparisonItem(
+                  category: (map['category'] ?? 'General').toString(),
+                  status: (map['status'] ?? 'review').toString(),
+                  yourContract: (map['your_contract'] ?? '').toString(),
+                  standardPractice: (map['standard_practice'] ?? '').toString(),
+                );
+              }).toList()
+            : <ScanComparisonItem>[];
+
+        final actionsRaw = data['recommended_actions'];
+        final recommendedActions = actionsRaw is List
+            ? actionsRaw.map((item) => item.toString()).toList()
+            : <String>[];
+
+        final when = uploadedAt ?? DateTime.now();
+
+        return ScanModel(
+          id: index + 1,
+          contractId: doc.id,
+          name: fileName,
+          fullName: fileName,
+          subtitle: riskLevel.isNotEmpty
+              ? riskLevel.toUpperCase()
+              : 'Uploaded contract',
+          date: _formatDate(when),
+          time: _formatTime(when),
+          score: riskScore.clamp(0, 100),
+          issueCount: issueCount,
+          criticalCount: criticalCount,
+          overviewSummary: overviewSummary.isNotEmpty ? overviewSummary : null,
+          comparisonItems: comparisonItems,
+          recommendedActions: recommendedActions,
+        );
+      }).toList();
+    });
+  }
+
   String _formatDate(DateTime date) {
     const months = [
       'Jan',

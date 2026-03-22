@@ -17,6 +17,24 @@ service cloud.firestore {
         allow update, delete: if request.auth != null &&
           request.auth.uid == userId;
       }
+
+      // ── Financial Shield profile ──────────────────────────────────────────
+      match /financial_shield/{docId} {
+        allow read, create, update, delete: if request.auth != null &&
+          request.auth.uid == userId;
+      }
+
+      // ── Savings goals ─────────────────────────────────────────────────────
+      match /savings_goals/{goalId} {
+        allow read, create, update, delete: if request.auth != null &&
+          request.auth.uid == userId;
+      }
+
+      // ── Smart exit plans ──────────────────────────────────────────────────
+      match /smart_exit_plans/{planId} {
+        allow read, create, update, delete: if request.auth != null &&
+          request.auth.uid == userId;
+      }
     }
 
     // ── OFW profiles ──────────────────────────────────────────────────────────
@@ -48,17 +66,21 @@ service cloud.firestore {
     // ── Community posts ───────────────────────────────────────────────────────
     match /community_posts/{postId} {
       allow read: if request.auth != null;
-      allow create: if request.auth != null;
+      allow create: if request.auth != null &&
+        request.resource.data.user_id == request.auth.uid;
       allow update, delete: if request.auth != null &&
-        resource.data.user_id == request.auth.uid;
+        resource.data.user_id == request.auth.uid &&
+        request.resource.data.user_id == resource.data.user_id;
     }
 
     // ── Post comments ─────────────────────────────────────────────────────────
     match /post_comments/{commentId} {
       allow read: if request.auth != null;
-      allow create: if request.auth != null;
+      allow create: if request.auth != null &&
+        request.resource.data.user_id == request.auth.uid;
       allow update, delete: if request.auth != null &&
-        resource.data.user_id == request.auth.uid;
+        resource.data.user_id == request.auth.uid &&
+        request.resource.data.user_id == resource.data.user_id;
     }
 
     // ── Contracts ─────────────────────────────────────────────────────────────
@@ -100,9 +122,11 @@ service cloud.firestore {
     match /notifications/{notifId} {
       allow read: if request.auth != null &&
         resource.data.user_id == request.auth.uid;
-      allow create: if request.auth != null;
+      allow create: if request.auth != null &&
+        (_isAdmin() || request.resource.data.user_id == request.auth.uid);
       allow update: if request.auth != null &&
-        resource.data.user_id == request.auth.uid;
+        resource.data.user_id == request.auth.uid &&
+        request.resource.data.user_id == resource.data.user_id;
       allow delete: if false;
     }
 
@@ -110,8 +134,21 @@ service cloud.firestore {
     match /reports/{reportId} {
       allow read: if request.auth != null &&
         (resource.data.reporter_id == request.auth.uid || _isAdmin());
-      allow create: if request.auth != null;
+      allow create: if request.auth != null &&
+        request.resource.data.reporter_id == request.auth.uid;
       allow update, delete: if false;
+    }
+
+    // ── Remittance rates (read-only for OFWs) ───────────────────────────────
+    match /remittance_rates/{rateId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if _isAdmin();
+    }
+
+    // ── Remittance providers (read-only for OFWs) ──────────────────────────
+    match /remittance_providers/{providerId} {
+      allow read: if request.auth != null;
+      allow create, update, delete: if _isAdmin();
     }
 
     // ── AI usage logs (server-side only) ─────────────────────────────────────

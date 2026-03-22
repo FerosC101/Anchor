@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
 class ExitSimulationDialog extends StatelessWidget {
-  const ExitSimulationDialog({super.key});
+  const ExitSimulationDialog({
+    super.key,
+    this.netSafetyNet,
+    this.remainingRunway,
+    this.survivalMonths,
+    this.estimatedFlightCost,
+    this.outstandingDebt,
+  });
+
+  final double? netSafetyNet;
+  final double? remainingRunway;
+  final int? survivalMonths;
+  final double? estimatedFlightCost;
+  final double? outstandingDebt;
 
   // ── Colors ──────────────────────────────────────────────────────────────────
   static const Color _blue = Color(0xFF003696);
@@ -63,23 +76,26 @@ class ExitSimulationDialog extends StatelessWidget {
   // ── Line Items ───────────────────────────────────────────────────────────────
 
   Widget _buildLineItems() {
+    final savingsValue = netSafetyNet ?? 0;
+    final flightValue = estimatedFlightCost ?? 0;
+    final debtValue = outstandingDebt ?? 0;
     return Column(
       children: [
         _SimulationRow(
           label: 'Current Savings',
-          value: '\$3200', // TODO: replace with dynamic data
+          value: '\$${savingsValue.toStringAsFixed(0)}',
           valueColor: _successGreen,
         ),
         const SizedBox(height: 12),
         _SimulationRow(
           label: 'Flight Home (Est.)',
-          value: '-\$450', // TODO: replace with dynamic data
+          value: '-\$${flightValue.toStringAsFixed(0)}',
           valueColor: _dangerRed,
         ),
         const SizedBox(height: 12),
         _SimulationRow(
           label: 'Debt Payoff (Required)',
-          value: '-\$1500', // TODO: replace with dynamic data
+          value: '-\$${debtValue.toStringAsFixed(0)}',
           valueColor: _dangerRed,
         ),
       ],
@@ -89,6 +105,7 @@ class ExitSimulationDialog extends StatelessWidget {
   // ── Remaining Runway ─────────────────────────────────────────────────────────
 
   Widget _buildRemainingRunway() {
+    final runway = remainingRunway ?? 0;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -100,9 +117,9 @@ class ExitSimulationDialog extends StatelessWidget {
             color: Color(0xFF1A1A1A),
           ),
         ),
-        const Text(
-          '\$1250', // TODO: replace with dynamic data
-          style: TextStyle(
+        Text(
+          '\$${runway.toStringAsFixed(0)}',
+          style: const TextStyle(
             fontSize: 15,
             fontWeight: FontWeight.w800,
             color: _successGreen,
@@ -115,6 +132,7 @@ class ExitSimulationDialog extends StatelessWidget {
   // ── Survival Estimate ────────────────────────────────────────────────────────
 
   Widget _buildSurvivalEstimate() {
+    final months = survivalMonths ?? 1;
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(14),
@@ -134,9 +152,9 @@ class ExitSimulationDialog extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            'Based on your \$800/month living cost, you will have 1 month of runway',
-            style: TextStyle(
+          Text(
+            'Based on your monthly living cost, you will have $months month${months == 1 ? '' : 's'} of runway',
+            style: const TextStyle(
               fontSize: 13,
               color: _blueMid,
             ),

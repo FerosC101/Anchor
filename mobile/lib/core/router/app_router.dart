@@ -10,8 +10,15 @@ import '../../features/auth/screens/register_screen.dart';
 import '../../features/home/screens/home_screen.dart';
 import '../../features/government_dashboard/screens/government_dashboard_screen.dart';
 import '../../features/admin_dashboard/screens/admin_dashboard_home_screen.dart';
-import '../../features/community/screens/community_post_detail_screen.dart';
+import '../../features/alerts/screens/alerts_screen.dart';
+import '../../features/community/screens/create_post_screen.dart';
+import '../../features/community/screens/feed_screen.dart';
+import '../../features/community/screens/my_reports_screen.dart';
+import '../../features/community/screens/post_detail_screen.dart';
+import '../../features/community/screens/risk_map_screen.dart';
+import '../../features/contracts/screens/contracts_screen.dart';
 import '../../features/contracts/screens/contract_scan_detail_screen.dart';
+import '../../features/jobs/screens/jobs_screen.dart';
 import '../../features/ngo/screens/ngo_home_screen.dart';
 import '../../models/user_model.dart';
 import '../../models/scan_model.dart';
@@ -66,8 +73,27 @@ final routerProvider = Provider<GoRouter>((ref) {
         builder: (_, __) => const _RoleDispatcher(),
       ),
       GoRoute(
-        path: '/community/post-detail',
-        builder: (_, __) => const CommunityPostDetailScreen(),
+        path: '/community/feed',
+        builder: (_, __) => const FeedScreen(),
+      ),
+      GoRoute(
+        path: '/community/create-post',
+        builder: (_, __) => const CreatePostScreen(),
+      ),
+      GoRoute(
+        path: '/community/post-detail/:postId',
+        builder: (_, state) {
+          final postId = state.pathParameters['postId'] ?? '';
+          return PostDetailScreen(postId: postId);
+        },
+      ),
+      GoRoute(
+        path: '/community/my-reports',
+        builder: (_, __) => const MyReportsScreen(),
+      ),
+      GoRoute(
+        path: '/community/risk-map',
+        builder: (_, __) => const RiskMapScreen(),
       ),
       GoRoute(
         path: '/contracts/detail',
@@ -75,6 +101,18 @@ final routerProvider = Provider<GoRouter>((ref) {
           final scan = state.extra as ScanModel;
           return ContractScanDetailScreen(scan: scan);
         },
+      ),
+      GoRoute(
+        path: '/contracts',
+        builder: (_, __) => const ContractsScreen(),
+      ),
+      GoRoute(
+        path: '/jobs',
+        builder: (_, __) => const JobsScreen(),
+      ),
+      GoRoute(
+        path: '/alerts',
+        builder: (_, __) => const AlertsScreen(),
       ),
     ],
   );

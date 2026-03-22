@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../shared/widgets/worker_app_bar.dart';
 import '../../../shared/widgets/worker_drawer.dart';
 
@@ -17,15 +18,16 @@ class _RemittanceCalculatorScreenState
   double _amount = 1000;
   String _sortBy = 'Best Value';
 
-  // Exchange rates (hardcoded for demo)
-  final Map<String, Map<String, double>> _exchangeRates = {
+  bool _loadingRemoteData = false;
+
+  Map<String, Map<String, double>> _exchangeRates = {
     'SGD': {'PHP': 37.45, 'USD': 0.74, 'MYR': 3.47},
     'PHP': {'SGD': 0.027, 'USD': 0.020, 'MYR': 0.093},
     'USD': {'SGD': 1.35, 'PHP': 50.25, 'MYR': 4.68},
     'MYR': {'SGD': 0.288, 'PHP': 10.75, 'USD': 0.214},
   };
 
-  final List<Map<String, dynamic>> _providers = [
+  List<Map<String, dynamic>> _providers = [
     {
       'name': 'Remitly',
       'rating': 4.6,
@@ -77,6 +79,75 @@ class _RemittanceCalculatorScreenState
       'recommended': false,
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRemoteRemittanceData();
+  }
+
+  Future<void> _loadRemoteRemittanceData() async {
+    setState(() => _loadingRemoteData = true);
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      final ratesSnapshot =
+          await firestore.collection('remittance_rates').limit(200).get();
+
+      final dynamicRates = <String, Map<String, double>>{};
+      for (final doc in ratesSnapshot.docs) {
+        final data = doc.data();
+        final from = (data['from'] ?? '').toString().toUpperCase();
+        final to = (data['to'] ?? '').toString().toUpperCase();
+        final rate = (data['rate'] as num?)?.toDouble();
+
+        if (from.isEmpty || to.isEmpty || rate == null || rate <= 0) {
+          continue;
+        }
+
+        final map = dynamicRates[from] ?? <String, double>{};
+        map[to] = rate;
+        dynamicRates[from] = map;
+      }
+
+      final providersSnapshot = await firestore
+          .collection('remittance_providers')
+          .where('active', isEqualTo: true)
+          .limit(50)
+          .get();
+
+      final remoteProviders = providersSnapshot.docs.map((doc) {
+        final data = doc.data();
+        return <String, dynamic>{
+          'name': (data['name'] ?? 'Provider').toString(),
+          'rating': (data['rating'] as num?)?.toDouble() ?? 0,
+          'reviews': (data['reviews'] as num?)?.toInt() ?? 0,
+          'fee': (data['fee'] as num?)?.toDouble() ?? 0,
+          'speed': (data['speed'] ?? '').toString(),
+          'tags': (data['tags'] as List?)?.map((e) => e.toString()).toList() ??
+              const <String>[],
+          'discount': data['discount']?.toString(),
+          'recommended': (data['recommended'] as bool?) ?? false,
+        };
+      }).toList();
+
+      if (!mounted) return;
+      setState(() {
+        if (dynamicRates.isNotEmpty) {
+          _exchangeRates = dynamicRates;
+        }
+        if (remoteProviders.isNotEmpty) {
+          _providers = remoteProviders;
+        }
+      });
+    } catch (_) {
+      // Keep fallback local values.
+    } finally {
+      if (mounted) {
+        setState(() => _loadingRemoteData = false);
+      }
+    }
+  }
 
   double get _convertedAmount {
     final rate = _exchangeRates[_fromCurrency]?[_toCurrency] ?? 1.0;
@@ -228,14 +299,22 @@ class _RemittanceCalculatorScreenState
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: Row(
                 children: [
-                  const Text(
-                    '5 Providers found',
+                  Text(
+                    '${_providers.length} Providers found',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w700,
                       color: Color(0xFF1A1A1A),
                     ),
                   ),
+                  if (_loadingRemoteData) ...[
+                    const SizedBox(width: 10),
+                    const SizedBox(
+                      width: 14,
+                      height: 14,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
+                  ],
                 ],
               ),
             ),
