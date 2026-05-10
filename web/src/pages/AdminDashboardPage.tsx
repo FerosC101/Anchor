@@ -13,7 +13,7 @@ function BellIcon() {
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={1.8}
+      strokeWidth={1.5}
     >
       <path
         strokeLinecap="round"
@@ -32,7 +32,7 @@ function MenuIcon() {
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={1.8}
+      strokeWidth={1.5}
     >
       <path
         strokeLinecap="round"
@@ -43,30 +43,15 @@ function MenuIcon() {
   );
 }
 
-function ChevronRight({ size = 14 }: { size?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-      strokeWidth={2.5}
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-    </svg>
-  );
-}
-
 function FlagIcon({ className }: { className?: string }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="20"
+      height="20"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={1.5}
       className={className}
     >
       <path
@@ -81,18 +66,18 @@ function FlagIcon({ className }: { className?: string }) {
 function JobIcon({ className }: { className?: string }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="20"
+      height="20"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={1.5}
       className={className}
     >
       <path
         strokeLinecap="round"
         strokeLinejoin="round"
-        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m7 4v7a2 2 0 01-2 2H5a2 2 0 01-2-2v-7"
       />
     </svg>
   );
@@ -101,12 +86,12 @@ function JobIcon({ className }: { className?: string }) {
 function PersonIcon({ className }: { className?: string }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="20"
+      height="20"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={1.5}
       className={className}
     >
       <path
@@ -121,12 +106,12 @@ function PersonIcon({ className }: { className?: string }) {
 function AlertTriangleIcon({ className }: { className?: string }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="20"
+      height="20"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={1.5}
       className={className}
     >
       <path
@@ -141,12 +126,12 @@ function AlertTriangleIcon({ className }: { className?: string }) {
 function BriefcaseIcon({ className }: { className?: string }) {
   return (
     <svg
-      width="14"
-      height="14"
+      width="20"
+      height="20"
       fill="none"
       viewBox="0 0 24 24"
       stroke="currentColor"
-      strokeWidth={2}
+      strokeWidth={1.5}
       className={className}
     >
       <path
@@ -161,12 +146,12 @@ function BriefcaseIcon({ className }: { className?: string }) {
 // ── Data ──────────────────────────────────────────────────────────────────────
 
 const STAT_CARDS = [
-  { value: "1,247", label: "Total Users", filled: true, dark: false },
-  { value: "23", label: "Suspended Accounts", filled: true, dark: false },
-  { value: "8", label: "Pending NGO\nVerifications", filled: true, dark: true },
-  { value: "15", label: "Flagged Posts", filled: false, dark: false },
-  { value: "42", label: "Pending Job Approvals", filled: false, dark: false },
-  { value: "5", label: "Active Risk Alerts", filled: false, dark: false },
+  { value: "1,247", label: "Total Users", filled: true },
+  { value: "23", label: "Suspended Accounts", filled: true },
+  { value: "8", label: "Pending NGO Verifications", filled: true },
+  { value: "15", label: "Flagged Posts", filled: false },
+  { value: "42", label: "Pending Job Approvals", filled: false },
+  { value: "5", label: "Active Risk Alerts", filled: false },
 ];
 
 const PENDING_ACTIONS = [
@@ -176,7 +161,7 @@ const PENDING_ACTIONS = [
     sub: "2 items",
     count: 2,
     action: "Review",
-    badgeColor: "bg-[#5B6BE8]",
+    isAlert: false,
   },
   {
     icon: "job",
@@ -184,7 +169,7 @@ const PENDING_ACTIONS = [
     sub: "2 items",
     count: 2,
     action: "Review",
-    badgeColor: "bg-[#5B6BE8]",
+    isAlert: false,
   },
   {
     icon: "person",
@@ -192,7 +177,7 @@ const PENDING_ACTIONS = [
     sub: "2 items",
     count: 2,
     action: "Verify",
-    badgeColor: "bg-[#5B6BE8]",
+    isAlert: false,
   },
   {
     icon: "alert",
@@ -200,7 +185,7 @@ const PENDING_ACTIONS = [
     sub: "3 active",
     count: 3,
     action: "View",
-    badgeColor: "bg-orange-400",
+    isAlert: true,
   },
 ];
 
@@ -246,64 +231,54 @@ const NAV_ITEMS = ["Home", "Users", "Contents", "Job Lists", "System"];
 
 // ── Sub-components ────────────────────────────────────────────────────────────
 
-function StatCard({
-  value,
-  label,
-  filled,
-  dark,
-}: {
-  value: string;
-  label: string;
-  filled: boolean;
-  dark: boolean;
-}) {
+function StatCard({ value, label, filled }: { value: string; label: string; filled: boolean }) {
   if (filled) {
     return (
       <div
-        className="rounded-2xl p-5 flex flex-col justify-between min-h-[110px]"
-        style={{
-          background: dark
-            ? "linear-gradient(135deg, #5649C0 0%, #3D33A0 100%)"
-            : "linear-gradient(135deg, #7B72D8 0%, #5B4FCB 100%)",
-        }}
+        className="rounded-[16px] p-6 flex flex-col justify-between min-h-[110px] bg-[#0D2B6B]"
+        style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
       >
-        <p className="text-3xl font-bold text-white">{value}</p>
-        <p className="text-white/75 text-xs leading-snug mt-2 whitespace-pre-line">
-          {label}
-        </p>
+        <p className="text-[30px] font-bold text-white">{value}</p>
+        <p className="text-white/60 text-[14px] leading-tight mt-2">{label}</p>
       </div>
     );
   }
   return (
-    <div className="rounded-2xl p-5 bg-white border border-slate-200 flex flex-col justify-between min-h-[110px]">
-      <p className="text-3xl font-bold text-[#4A3FC0]">{value}</p>
-      <p className="text-slate-400 text-xs leading-snug mt-2">{label}</p>
+    <div
+      className="rounded-[16px] p-6 bg-white flex flex-col justify-between min-h-[110px]"
+      style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+    >
+      <p className="text-[30px] font-bold text-[#0D1B3E]">{value}</p>
+      <p className="text-[#6B7280] text-[14px] leading-tight mt-2">{label}</p>
     </div>
   );
 }
 
-function PendingIcon({ icon }: { icon: string }) {
+function PendingIcon({ icon, isAlert }: { icon: string; isAlert?: boolean }) {
+  const bgColor = isAlert ? "bg-amber-100" : "bg-[#F3F4F6]";
+  const textColor = isAlert ? "text-[#D97706]" : "text-[#6B7280]";
+
   if (icon === "flag")
     return (
-      <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-        <FlagIcon className="text-slate-500" />
+      <span className={`w-9 h-9 rounded-lg ${bgColor} flex items-center justify-center shrink-0`}>
+        <FlagIcon className={textColor} />
       </span>
     );
   if (icon === "job")
     return (
-      <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-        <JobIcon className="text-slate-500" />
+      <span className={`w-9 h-9 rounded-lg ${bgColor} flex items-center justify-center shrink-0`}>
+        <JobIcon className={textColor} />
       </span>
     );
   if (icon === "person")
     return (
-      <span className="w-8 h-8 rounded-lg bg-slate-100 flex items-center justify-center shrink-0">
-        <PersonIcon className="text-slate-500" />
+      <span className={`w-9 h-9 rounded-lg ${bgColor} flex items-center justify-center shrink-0`}>
+        <PersonIcon className={textColor} />
       </span>
     );
   return (
-    <span className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-      <AlertTriangleIcon className="text-orange-400" />
+    <span className={`w-9 h-9 rounded-lg ${bgColor} flex items-center justify-center shrink-0`}>
+      <AlertTriangleIcon className={textColor} />
     </span>
   );
 }
@@ -311,25 +286,25 @@ function PendingIcon({ icon }: { icon: string }) {
 function ActivityIcon({ icon }: { icon: string }) {
   if (icon === "flag")
     return (
-      <span className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
-        <FlagIcon className="text-[#5B4FCB]" />
+      <span className="w-9 h-9 rounded-lg bg-[#F3F4F6] flex items-center justify-center shrink-0">
+        <FlagIcon className="text-[#6B7280]" />
       </span>
     );
   if (icon === "person")
     return (
-      <span className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
-        <PersonIcon className="text-[#5B4FCB]" />
+      <span className="w-9 h-9 rounded-lg bg-[#F3F4F6] flex items-center justify-center shrink-0">
+        <PersonIcon className="text-[#6B7280]" />
       </span>
     );
   if (icon === "alert")
     return (
-      <span className="w-8 h-8 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
-        <AlertTriangleIcon className="text-orange-400" />
+      <span className="w-9 h-9 rounded-lg bg-amber-100 flex items-center justify-center shrink-0">
+        <AlertTriangleIcon className="text-[#D97706]" />
       </span>
     );
   return (
-    <span className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center shrink-0">
-      <BriefcaseIcon className="text-[#5B4FCB]" />
+    <span className="w-9 h-9 rounded-lg bg-[#F3F4F6] flex items-center justify-center shrink-0">
+      <BriefcaseIcon className="text-[#6B7280]" />
     </span>
   );
 }
@@ -348,16 +323,16 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F6FA]">
+    <div className="min-h-screen bg-[#EDEEF2]" style={{ fontFamily: "Inter, sans-serif" }}>
       {/* ── Top Navigation ── */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-20">
+      <header className="bg-white sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center gap-6 justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2.5 shrink-0">
-            <div className="w-10 h-10 rounded-full bg-[#5B4FCB] flex items-center justify-center">
+            <div className="w-10 h-10 rounded-full bg-[#0D2B6B] flex items-center justify-center">
               <div className="w-3.5 h-3.5 rounded-full bg-white" />
             </div>
-            <span className="text-[20px] font-bold text-slate-800 tracking-tight">
+            <span className="text-[20px] font-bold text-[#0D1B3E] tracking-tight">
               Anchor
             </span>
           </div>
@@ -365,24 +340,38 @@ export default function AdminDashboardPage() {
           {/* Desktop center nav */}
           <nav className="hidden md:flex items-stretch gap-1 h-full">
             {NAV_ITEMS.map((item) => {
-              const isActive = (item === "Home" && location.pathname === ROUTES.ADMIN) || 
-                               (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
-                               (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
-                               (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
-                               (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
+              const isActive =
+                (item === "Home" && location.pathname === ROUTES.ADMIN) ||
+                (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
+                (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
+                (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
+                (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
               return (
                 <Link
                   key={item}
-                  to={item === "Users" ? ROUTES.ADMIN_USERS : item === "Contents" ? ROUTES.ADMIN_CONTENTS : item === "Job Lists" ? ROUTES.ADMIN_JOB_LISTS : item === "System" ? ROUTES.ADMIN_SYSTEM : item === "Home" ? ROUTES.ADMIN : "#"}
-                  className={`relative px-4 text-sm font-medium transition-colors h-full flex items-center ${
-                    isActive
-                      ? "text-[#5B4FCB]"
-                      : "text-slate-500 hover:text-slate-800"
+                  to={
+                    item === "Users"
+                      ? ROUTES.ADMIN_USERS
+                      : item === "Contents"
+                        ? ROUTES.ADMIN_CONTENTS
+                        : item === "Job Lists"
+                          ? ROUTES.ADMIN_JOB_LISTS
+                          : item === "System"
+                            ? ROUTES.ADMIN_SYSTEM
+                            : item === "Home"
+                              ? ROUTES.ADMIN
+                              : "#"
+                  }
+                  className={`relative px-4 text-[15px] font-medium transition-colors h-full flex items-center ${
+                    isActive ? "text-[#1A1A2E]" : "text-[#6B7280] hover:text-[#1A1A2E]"
                   }`}
                 >
                   {item}
                   {isActive && (
-                    <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#5B4FCB] rounded-full" />
+                    <span
+                      className="absolute bottom-0 left-0 right-0 bg-[#0D2B6B] rounded-full"
+                      style={{ height: "2px" }}
+                    />
                   )}
                 </Link>
               );
@@ -390,19 +379,19 @@ export default function AdminDashboardPage() {
           </nav>
 
           {/* Right icons */}
-          <div className="flex items-center gap-3 text-slate-400 shrink-0">
-            <button className="hover:text-slate-600 transition-colors p-1">
+          <div className="flex items-center gap-4 text-[#6B7280] shrink-0">
+            <button className="hover:text-[#0D1B3E] transition-colors p-1">
               <BellIcon />
             </button>
             <button
-              className="md:hidden hover:text-slate-600 transition-colors p-1"
+              className="md:hidden hover:text-[#0D1B3E] transition-colors p-1"
               onClick={() => setMobileMenuOpen((v) => !v)}
             >
               <MenuIcon />
             </button>
             <button
               onClick={handleSignOut}
-              className="hidden md:block text-sm text-slate-500 hover:text-slate-800 transition-colors ml-1"
+              className="hidden md:block text-[15px] text-[#6B7280] hover:text-[#0D1B3E] transition-colors font-medium"
             >
               Sign out
             </button>
@@ -411,19 +400,36 @@ export default function AdminDashboardPage() {
 
         {/* Mobile nav drawer */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-slate-100 bg-white px-5 py-3 flex flex-col gap-1">
+          <div className="md:hidden border-t border-[#E5E7EB] bg-white px-5 py-3 flex flex-col gap-1">
             {NAV_ITEMS.map((item) => {
-              const isActive = (item === "Home" && location.pathname === ROUTES.ADMIN) || 
-                               (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
-                               (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
-                               (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
-                               (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
+              const isActive =
+                (item === "Home" && location.pathname === ROUTES.ADMIN) ||
+                (item === "Users" && location.pathname === ROUTES.ADMIN_USERS) ||
+                (item === "Contents" && location.pathname === ROUTES.ADMIN_CONTENTS) ||
+                (item === "Job Lists" && location.pathname === ROUTES.ADMIN_JOB_LISTS) ||
+                (item === "System" && location.pathname === ROUTES.ADMIN_SYSTEM);
               return (
                 <Link
                   key={item}
-                  to={item === "Users" ? ROUTES.ADMIN_USERS : item === "Contents" ? ROUTES.ADMIN_CONTENTS : item === "Job Lists" ? ROUTES.ADMIN_JOB_LISTS : item === "System" ? ROUTES.ADMIN_SYSTEM : item === "Home" ? ROUTES.ADMIN : "#"}
+                  to={
+                    item === "Users"
+                      ? ROUTES.ADMIN_USERS
+                      : item === "Contents"
+                        ? ROUTES.ADMIN_CONTENTS
+                        : item === "Job Lists"
+                          ? ROUTES.ADMIN_JOB_LISTS
+                          : item === "System"
+                            ? ROUTES.ADMIN_SYSTEM
+                            : item === "Home"
+                              ? ROUTES.ADMIN
+                              : "#"
+                  }
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`text-left px-3 py-2.5 rounded-xl text-sm font-medium transition-colors ${isActive ? "bg-purple-50 text-[#5B4FCB]" : "text-slate-600 hover:bg-slate-50"}`}
+                  className={`text-left px-3 py-2.5 rounded-lg text-[15px] font-medium transition-colors ${
+                    isActive
+                      ? "bg-[#F3F4F6] text-[#0D2B6B]"
+                      : "text-[#374151] hover:bg-[#F9FAFB]"
+                  }`}
                 >
                   {item}
                 </Link>
@@ -431,7 +437,7 @@ export default function AdminDashboardPage() {
             })}
             <button
               onClick={handleSignOut}
-              className="text-left px-3 py-2.5 rounded-xl text-sm font-medium text-red-500 hover:bg-red-50 mt-1"
+              className="text-left px-3 py-2.5 rounded-lg text-[15px] font-medium text-red-600 hover:bg-red-50 mt-1"
             >
               Sign out
             </button>
@@ -443,21 +449,27 @@ export default function AdminDashboardPage() {
       <main className="max-w-7xl mx-auto px-5 sm:px-8 py-8 space-y-8">
         {/* Page title */}
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">
+          <p
+            className="text-[11px] font-semibold uppercase text-[#6B7280] tracking-[0.12em]"
+            style={{ letterSpacing: "0.12em" }}
+          >
             Admin Dashboard
-          </h1>
-          <p className="text-slate-500 mt-2">
-            Quick overview of platform status, pending actions, and recent
-            activity
+          </p>
+          <h1 className="mt-3 text-[30px] font-bold text-[#0D1B3E]">Welcome back</h1>
+          <p className="text-[14px] text-[#6B7280] mt-2 font-normal">
+            Quick overview of platform status, pending actions, and recent activity
           </p>
         </div>
 
         {/* System overview */}
         <section>
-          <h2 className="text-[15px] font-semibold text-slate-800 mb-3">
+          <h2
+            className="text-[11px] font-semibold uppercase text-[#6B7280] mb-4 tracking-[0.12em]"
+            style={{ letterSpacing: "0.12em" }}
+          >
             System overview
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
             {STAT_CARDS.map((card) => (
               <StatCard key={card.label} {...card} />
             ))}
@@ -465,37 +477,42 @@ export default function AdminDashboardPage() {
         </section>
 
         {/* Two-column layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Pending Actions */}
-          <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-              <h3 className="font-semibold text-slate-800 text-[15px]">
-                Pending Actions
-              </h3>
-              <button className="text-sm text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
-                View all <ChevronRight />
+          <section
+            className="bg-white rounded-[16px] overflow-hidden"
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+          >
+            <div className="flex items-center justify-between px-6 py-6 border-b border-[#F3F4F6]">
+              <h3 className="font-semibold text-[#0D1B3E] text-[16px]">Pending Actions</h3>
+              <button className="text-[14px] text-[#6B7280] flex items-center gap-1 hover:text-[#0D1B3E] transition-colors font-medium">
+                View all <span>›</span>
               </button>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-[#F3F4F6]">
               {PENDING_ACTIONS.map((item) => (
                 <div
                   key={item.label}
-                  className="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50 transition-colors"
+                  className="flex items-center gap-4 px-6 py-4 hover:bg-[#F9FAFB] transition-colors"
                 >
-                  <PendingIcon icon={item.icon} />
+                  <PendingIcon icon={item.icon} isAlert={item.isAlert} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-700 leading-snug">
-                      {item.label}
-                    </p>
-                    <p className="text-xs text-slate-400 mt-0.5">{item.sub}</p>
+                    <p className="text-[14px] font-semibold text-[#0D1B3E] leading-snug">{item.label}</p>
+                    <p className="text-[12px] text-[#9CA3AF] mt-0.5">{item.sub}</p>
                   </div>
                   <span
-                    className={`w-6 h-6 rounded-full ${item.badgeColor} text-white text-xs font-bold flex items-center justify-center shrink-0`}
+                    className={`w-6 h-6 rounded-full text-white text-[12px] font-bold flex items-center justify-center shrink-0 ${
+                      item.isAlert ? "bg-[#D97706]" : "bg-[#0D2B6B]"
+                    }`}
                   >
                     {item.count}
                   </span>
-                  <button className="text-sm text-slate-500 hover:text-[#5B4FCB] flex items-center gap-0.5 transition-colors shrink-0 font-medium">
-                    {item.action} <ChevronRight size={12} />
+                  <button
+                    className={`text-[14px] font-medium flex items-center gap-0.5 transition-colors shrink-0 ${
+                      item.isAlert ? "text-[#D97706] hover:text-[#B45309]" : "text-[#0D1B3E] hover:text-[#0D2B6B]"
+                    }`}
+                  >
+                    {item.action}
                   </button>
                 </div>
               ))}
@@ -503,32 +520,29 @@ export default function AdminDashboardPage() {
           </section>
 
           {/* Recent Activity */}
-          <section className="bg-white rounded-2xl border border-slate-200 overflow-hidden">
-            <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
-              <h3 className="font-semibold text-slate-800 text-[15px]">
-                Recent Activity
-              </h3>
-              <button className="text-sm text-slate-400 flex items-center gap-1 hover:text-slate-600 transition-colors">
-                View all <ChevronRight />
+          <section
+            className="bg-white rounded-[16px] overflow-hidden"
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
+          >
+            <div className="flex items-center justify-between px-6 py-6 border-b border-[#F3F4F6]">
+              <h3 className="font-semibold text-[#0D1B3E] text-[16px]">Recent Activity</h3>
+              <button className="text-[14px] text-[#6B7280] flex items-center gap-1 hover:text-[#0D1B3E] transition-colors font-medium">
+                View all <span>›</span>
               </button>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-[#F3F4F6]">
               {RECENT_ACTIVITY.map((item, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-3 px-5 py-3.5 hover:bg-slate-50 transition-colors"
+                  className="flex items-center gap-4 px-6 py-4 hover:bg-[#F9FAFB] transition-colors"
                 >
                   <ActivityIcon icon={item.icon} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-semibold text-[#5B4FCB] leading-snug">
-                      {item.type}
-                    </p>
-                    <p className="text-xs text-slate-500 mt-0.5 truncate">
-                      {item.desc}
-                    </p>
-                    <p className="text-xs text-slate-400 mt-0.5">{item.date}</p>
+                    <p className="text-[14px] font-semibold text-[#0D2B6B] leading-snug">{item.type}</p>
+                    <p className="text-[13px] text-[#374151] mt-0.5 truncate">{item.desc}</p>
+                    <p className="text-[11px] text-[#9CA3AF] mt-0.5">{item.date}</p>
                   </div>
-                  <button className="text-sm text-slate-500 hover:text-[#5B4FCB] font-medium transition-colors shrink-0">
+                  <button className="text-[14px] text-[#0D1B3E] hover:text-[#0D2B6B] font-medium transition-colors shrink-0">
                     {item.action}
                   </button>
                 </div>
