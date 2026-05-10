@@ -277,8 +277,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           fontSize: 14,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () => context.push('/register'),
+                      TextButton(
+                        onPressed: () => context.push('/register'),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.zero,
+                          minimumSize: const Size(0, 0),
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        ),
                         child: const Text(
                           'Create one',
                           style: TextStyle(

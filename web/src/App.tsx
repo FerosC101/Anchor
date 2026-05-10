@@ -6,6 +6,13 @@ import AlertPage from "./pages/AlertPage";
 import ContentsPageWrapper from "./pages/ContentsPage";
 import HomePage from "./pages/HomePage";
 import JobListsPageWrapper from "./pages/JobListsPage";
+import WagesPage from "./pages/WagesPage";
+import ContractsPage from "./pages/ContractsPage";
+import CommunityPage from "./pages/CommunityPage";
+import ShieldPage from "./pages/ShieldPage";
+import AlertsPage from "./pages/AlertsPage";
+import SafetyResourcesPage from "./pages/SafetyResourcesPage";
+import HelpPage from "./pages/HelpPage";
 import LoginPage from "./pages/LoginPage";
 import MonitoringPage from "./pages/MonitoringPage";
 import NGODashboardPage from "./pages/NGODashboardPage";
@@ -49,7 +56,14 @@ function PublicRoute({ children }: { children: React.ReactNode }) {
 export default function App() {
   return (
     <Routes>
-      <Route path="/" element={<LoginPage />} />
+      <Route
+        path="/"
+        element={
+          <PublicRoute>
+            <LoginPage />
+          </PublicRoute>
+        }
+      />
       <Route
         path={ROUTES.LOGIN}
         element={
@@ -71,6 +85,62 @@ export default function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.WAGES}
+        element={
+          <ProtectedRoute>
+            <WagesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.CONTRACTS}
+        element={
+          <ProtectedRoute>
+            <ContractsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.COMMUNITY}
+        element={
+          <ProtectedRoute>
+            <CommunityPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.SHIELD}
+        element={
+          <ProtectedRoute>
+            <ShieldPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.ALERTS}
+        element={
+          <ProtectedRoute>
+            <AlertsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.SAFETY_RESOURCES}
+        element={
+          <ProtectedRoute>
+            <SafetyResourcesPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path={ROUTES.HELP}
+        element={
+          <ProtectedRoute>
+            <HelpPage />
           </ProtectedRoute>
         }
       />

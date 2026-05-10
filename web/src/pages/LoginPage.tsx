@@ -59,6 +59,10 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [showPw, setShowPw] = useState(false);
 
+  function handleRegisterClick() {
+    navigate(ROUTES.REGISTER);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     clearError();
@@ -284,12 +288,13 @@ export default function LoginPage() {
 
               <p className="mt-6 text-center text-sm text-[#64748B]">
                 Don&apos;t have an account?{" "}
-                <Link
-                  to={ROUTES.REGISTER}
+                <button
+                  type="button"
+                  onClick={handleRegisterClick}
                   className="font-semibold text-[#0A2463] hover:text-[#1E3A8A] transition"
                 >
                   Create one
-                </Link>
+                </button>
               </p>
             </div>
           </div>

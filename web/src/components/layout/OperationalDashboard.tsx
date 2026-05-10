@@ -1,6 +1,5 @@
-import { useState } from "react";
+import { NgoLayout } from "./NgoLayout";
 import { NgoColors } from "../../core/theme/ngo-colors";
-import { NgoDrawer } from "./NgoDrawer";
 
 export type DashboardIconName =
   | "alert"
@@ -22,12 +21,6 @@ export type DashboardBadgeTone =
   | "orange"
   | "rose"
   | "violet";
-
-export interface DashboardNavItem {
-  label: string;
-  active?: boolean;
-  onClick?: () => void;
-}
 
 export interface DashboardSummaryCard {
   value: string;
@@ -80,7 +73,6 @@ export interface DashboardSectionConfig {
 
 interface OperationalDashboardProps {
   pageTitle: string;
-  navItems: DashboardNavItem[];
   summaryCards: DashboardSummaryCard[];
   searchPlaceholder: string;
   searchValue: string;
@@ -93,18 +85,6 @@ interface OperationalDashboardProps {
     columns: [string, string, string, string];
   };
   secondaryRows: DashboardSecondaryRow[];
-  headerAction?: {
-    label: string;
-    onClick: () => void;
-  };
-  unreadNotificationCount?: number;
-  showDrawer?: boolean;
-  onDrawerOpen?: () => void;
-  onDrawerClose?: () => void;
-  onProfileClick?: () => void;
-  onNotificationsClick?: () => void;
-  onPrivacyClick?: () => void;
-  onLogoutClick?: () => void;
 }
 
 function getBadgeColors(tone: DashboardBadgeTone) {
@@ -122,25 +102,6 @@ function getBadgeColors(tone: DashboardBadgeTone) {
 
 // ─── Icon Components ────────────────────────────────────────────────────────────
 
-function BellIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a1 1 0 10-2 0v1.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-      />
-    </svg>
-  );
-}
-
-function MenuIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-      <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-    </svg>
-  );
-}
 
 function SearchIcon() {
   return (
@@ -297,7 +258,6 @@ function MetaIcon({ icon }: { icon?: "pin" | "clock" }) {
 
 export default function OperationalDashboard({
   pageTitle,
-  navItems,
   summaryCards,
   searchPlaceholder,
   searchValue,
@@ -308,124 +268,10 @@ export default function OperationalDashboard({
   primaryEmptyMessage,
   secondarySection,
   secondaryRows,
-  headerAction,
-  unreadNotificationCount = 0,
-  showDrawer: initialShowDrawer = false,
-  onDrawerOpen,
-  onDrawerClose,
-  onProfileClick,
-  onNotificationsClick,
-  onPrivacyClick,
-  onLogoutClick,
 }: OperationalDashboardProps) {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [drawerOpen, setDrawerOpen] = useState(initialShowDrawer);
-
-  const handleDrawerOpen = () => {
-    setDrawerOpen(true);
-    onDrawerOpen?.();
-  };
-
-  const handleDrawerClose = () => {
-    setDrawerOpen(false);
-    onDrawerClose?.();
-  };
-
   return (
-    <>
-      <div className="min-h-screen text-slate-800" style={{ backgroundColor: NgoColors.bg }}>
-        <header className="sticky top-0 z-20 border-b border-[#D9DCE3] bg-white/95 backdrop-blur w-full">
-        <div className="mx-auto flex h-[54px] w-full items-center px-4 sm:px-6 lg:px-8">
-          {/* Logo */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="h-6 w-6 rounded-full bg-[#003696]" />
-            <p className="text-[20px] font-extrabold text-[#003696] tracking-[-0.03em]">Anchor</p>
-          </div>
-
-          {/* Center Navigation */}
-          <nav className="hidden md:flex flex-1 items-center justify-center gap-12 text-[14px] font-semibold text-slate-500">
-            {navItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={item.onClick}
-                className={`relative transition ${item.active ? "text-[#003696]" : "hover:text-slate-700"}`}
-              >
-                {item.label}
-                {item.active ? (
-                  <span className="absolute -bottom-[17px] left-1/2 h-[2px] w-16 -translate-x-1/2 rounded-full bg-[#003696]" />
-                ) : null}
-              </button>
-            ))}
-          </nav>
-
-          {/* Right Actions */}
-          <div className="flex flex-shrink-0 items-center gap-3 text-slate-500 ml-auto">
-            <button 
-              className="rounded-md p-1.5 hover:bg-slate-100 relative"
-              onClick={() => onNotificationsClick?.()}
-            >
-              <BellIcon />
-              {unreadNotificationCount > 0 && (
-                <span 
-                  className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold text-white"
-                  style={{ backgroundColor: "#8E0012" }}
-                >
-                  {unreadNotificationCount}
-                </span>
-              )}
-            </button>
-            {headerAction ? (
-              <button
-                onClick={headerAction.onClick}
-                className="hidden md:block text-sm text-slate-500 hover:text-slate-800 transition-colors"
-              >
-                {headerAction.label}
-              </button>
-            ) : null}
-            <button
-              className="rounded-md p-1.5 hover:bg-slate-100"
-              onClick={handleDrawerOpen}
-              aria-label="Open menu"
-            >
-              <MenuIcon />
-            </button>
-          </div>
-        </div>
-
-        {mobileMenuOpen ? (
-          <div className="border-t border-slate-100 bg-white px-5 py-3 md:hidden">
-            <div className="flex flex-col gap-1">
-              {navItems.map((item) => (
-                <button
-                  key={item.label}
-                  onClick={() => {
-                    item.onClick?.();
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`rounded-xl px-3 py-2.5 text-left text-sm font-medium ${
-                    item.active ? "bg-blue-50 text-[#003696]" : "text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  {item.label}
-                </button>
-              ))}
-              {headerAction ? (
-                <button
-                  onClick={() => {
-                    headerAction.onClick();
-                    setMobileMenuOpen(false);
-                  }}
-                  className="mt-1 rounded-xl px-3 py-2.5 text-left text-sm font-medium text-red-500 hover:bg-red-50"
-                >
-                  {headerAction.label}
-                </button>
-              ) : null}
-            </div>
-          </div>
-        ) : null}
-      </header>
-
-      <main className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
+    <NgoLayout>
+      <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <h1 className="text-[16px] font-extrabold tracking-[-0.01em] text-slate-900">{pageTitle}</h1>
 
         <section className="mt-4 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -444,18 +290,9 @@ export default function OperationalDashboard({
           ))}
         </section>
 
-        <section className="mt-7">
-          <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-[15px] font-extrabold tracking-[-0.01em] text-slate-900">{primarySection.title}</h2>
-            {!primarySection.hideButton && primarySection.buttonLabel ? (
-              <button className="rounded-md bg-[#003696] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm hover:bg-[#002060]\">
-                {primarySection.buttonLabel}
-              </button>
-            ) : null}
-          </div>
-
-          <div className="mb-4 flex flex-col gap-3 lg:flex-row lg:items-center">
-            <label className="relative block flex-1">
+        <section className="mt-6">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <label className="relative w-full lg:max-w-[360px]">
               <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-slate-300">
                 <SearchIcon />
               </span>
@@ -494,6 +331,17 @@ export default function OperationalDashboard({
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="mt-6">
+          <div className="mb-4 flex items-center justify-between gap-3">
+            <h2 className="text-[15px] font-extrabold tracking-[-0.01em] text-slate-900">{primarySection.title}</h2>
+            {!primarySection.hideButton && primarySection.buttonLabel ? (
+              <button className="rounded-md bg-[#003696] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm hover:bg-[#002060]">
+                {primarySection.buttonLabel}
+              </button>
+            ) : null}
           </div>
 
           {primaryCards.length > 0 ? (
@@ -539,13 +387,12 @@ export default function OperationalDashboard({
                   </div>
 
                   <div className="mt-3 flex gap-3">
-                    <button 
-                      className="flex-1 rounded-lg px-5 py-2 text-[12px] font-bold text-white hover:opacity-90 transition"
+                    <button
+                      className="flex-1 rounded-lg px-5 py-2 text-[12px] font-bold text-white transition hover:opacity-90"
                       style={{ backgroundColor: NgoColors.navy }}
                     >
                       {card.actionLabel}
                     </button>
-                  
                   </div>
                 </article>
               ))}
@@ -560,7 +407,7 @@ export default function OperationalDashboard({
         <section className="mt-7 pb-8">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-[15px] font-extrabold tracking-[-0.01em] text-slate-900">{secondarySection.title}</h2>
-            <button className="rounded-md bg-[#003696] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm hover:bg-[#002060]\">
+            <button className="rounded-md bg-[#003696] px-3 py-1.5 text-[10px] font-semibold text-white shadow-sm hover:bg-[#002060]">
               {secondarySection.buttonLabel}
             </button>
           </div>
@@ -612,16 +459,6 @@ export default function OperationalDashboard({
           </div>
         </section>
       </main>
-      </div>
-
-      <NgoDrawer
-        isOpen={drawerOpen}
-        onClose={handleDrawerClose}
-        onProfileClick={onProfileClick || (() => {})}
-        onNotificationsClick={onNotificationsClick || (() => {})}
-        onPrivacyClick={onPrivacyClick || (() => {})}
-        onLogoutClick={onLogoutClick || (() => {})}
-      />
-    </>
+    </NgoLayout>
   );
 }

@@ -1,10 +1,6 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../core/config/routes";
+import { NgoLayout } from "../../components/layout/NgoLayout";
 import { NgoColors } from "../../core/theme/ngo-colors";
-import { NgoDrawer } from "../../components/layout/NgoDrawer";
-import { useNotifications } from "../../core/context/NotificationContext";
-import { useAuth } from "../../core/context/AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -188,14 +184,10 @@ function getSeverityColors(severity: "HIGH" | "MEDIUM" | "LOW") {
 // ─── Component ─────────────────────────────────────────────────────────────────────────
 
 export function Alert() {
-  const navigate = useNavigate();
-  const { unreadCount } = useNotifications();
-  const { signOut } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("All Countries");
   const [selectedIssue, setSelectedIssue] = useState("All Issues");
   const [selectedStatus, setSelectedStatus] = useState("All Status");
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -207,14 +199,6 @@ export function Alert() {
     description: "",
   });
 
-  const handleLogout = async () => {
-    await signOut();
-    navigate(ROUTES.LOGIN);
-  };
-
-  const handlePrivacy = () => {
-    navigate(ROUTES.PRIVACY);
-  };
 
   const filteredAlerts = useMemo(() => {
     return ALERTS.filter((alert) => {
@@ -236,58 +220,8 @@ export function Alert() {
   }, [searchTerm, selectedCountry, selectedIssue, selectedStatus]);
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: NgoColors.bg }}>
-      {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-[#D9DCE3] bg-white/95 backdrop-blur w-full">
-        <div className="mx-auto flex h-[54px] w-full items-center px-4 sm:px-6 lg:px-8">
-          {/* Logo */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <span className="h-6 w-6 rounded-full bg-[#003696]" />
-            <p className="text-[20px] font-extrabold text-[#003696] tracking-[-0.03em]">Anchor</p>
-          </div>
-
-          {/* Center Navigation */}
-          <nav className="hidden md:flex flex-1 items-center justify-center gap-12 text-[14px] font-semibold text-slate-500">
-            <button onClick={() => navigate(ROUTES.DASHBOARD)} className="relative transition text-slate-500 hover:text-slate-700">Home</button>
-            <button onClick={() => navigate(ROUTES.MONITORING)} className="relative transition text-slate-500 hover:text-slate-700">Monitoring</button>
-            <button className="relative transition text-[#003696]">Alert<span className="absolute -bottom-[17px] left-1/2 h-[2px] w-16 -translate-x-1/2 rounded-full bg-[#003696]" /></button>
-          </nav>
-
-          {/* Right Actions */}
-          <div className="flex flex-shrink-0 items-center gap-3 text-slate-500 ml-auto">
-            <button className="rounded-md p-1.5 hover:bg-slate-100 relative" onClick={() => navigate(ROUTES.NOTIFICATIONS)}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-5-5.917V4a1 1 0 10-2 0v1.083A6 6 0 006 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
-              </svg>
-              {unreadCount > 0 && (
-                <span 
-                  className="absolute top-0 right-0 flex h-5 w-5 items-center justify-center rounded-full text-[11px] font-bold text-white"
-                  style={{ backgroundColor: "#8E0012" }}
-                >
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-            <button className="rounded-md p-1.5 hover:bg-slate-100" onClick={() => setDrawerOpen(true)}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Drawer */}
-      <NgoDrawer
-        isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onProfileClick={() => navigate(ROUTES.PROFILE)}
-        onNotificationsClick={() => navigate(ROUTES.NOTIFICATIONS)}
-        onPrivacyClick={handlePrivacy}
-        onLogoutClick={handleLogout}
-      />
-
-      <main className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
+    <NgoLayout>
+      <main className="mx-auto w-full max-w-6xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-4">
           <h1 className="text-[16px] font-extrabold tracking-[-0.01em] text-slate-900">Alert Generation</h1>
           <button
@@ -709,6 +643,6 @@ export function Alert() {
           </div>
         </div>
       )}
-    </div>
+    </NgoLayout>
   );
 }

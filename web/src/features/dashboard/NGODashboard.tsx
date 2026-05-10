@@ -1,8 +1,4 @@
 import { useMemo, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import { ROUTES } from "../../core/config/routes";
-import { useNotifications } from "../../core/context/NotificationContext";
-import { useAuth } from "../../core/context/AuthContext";
 import OperationalDashboard, {
   type DashboardBadgeTone,
   type DashboardPrimaryCard,
@@ -209,24 +205,10 @@ const STATUS_OPTIONS = [
 ];
 
 export default function NGODashboard() {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const { unreadCount } = useNotifications();
-  const { signOut } = useAuth();
   const [search, setSearch] = useState("");
   const [country, setCountry] = useState(COUNTRY_OPTIONS[0]);
   const [issue, setIssue] = useState(ISSUE_OPTIONS[0]);
   const [status, setStatus] = useState(STATUS_OPTIONS[0]);
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const handleLogout = async () => {
-    await signOut();
-    navigate(ROUTES.LOGIN);
-  };
-
-  const handlePrivacy = () => {
-    navigate(ROUTES.PRIVACY);
-  };
 
   const primaryCards: DashboardPrimaryCard[] = useMemo(
     () =>
@@ -279,11 +261,6 @@ export default function NGODashboard() {
   return (
     <OperationalDashboard
       pageTitle="Dashboard Overview"
-      navItems={[
-        { label: "Home", active: location.pathname === ROUTES.DASHBOARD, onClick: () => navigate(ROUTES.DASHBOARD) },
-        { label: "Monitoring", active: location.pathname === ROUTES.MONITORING, onClick: () => navigate(ROUTES.MONITORING) },
-        { label: "Alert", active: location.pathname === ROUTES.ALERT, onClick: () => navigate(ROUTES.ALERT) },
-      ]}
       summaryCards={SUMMARY_CARDS}
       searchPlaceholder="Search worker by name or case ID"
       searchValue={search}
@@ -319,14 +296,6 @@ export default function NGODashboard() {
         columns: ["Employer", "Location", "Risk Level", "Reports"],
       }}
       secondaryRows={secondaryRows}
-      unreadNotificationCount={unreadCount}
-      showDrawer={drawerOpen}
-      onDrawerOpen={() => setDrawerOpen(true)}
-      onDrawerClose={() => setDrawerOpen(false)}
-      onProfileClick={() => navigate(ROUTES.PROFILE)}
-      onNotificationsClick={() => navigate(ROUTES.NOTIFICATIONS)}
-      onPrivacyClick={handlePrivacy}
-      onLogoutClick={handleLogout}
     />
   );
 }

@@ -1,10 +1,6 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../../core/config/routes";
+import { NgoLayout } from "../../components/layout/NgoLayout";
 import { NgoColors } from "../../core/theme/ngo-colors";
-import { NgoDrawer } from "../../components/layout/NgoDrawer";
 import { useNotifications } from "../../core/context/NotificationContext";
-import { useAuth } from "../../core/context/AuthContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -74,19 +70,7 @@ function IdentityIcon() {
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export function Notifications() {
-  const navigate = useNavigate();
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const { notifications, markAsRead } = useNotifications();
-  const { signOut } = useAuth();
-
-  const handleLogout = async () => {
-    await signOut();
-    navigate(ROUTES.LOGIN);
-  };
-
-  const handlePrivacy = () => {
-    navigate(ROUTES.PRIVACY);
-  };
 
   const getNotificationStyle = (type: any) => {
     switch (type) {
@@ -110,49 +94,7 @@ export function Notifications() {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: NgoColors.bg }}>
-      {/* Header */}
-      <header className="sticky top-0 z-20 border-b border-[#D9DCE3] bg-white/95 backdrop-blur w-full">
-        <div className="mx-auto flex h-[54px] w-full items-center px-4 sm:px-6 lg:px-8">
-          {/* Back Button */}
-          <button
-            onClick={() => navigate(-1)}
-            className="transition text-slate-600 hover:text-slate-900"
-          >
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-
-          {/* Logo - Center */}
-          <div className="flex-1 text-center">
-            <span className="text-[16px] font-bold tracking-[-0.01em]" style={{ color: NgoColors.navy }}>
-              Anchor
-            </span>
-          </div>
-
-          {/* Hamburger Menu */}
-          <button
-            onClick={() => setDrawerOpen(true)}
-            className="transition text-slate-500 hover:text-slate-700"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
-          </button>
-        </div>
-      </header>
-
-      {/* Drawer */}
-      <NgoDrawer
-        isOpen={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
-        onProfileClick={() => navigate(ROUTES.PROFILE)}
-        onNotificationsClick={() => navigate(ROUTES.NOTIFICATIONS)}
-        onPrivacyClick={handlePrivacy}
-        onLogoutClick={handleLogout}
-      />
-
+    <NgoLayout>
       <main className="mx-auto w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* Title */}
         <h1 className="text-[24px] font-extrabold tracking-[-0.01em] text-slate-900 mb-6">Notifications</h1>
@@ -221,6 +163,6 @@ export function Notifications() {
           </div>
         )}
       </main>
-    </div>
+    </NgoLayout>
   );
 }
