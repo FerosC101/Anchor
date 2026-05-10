@@ -1,26 +1,18 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../core/context/AuthContext";
 import { ROUTES, getDefaultRouteForRole } from "../core/config/routes";
 
 const GRADIENT: React.CSSProperties = {
-  background: "linear-gradient(135deg, #0A2463 0%, #1E3A8A 100%)",
+  background: "linear-gradient(135deg, #DFEDFF 0%, #003696 100%)",
 };
 
-const FEATURES = [
-  { icon: "🛡️", text: "AI-powered contract analysis" },
-  { icon: "⚡", text: "Real-time safety alerts" },
-  { icon: "💸", text: "Wage protection & tracking" },
-  { icon: "🌐", text: "Government-linked support" },
+const INFO_ITEMS = [
+  "AI-powered contract analysis",
+  "Real-time safety alerts",
+  "Wage protection & tracking",
+  "Government-linked support",
 ];
-
-function AnchorIcon({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-      <path d="M17 14.5A5.5 5.5 0 0 1 7.072 16H9a1 1 0 0 0 0-2H5a1 1 0 0 0-1 1v4a1 1 0 0 0 2 0v-1.43A7.5 7.5 0 0 0 19.5 14.5a1 1 0 0 0-2 0zM12 2a3 3 0 0 0-1 5.83V10H9a1 1 0 0 0 0 2h2v.17A3.001 3.001 0 0 0 12 18a3 3 0 0 0 1-5.83V12h2a1 1 0 0 0 0-2h-2V7.83A3 3 0 0 0 12 2zm0 2a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0 12a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
-    </svg>
-  );
-}
 
 function EyeIcon({ className }: { className?: string }) {
   return (
@@ -73,89 +65,63 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#F8FAFC]">
-      {/* LEFT — branding panel, desktop only */}
+    <div className="min-h-screen bg-[#F4F4F8] lg:flex">
       <aside
-        className="hidden lg:flex lg:w-5/12 xl:w-1/2 flex-col justify-between p-12 relative overflow-hidden shrink-0"
+        className="hidden lg:flex lg:w-1/2 flex-col justify-between px-12 py-14 text-white"
         style={GRADIENT}
       >
-        <div className="absolute -top-24 -left-24 w-80 h-80 rounded-full bg-white/5 pointer-events-none" />
-        <div className="absolute -bottom-28 -right-20 w-96 h-96 rounded-full bg-white/5 pointer-events-none" />
-        <div className="absolute top-1/3 -right-12 w-52 h-52 rounded-full bg-white/5 pointer-events-none" />
-
-        {/* Logo */}
-        <div className="relative z-10">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-white/15 border-2 border-white/30 flex items-center justify-center shrink-0">
-              <AnchorIcon className="w-7 h-7 text-white" />
-            </div>
-            <span className="text-white text-2xl font-extrabold tracking-[0.2em]">
-              ANCHOR
-            </span>
-          </div>
-          <p className="text-white/55 text-sm mt-1 pl-[60px]">
+        <div>
+          <p className="text-[26px] font-extrabold tracking-[0.3em] text-[#003696]">
+            ANCHOR
+          </p>
+          <p className="mt-2 text-sm text-white/85">
             Protecting Filipino Workers Abroad
           </p>
         </div>
 
-        {/* Hero */}
-        <div className="relative z-10 space-y-6">
-          <h2 className="text-white text-4xl xl:text-5xl font-bold leading-tight">
-            Your safety, <span style={{ color: "#F4A261" }}>our mission.</span>
+        <div className="mt-10 space-y-6">
+          <h2 className="text-4xl font-bold leading-tight">
+            Your safety, our mission.
           </h2>
-          <p className="text-white/70 text-base max-w-sm leading-relaxed">
+          <p className="text-white/85 text-sm max-w-md">
             Anchor gives every OFW the legal protection, real-time alerts, and
             government support they deserve — wherever they are in the world.
           </p>
-          <ul className="space-y-3 pt-1">
-            {FEATURES.map((f) => (
-              <li key={f.text} className="flex items-center gap-3">
-                <span className="text-lg leading-none">{f.icon}</span>
-                <span className="text-white/80 text-sm">{f.text}</span>
+          <ul className="space-y-3 text-sm text-white/85">
+            {INFO_ITEMS.map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <span className="mt-2 h-2 w-2 rounded-full bg-white" />
+                <span>{item}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <p className="relative z-10 text-white/30 text-xs">
-          &copy; {new Date().getFullYear()} Anchor &middot; For OFWs, by OFWs
+        <p className="text-white/50 text-xs">
+          &copy; {new Date().getFullYear()} Anchor · For OFWs, by OFWs
         </p>
       </aside>
 
-      {/* RIGHT — form panel */}
-      <div className="flex-1 flex flex-col">
-        {/* Mobile header */}
-        <header
-          className="lg:hidden flex flex-col items-center gap-2 px-6 pt-12 pb-16"
-          style={GRADIENT}
-        >
-          <div className="w-16 h-16 rounded-full bg-white/15 border-2 border-white/30 flex items-center justify-center">
-            <AnchorIcon className="w-9 h-9 text-white" />
-          </div>
-          <p className="text-white text-2xl font-extrabold tracking-[0.2em]">
-            ANCHOR
-          </p>
-          <p className="text-white/60 text-xs">
-            Protecting Filipino Workers Abroad
-          </p>
-        </header>
-
-        {/* Card */}
-        <div className="flex-1 flex items-start lg:items-center justify-center px-4 sm:px-8 lg:px-14 xl:px-20 -mt-6 lg:mt-0 pb-12">
-          <div className="w-full max-w-md">
-            <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/60 p-8 sm:p-10">
-              <h1 className="text-[22px] font-bold text-[#0F172A]">
-                Welcome back!
-              </h1>
-              <p className="mt-1 text-[#64748B] text-sm">
-                Sign in to your Anchor account
+      <div className="flex-1 lg:flex lg:items-center lg:justify-center">
+        <div className="relative w-full">
+          <div className="h-[280px] rounded-b-[32px] lg:hidden" style={GRADIENT}>
+            <div className="mx-auto w-full max-w-xl px-6 pt-10 text-center">
+              <p className="text-[26px] font-extrabold tracking-[0.3em] text-[#003696]">
+                ANCHOR
               </p>
+              <p className="mt-2 text-[13px] text-white/80">
+                Protecting Filipino Workers Abroad
+              </p>
+            </div>
+          </div>
 
-              <form
-                onSubmit={handleSubmit}
-                className="mt-7 space-y-5"
-                noValidate
-              >
+          <div className="-mt-12 px-4 pb-10 lg:mt-0 lg:flex lg:min-h-screen lg:w-full lg:items-center lg:justify-center lg:px-12 lg:py-0">
+            <div className="mx-auto flex w-full max-w-md flex-col items-center">
+              <div className="w-full rounded-3xl bg-white p-8 shadow-[0_12px_32px_rgba(15,23,42,0.12)]">
+              <h1 className="text-[22px] font-bold text-[#0F172A]">Welcome back!</h1>
+              <p className="mt-1 text-[#64748B] text-sm">Sign in to your account to continue</p>
+
+              <form onSubmit={handleSubmit} className="mt-7 space-y-5" noValidate>
                 {error && (
                   <div
                     role="alert"
@@ -166,17 +132,13 @@ export default function LoginPage() {
                   </div>
                 )}
 
-                {/* Email */}
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-[#0F172A] mb-1.5"
-                  >
+                  <label htmlFor="email" className="block text-sm font-medium text-[#0F172A] mb-1.5">
                     Email Address
                   </label>
                   <div className="relative">
                     <svg
-                      className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8] pointer-events-none"
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#003696] pointer-events-none"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -193,30 +155,23 @@ export default function LoginPage() {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@example.com"
-                      className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-4 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#0A2463] focus:outline-none focus:ring-2 focus:ring-[#0A2463]/20 transition"
+                      className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-4 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#003696] focus:outline-none focus:ring-2 focus:ring-[#003696]/20 transition"
                     />
                   </div>
                 </div>
 
-                {/* Password */}
                 <div>
                   <div className="flex items-center justify-between mb-1.5">
-                    <label
-                      htmlFor="password"
-                      className="text-sm font-medium text-[#0F172A]"
-                    >
+                    <label htmlFor="password" className="text-sm font-medium text-[#0F172A]">
                       Password
                     </label>
-                    <button
-                      type="button"
-                      className="text-xs font-medium text-[#0A2463] hover:text-[#1E3A8A] transition"
-                    >
+                    <button type="button" className="text-xs font-medium text-[#003696] hover:text-[#002060] transition">
                       Forgot Password?
                     </button>
                   </div>
                   <div className="relative">
                     <svg
-                      className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#94A3B8] pointer-events-none"
+                      className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-[#003696] pointer-events-none"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -233,51 +188,28 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-12 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#0A2463] focus:outline-none focus:ring-2 focus:ring-[#0A2463]/20 transition"
+                      className="w-full rounded-xl border border-[#E2E8F0] pl-10 pr-12 py-3 text-sm text-[#0F172A] placeholder-[#94A3B8] focus:border-[#003696] focus:outline-none focus:ring-2 focus:ring-[#003696]/20 transition"
                     />
                     <button
                       type="button"
                       aria-label={showPw ? "Hide password" : "Show password"}
                       onClick={() => setShowPw((v) => !v)}
-                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#94A3B8] hover:text-[#64748B] transition"
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#003696] hover:text-[#002060] transition"
                     >
-                      {showPw ? (
-                        <EyeOffIcon className="w-4 h-4" />
-                      ) : (
-                        <EyeIcon className="w-4 h-4" />
-                      )}
+                      {showPw ? <EyeOffIcon className="w-4 h-4" /> : <EyeIcon className="w-4 h-4" />}
                     </button>
                   </div>
                 </div>
 
-                {/* Submit */}
                 <button
                   type="submit"
                   disabled={isLoading}
-                  style={GRADIENT}
-                  className="w-full mt-2 rounded-xl py-3.5 text-white text-sm font-semibold shadow-lg shadow-[#0A2463]/25 hover:opacity-90 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#0A2463] focus:ring-offset-2 disabled:opacity-60 disabled:pointer-events-none transition-all"
+                  className="w-full mt-2 rounded-xl py-3.5 text-white text-sm font-semibold shadow-lg shadow-[#003696]/25 hover:opacity-90 active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-[#003696] focus:ring-offset-2 disabled:opacity-60 disabled:pointer-events-none transition-all"
+                  style={{ backgroundColor: "#003696" }}
                 >
                   {isLoading ? (
                     <span className="flex items-center justify-center gap-2">
-                      <svg
-                        className="animate-spin h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        />
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8v8z"
-                        />
-                      </svg>
+                      <span className="h-4 w-4 rounded-full border-2 border-white/60 border-t-white animate-spin" />
                       Signing in…
                     </span>
                   ) : (
@@ -285,17 +217,18 @@ export default function LoginPage() {
                   )}
                 </button>
               </form>
+              </div>
 
-              <p className="mt-6 text-center text-sm text-[#64748B]">
+              <div className="mt-6 text-center text-sm text-[#64748B]">
                 Don&apos;t have an account?{" "}
                 <button
                   type="button"
                   onClick={handleRegisterClick}
-                  className="font-semibold text-[#0A2463] hover:text-[#1E3A8A] transition"
+                  className="text-[#003696] font-semibold hover:text-[#002060]"
                 >
                   Create one
                 </button>
-              </p>
+              </div>
             </div>
           </div>
         </div>

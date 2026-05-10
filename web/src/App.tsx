@@ -19,7 +19,7 @@ import NGODashboardPage from "./pages/NGODashboardPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import PrivacyPage from "./pages/PrivacyPage";
 import ProfilePage from "./pages/ProfilePage";
-import RegisterPage from "./pages/RegisterPage";
+import RegisterPage from "./pages/RegisterPageNew";
 import SystemPageWrapper from "./pages/SystemPage";
 import UsersPageWrapper from "./pages/UsersPage";
 
