@@ -2,6 +2,16 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { ROUTES } from "../core/config/routes";
 import { useAuth } from "../core/context/AuthContext";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
 // ── Icons ─────────────────────────────────────────────────────────────────────
 
@@ -306,14 +316,67 @@ function StatCard({ metric }: { metric: UsageMetric }) {
 }
 
 function SystemPerformanceCard() {
+  const performanceData = [
+    { time: "00:00", Requests: 420, Errors: 3 },
+    { time: "04:00", Requests: 380, Errors: 2 },
+    { time: "08:00", Requests: 820, Errors: 5 },
+    { time: "12:00", Requests: 1280, Errors: 8 },
+    { time: "16:00", Requests: 1200, Errors: 6 },
+    { time: "20:00", Requests: 900, Errors: 4 },
+    { time: "23:59", Requests: 720, Errors: 3 },
+  ];
+
   return (
     <div
-      className="bg-white rounded-[16px] p-6 col-span-1 md:col-span-2"
+      className="bg-white rounded-[16px] p-6 w-full"
       style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.06)" }}
     >
       <h3 className="text-[16px] font-semibold text-[#0D1B3E] mb-6">System Performance</h3>
-      <div className="h-64 bg-gradient-to-br from-[#F3F4F6] to-[#E5E7EB] rounded-lg flex items-center justify-center text-[#9CA3AF]">
-        <p className="text-[14px]">Performance Chart Component</p>
+      <div style={{ width: "100%", height: "300px" }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart
+            data={performanceData}
+            margin={{ top: 5, right: 30, left: 0, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" vertical={false} />
+            <XAxis
+              dataKey="time"
+              tick={{ fontSize: 11, fill: "#9CA3AF" }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <YAxis
+              tick={{ fontSize: 11, fill: "#9CA3AF" }}
+              axisLine={false}
+              tickLine={false}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "#FFFFFF",
+                border: "1px solid #E5E7EB",
+                borderRadius: "8px",
+                boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+              }}
+            />
+            <Legend iconType="circle" iconSize={8} wrapperStyle={{ paddingTop: "20px" }} />
+            <Line
+              dataKey="Requests"
+              stroke="#7C6FF7"
+              strokeWidth={2}
+              dot={{ r: 4, fill: "#7C6FF7" }}
+              activeDot={{ r: 6 }}
+              type="monotone"
+            />
+            <Line
+              dataKey="Errors"
+              stroke="#EF4444"
+              strokeWidth={2}
+              dot={{ r: 4, fill: "#EF4444" }}
+              activeDot={{ r: 6 }}
+              type="monotone"
+            />
+          </LineChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );
@@ -536,7 +599,7 @@ export default function SystemPage() {
         {/* Page Title */}
         <div>
           <p
-            className="text-[11px] font-semibold uppercase text-[#6B7280] tracking-[0.12em]"
+            className="text-[11px] font-semibold uppercase text-[#6B7280]"
             style={{ letterSpacing: "0.12em" }}
           >
             System Analytics
@@ -548,10 +611,10 @@ export default function SystemPage() {
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 overflow-x-auto">
           <button
             onClick={() => setActiveTab("ai")}
-            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all ${
+            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all whitespace-nowrap ${
               activeTab === "ai"
                 ? "text-white bg-[#0D2B6B]"
                 : "text-[#6B7280] hover:text-[#0D1B3E]"
@@ -561,7 +624,7 @@ export default function SystemPage() {
           </button>
           <button
             onClick={() => setActiveTab("metrics")}
-            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all ${
+            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all whitespace-nowrap ${
               activeTab === "metrics"
                 ? "text-white bg-[#0D2B6B]"
                 : "text-[#6B7280] hover:text-[#0D1B3E]"
@@ -571,7 +634,7 @@ export default function SystemPage() {
           </button>
           <button
             onClick={() => setActiveTab("risks")}
-            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all ${
+            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all whitespace-nowrap ${
               activeTab === "risks"
                 ? "text-white bg-[#0D2B6B]"
                 : "text-[#6B7280] hover:text-[#0D1B3E]"
@@ -581,7 +644,7 @@ export default function SystemPage() {
           </button>
           <button
             onClick={() => setActiveTab("errors")}
-            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all ${
+            className={`px-4 py-3 text-[14px] font-medium rounded-[8px] transition-all whitespace-nowrap ${
               activeTab === "errors"
                 ? "text-white bg-[#0D2B6B]"
                 : "text-[#6B7280] hover:text-[#0D1B3E]"
@@ -611,9 +674,13 @@ export default function SystemPage() {
             </div>
 
             {/* Performance and Resource Usage Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <SystemPerformanceCard />
-              <ResourceUsageCard />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <SystemPerformanceCard />
+              </div>
+              <div className="lg:col-span-1">
+                <ResourceUsageCard />
+              </div>
             </div>
           </div>
         )}
