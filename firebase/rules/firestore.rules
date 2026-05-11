@@ -166,12 +166,25 @@ service cloud.firestore {
     }
 
     // ── Helper functions ──────────────────────────────────────────────────────
+    /*
+      Resolve the caller's role in the safest way possible:
+      1) Prefer `request.auth.token.role` (custom claim) when available.
+      2) Fall back to reading the users document only when necessary.
+
+      This avoids recursive `get()` evaluations that can produce
+      `permission-denied` errors when Firestore rules attempt to read
+      the same `/users/{uid}` document during rule evaluation.
+    */
     function _role() {
-      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+      return request.auth != null && request.auth.token != null && request.auth.token.role != null
+        ? request.auth.token.role
+        : (request.auth != null ? get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role : null);
     }
+
     function _isGovernmentOrNgo() {
       return request.auth != null && (_role() == 'government' || _role() == 'ngo');
     }
+
     function _isAdmin() {
       return request.auth != null && _role() == 'admin';
     }
